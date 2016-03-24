@@ -1,0 +1,34 @@
+{
+  "name": "mindmup-mapjs-layout",
+  "license": "MIT",
+  "description": "Mind mapping layout library, developed for MindMup",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mindmup/mapjs-layout.git"
+  },
+  "keywords": [
+    "mindmup",
+    "svg"
+  ],
+  "files": [
+    "src"
+  ],
+  "bugs": {
+    "url": "https://github.com/mindmup/mapjs-layout/issues"
+  },
+  "homepage": "https://app.mindmup.com",
+  "version": "1.0.0",
+  "scripts": {
+    "pretest": "jshint src spec && jscs src spec",
+    "test": "node spec/support/jasmine-runner.js"
+  },
+  "main": "src/mapjs-layout.js",
+  "dependencies": {
+    "underscore": "^1.8.3",
+    "color": "^0.10.1"
+  },
+  "devDependencies": {
+    "jasmine": "^2.4.1",
+    "jasmine-spec-reporter": "^2.4.0"
+  }
+}
