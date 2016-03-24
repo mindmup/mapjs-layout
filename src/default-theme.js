@@ -1,0 +1,204 @@
+/*global module*/
+module.exports = {
+	'name': 'MindMup Default',
+	'node': [
+	{
+		'name': 'default',
+		'cornerRadius': 10.0,
+		'backgroundColor': '#E0E0E0',
+		'border': {
+			'type': 'surround',
+			'line': {
+				'color': '#707070',
+				'width': 1.0
+			}
+		},
+		'shadow': [{
+			'color': '#070707',
+			'opacity': 0.4,
+			'offset': {
+				'width': 2,
+				'height': 2
+			},
+			'radius': 2
+		}],
+		'text': {
+			'margin': 5.0,
+			'alignment': 'center',
+			'color': '#4F4F4F',
+			'lightColor': '#EEEEEE',
+			'darkColor': '#000000',
+			'font': {
+				'lineSpacing': 3.5,
+				'size': 12,
+				'weight': 'semibold'
+			}
+		},
+		'connections': {
+			'default': {
+				'h': 'center',
+				'v': 'center'
+			},
+			'from': {
+				'horizontal': {
+					'h': 'nearest-inset',
+					'v': 'center'
+				}
+			},
+			'to': {
+				'h': 'nearest',
+				'v': 'center'
+			}
+		},
+		'decorations': {
+			'attachment': {
+				'h': 'right',
+				'v': 'top'
+			},
+			'link': {
+				'h': 'right',
+				'v': 'bottom'
+			}
+		}
+	},
+	{
+		'name': 'level_1',
+		'backgroundColor': '#22AAE0'
+	},
+	{
+		'name': 'activated',
+		'border': {
+			'line': {
+				'color': '#22AAE0'
+			}
+		}
+	},
+	{
+		'name': 'selected',
+		'shadow': [
+		{
+			'color': '#000000',
+			'opacity': 0.9,
+			'offset': {
+				'width': 2,
+				'height': 2
+			},
+			'radius': 2
+		}
+		]
+	},
+	{
+		'name': 'collapsed',
+		'shadow': [
+		{
+			'color': '#888888',
+			'offset': {
+				'width': 0,
+				'height': 1
+			},
+			'radius': 0
+		},
+		{
+			'color': '#FFFFFF',
+			'offset': {
+				'width': 0,
+				'height': 3
+			},
+			'radius': 0
+		},
+		{
+			'color': '#888888',
+			'offset': {
+				'width': 0,
+				'height': 4
+			},
+			'radius': 0
+		},
+		{
+			'color': '#FFFFFF',
+			'offset': {
+				'width': 0,
+				'height': 6
+			},
+			'radius': 0
+		},
+		{
+			'color': '#888888',
+			'offset': {
+				'width': 0,
+				'height': 7
+			},
+			'radius': 0
+		}
+		]
+	},
+	{
+		'name': 'collapsed.selected',
+		'shadow': [
+		{
+			'color': '#FFFFFF',
+			'offset': {
+				'width': 0,
+				'height': 1
+			},
+			'radius': 0
+		},
+		{
+			'color': '#888888',
+			'offset': {
+				'width': 0,
+				'height': 3
+			},
+			'radius': 0
+		},
+		{
+			'color': '#FFFFFF',
+			'offset': {
+				'width': 0,
+				'height': 6
+			},
+			'radius': 0
+		},
+		{
+			'color': '#555555',
+			'offset': {
+				'width': 0,
+				'height': 7
+			},
+			'radius': 0
+		},
+		{
+			'color': '#FFFFFF',
+			'offset': {
+				'width': 0,
+				'height': 10
+			},
+			'radius': 0
+		},
+		{
+			'color': '#333333',
+			'offset': {
+				'width': 0,
+				'height': 11
+			},
+			'radius': 0
+		}
+		]
+	}
+	],
+	'connector': {
+		'default': {
+			'type': 'quadratic',
+			'controlPoint': {
+				'above': {'width': 0, 'height': 1.75},
+				'below': {'width': 0, 'height': 1.75},
+				'horizontal': {'width': 0, 'height': 1}
+			},
+			'line': {
+				'color': '#707070',
+				'width': 1.0
+			}
+		}
+	}
+};
+

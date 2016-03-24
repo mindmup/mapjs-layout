@@ -1,5 +1,5 @@
-/*global describe, beforeEach, it, expect, require*/
-var MAPJS = require('../src/mapjs-layout');
+/*global MAPJS, describe, beforeEach, it, expect*/
+
 describe('Theme', function () {
 	'use strict';
 	var underTest;
