@@ -24,8 +24,7 @@
   },
   "main": "src/mapjs-layout.js",
   "dependencies": {
-    "underscore": "^1.8.3",
-    "color": "^0.10.1"
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "jasmine": "^2.4.1",
