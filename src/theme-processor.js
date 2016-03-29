@@ -1,6 +1,6 @@
 /*global module, require*/
 var _ = require('underscore'),
-	convertHexRGB = require('./hex-color-to-rgb');
+	convertToRGB = require('./color-to-rgb');
 module.exports = function ThemeProcessor() {
 	'use strict';
 	var self = this,
@@ -23,7 +23,7 @@ module.exports = function ThemeProcessor() {
 				return 'transparent';
 			}
 			if (colorObj.opacity) {
-				return 'rgba(' + convertHexRGB(colorObj.color).join(',') + ',' + colorObj.opacity + ')';
+				return 'rgba(' + convertToRGB(colorObj.color).join(',') + ',' + colorObj.opacity + ')';
 			} else {
 				return colorObj.color;
 			}

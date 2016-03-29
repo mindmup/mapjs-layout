@@ -1,5 +1,5 @@
 /*global module, require */
-var convertHexRGB = require('./hex-color-to-rgb');
+var convertToRGB = require('./color-to-rgb');
 
 module.exports = function foregroundStyle(backgroundColor) {
 	'use strict';
@@ -15,7 +15,7 @@ module.exports = function foregroundStyle(backgroundColor) {
 		},
 		calcLuminosity = function () {
 			// http://www.w3.org/TR/WCAG20/#relativeluminancedef
-			var rgb = mix(convertHexRGB(backgroundColor), convertHexRGB('#EEEEEE')),
+			var rgb = mix(convertToRGB(backgroundColor), convertToRGB('#EEEEEE')),
 				lum = [], i, chan;
 			for (i = 0; i < rgb.length; i++) {
 				chan = rgb[i] / 255;
