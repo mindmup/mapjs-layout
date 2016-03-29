@@ -7,5 +7,8 @@ module.exports = {
 	calculateLayout: require('./calculate-layout'),
 	foregroundStyle: require('./foreground-style'),
 	colorToRGB: require('./color-to-rgb'),
-	Connectors: require('./connectors')
+	Connectors: require('./connectors'),
+	Themes: {
+		default: require('./default-theme')
+	}
 };
