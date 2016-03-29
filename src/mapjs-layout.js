@@ -7,5 +7,5 @@ module.exports = {
 	calculateLayout: require('./calculate-layout'),
 	foregroundStyle: require('./foreground-style'),
 	colorToRGB: require('./color-to-rgb'),
-	connectors: require('./connectors')
+	Connectors: require('./connectors')
 };
