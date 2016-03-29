@@ -2,5 +2,6 @@
 
 module.exports = {
 	Theme: require('./theme'),
-	calculateLayout: require('./calculate-layout')
+	calculateLayout: require('./calculate-layout'),
+	foregroundStyle: require('./foreground-style')
 };
