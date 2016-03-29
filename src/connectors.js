@@ -98,7 +98,6 @@ var Theme = require ('./theme'),
 			'use strict';
 			return {
 				'd': 'M' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.from.y - position.top) + 'L' + Math.round(calculatedConnector.to.x - position.left) + ',' + Math.round(calculatedConnector.to.y - position.top),
-				'conn': calculatedConnector,
 				'position': position
 			};
 		}
@@ -122,14 +121,13 @@ var Theme = require ('./theme'),
 			connectionPositionFrom = _.extend({}, connectionPositionDefaultFrom, theme.attributeValue(['node'], fromStyles, ['connections', 'from', childPosition], {})),
 			connectionPositionTo = _.extend({}, connectionPositionDefaultTo, theme.attributeValue(['node'], toStyles, ['connections', 'to'], {})),
 			connectionStyle = theme.attributeValue(['node'], toStyles, ['connections', 'style'], 'default'),
-			connectionCurveType = theme.attributeValue(['connector'], toStyles, ['type'], 'quadratic'),
+			connectionCurveType = theme.attributeValue(['connector'], [connectionStyle], ['type'], 'quadratic'),
 			controlPointOffsetFallBack = childPosition === 'horizontal' ? 1 : 1.75,
 			controlPointOffset = theme.attributeValue(['connector'], [connectionStyle], ['controlPoint', childPosition, 'height'], controlPointOffsetFallBack) - 1,
 			fromInset = theme.attributeValue(['node'], fromStyles, ['cornerRadius'], 10),
 			toInset = theme.attributeValue(['node'], toStyles, ['cornerRadius'], 10),
 			borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], ''),
 			nodeUnderline = false;
-
 		if (borderType === 'underline') {
 			nodeUnderline = {
 				from: {

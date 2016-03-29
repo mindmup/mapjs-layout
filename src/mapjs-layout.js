@@ -5,5 +5,6 @@ module.exports = {
 	ThemeProcessor: require('./theme-processor'),
 	URLHelper: require('./url-helper'),
 	calculateLayout: require('./calculate-layout'),
-	foregroundStyle: require('./foreground-style')
+	foregroundStyle: require('./foreground-style'),
+	connectors: require('./connectors')
 };
