@@ -1,5 +1,5 @@
 /*global module*/
-module.exports = function URLHelper() {
+var URLHelper = function () {
 	'use strict';
 	var self = this,
 		urlPattern = /(https?:\/\/|www\.)[\w-]+(\.[\w-]+)+([\w.,!@?^=%&amp;:\/~+#-]*[\w!@?^=%&amp;\/~+#-])?/i;
@@ -23,3 +23,5 @@ module.exports = function URLHelper() {
 		return text.replace(urlPattern, '');
 	};
 };
+
+module.exports = new URLHelper();

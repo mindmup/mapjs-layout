@@ -1,5 +1,7 @@
-/*global MAPJS, _, Color*/
-MAPJS.ThemeProcessor = function () {
+/*global module, require*/
+var _ = require('underscore'),
+	convertHexRGB = require('./hex-color-to-rgb');
+module.exports = function ThemeProcessor() {
 	'use strict';
 	var self = this,
 		addPx = function (val) {
@@ -7,6 +9,7 @@ MAPJS.ThemeProcessor = function () {
 		},
 		cssProp = {
 			cornerRadius: 'border-radius',
+			'text.color': 'color',
 			'text.margin': 'padding',
 			background: 'background-color',
 			backgroundColor: 'background-color',
@@ -20,7 +23,7 @@ MAPJS.ThemeProcessor = function () {
 				return 'transparent';
 			}
 			if (colorObj.opacity) {
-				return 'rgba(' + new Color(colorObj.color).rgbArray().join(',') + ',' + colorObj.opacity + ')';
+				return 'rgba(' + convertHexRGB(colorObj.color).join(',') + ',' + colorObj.opacity + ')';
 			} else {
 				return colorObj.color;
 			}

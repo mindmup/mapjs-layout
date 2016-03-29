@@ -1,5 +1,6 @@
-/*global module */
-// var Color = require('color');
+/*global module, require */
+var convertHexRGB = require('./hex-color-to-rgb');
+
 module.exports = function foregroundStyle(backgroundColor) {
 	'use strict';
 
@@ -11,20 +12,6 @@ module.exports = function foregroundStyle(backgroundColor) {
 				Math.round(0.5 * (color1[1] + color2[1])),
 				Math.round(0.5 * (color1[2] + color2[2]))
 			];
-		},
-		convertHexRGB = function (hexColor) {
-			var match = hexColor.toString(16).match(/[a-f0-9]{6}/i),
-				integer,r, g, b;
-			if (!match) {
-				return [0, 0, 0];
-			}
-
-			integer = parseInt(match[0], 16);
-			r = (integer >> 16) & 0xFF;
-			g = (integer >> 8) & 0xFF;
-			b = integer & 0xFF;
-
-			return [r, g, b];
 		},
 		calcLuminosity = function () {
 			// http://www.w3.org/TR/WCAG20/#relativeluminancedef
