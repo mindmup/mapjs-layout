@@ -19,7 +19,8 @@ describe('convertToRGB', function () {
 		[
 			['rgb(0,0,0)', [0,0,0]],
 			['rgb(255, 255, 255)', [255, 255, 255]],
-			['rgb(255, 255, 255)', [255, 255, 255]]
+			['rgb(255, 254, 253)', [255, 254, 253]],
+			['rgb(255,254,253)', [255, 254, 253]]
 		].forEach(function (args) {
 			it('should convert ' + args[0] + ' to rgb:' + args[1].join(','), function () {
 				expect(underTest(args[0])).toEqual(args[1]);
