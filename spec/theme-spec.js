@@ -20,7 +20,10 @@ describe('Theme', function () {
 					'name': 'sharp',
 					'cornerRadius': 0.0
 				}
-			]
+			],
+			layout: {
+				spacing: 30
+			}
 		};
 		underTest = new MAPJS.Theme(theme);
 	});
@@ -46,6 +49,9 @@ describe('Theme', function () {
 		});
 		it('should return the fallback value if no styles supplied', function () {
 			expect(underTest.attributeValue(['node'], [], ['backgroundColor'], '#FFFFFF')).toEqual('#FFFFFF');
+		});
+		it('should return the value from a non-array structure', function () {
+			expect(underTest.attributeValue(['layout'], [], ['spacing'])).toEqual(30);
 		});
 	});
 });

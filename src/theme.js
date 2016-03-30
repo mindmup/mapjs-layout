@@ -34,9 +34,13 @@ module.exports = function Theme(themeJson) {
 		if (!rootElement) {
 			return fallback;
 		}
-		styles.slice(0).reverse().forEach(function (style) {
-			merged = _.extend(merged, rootElement[style]);
-		});
+		if (styles.length) {
+			styles.slice(0).reverse().forEach(function (style) {
+				merged = _.extend(merged, rootElement[style]);
+			});
+		} else {
+			merged = _.extend({}, rootElement);
+		}
 		result = getElementForPath(merged, postfixes);
 		if (result === undefined) {
 			return fallback;
