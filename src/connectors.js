@@ -36,6 +36,10 @@ var Theme = require ('./theme'),
 		'base': function (node) {
 			'use strict';
 			return node.top + node.height + 1;
+		},
+		'top': function (node) {
+			'use strict';
+			return node.top;
 		}
 	},
 	connectorPaths = {
@@ -90,6 +94,32 @@ var Theme = require ('./theme'),
 						'v' + (dy - (2 * dyIncrement)) +
 						'q0,' + dyIncrement + ' ' + dxIncrement + ',' +  dyIncrement +
 						'h' + (dx - (2 * dxIncrement)),
+					'position': position
+				};
+
+		},
+		'vertical-s-curve': function (calculatedConnector, position) {
+			'use strict';
+			var initialRadius = 10,
+				dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
+				dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y),
+				dxIncrement = initialRadius * Math.sign(dx),
+				dyIncrement = initialRadius * Math.sign(dy);
+
+			if (initialRadius > Math.abs(dx * 0.5) || initialRadius > Math.abs(dy * 0.5)) {
+				dxIncrement = Math.round(dx / 2);
+				return {
+					'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+						'l' + dx + ',' + dy,
+					'position': position
+				};
+			}
+			return {
+					'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+						'q0,' + dyIncrement + ' ' + dxIncrement + ',' + dyIncrement +
+						'h' + (dx - (2 * dxIncrement)) +
+						'q' + dxIncrement + ',0 ' + dxIncrement + ',' +  dyIncrement +
+						'v' + (dy - (2 * dyIncrement)),
 					'position': position
 				};
 
