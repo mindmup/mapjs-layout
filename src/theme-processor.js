@@ -110,6 +110,40 @@ module.exports = function ThemeProcessor() {
 						result.push(';}');
 					}
 
+				},
+				appendDecorationStyles = function (styleSelector, nodeStyle) {
+					var style = nodeStyle.decorations;
+					if (!style) {
+						return;
+					}
+					result.push(styleSelector);
+					result.push(' .mapjs-decorations{position:absolute;');
+					if (style.edge === 'top' || style.edge === 'bottom') {
+						if (style.position === 'end') {
+							result.push('right:0;');
+						} else if (style.position === 'start') {
+							result.push('left:0;');
+						} else {
+							result.push('left:0;width:100%;');
+						}
+						result.push(style.edge);
+						result.push(':-');
+						result.push (style.overlap ? Math.round(style.height / 2) : style.height);
+						result.push('px;');
+					} else if (style.edge === 'left' || style.edge === 'right') {
+						result.push(style.edge === 'left' ?  'right' : 'left');
+						result.push(':100%;');
+						if (style.position === 'end') {
+							result.push('bottom:0;');
+						} else if (style.position === 'start') {
+							result.push('top:0;');
+						} else {
+							result.push('top:calc(50% - ');
+							result.push(Math.round(style.height / 2));
+							result.push('px);');
+						}
+					}
+					result.push('}');
 				};
 			nodeStyleArray.forEach(function (nodeStyle) {
 				var styleSelector = '.mapjs-node';
@@ -122,6 +156,7 @@ module.exports = function ThemeProcessor() {
 				result.push('}');
 
 				appendColorVariants(styleSelector, nodeStyle);
+				appendDecorationStyles(styleSelector, nodeStyle);
 			});
 			return result.join('');
 		};

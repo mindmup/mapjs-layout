@@ -122,7 +122,106 @@ describe('MAPJS.ThemeProcessor', function () {
 			});
 
 		});
+		describe('decorations', function () {
+			beforeEach(function () {
+				theme = {
+					node: [{
+						name: 'default',
+						decorations: {
+							edge: 'top',
+							overlap: true,
+							position: 'end',
+							height: 16
+						}
+					}]
+				};
+			});
+			describe('when working on top edge', function () {
+				beforeEach(function () {
+					theme.node[0].decorations.edge = 'top';
+				});
+				it('creates link position styles', function () {
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;right:0;top:-8px;}');
+				});
+				it('will position above if overlap is false', function () {
+					theme.node[0].decorations.overlap = false;
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;right:0;top:-16px;}');
+				});
+				it('will position in the middle if position is center', function () {
+					theme.node[0].decorations.position = 'center';
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:0;width:100%;top:-8px;}');
+				});
+				it('will position to the left if position is start', function () {
+					theme.node[0].decorations.position = 'start';
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:0;top:-8px;}');
+				});
+			});
+			describe('when working on bottom edge', function () {
+				beforeEach(function () {
+					theme.node[0].decorations.edge = 'bottom';
+				});
+				it('creates link position styles', function () {
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;right:0;bottom:-8px;}');
+				});
+				it('will position above if overlap is false', function () {
+					theme.node[0].decorations.overlap = false;
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;right:0;bottom:-16px;}');
+				});
+				it('will position in the middle if position is center', function () {
+					theme.node[0].decorations.position = 'center';
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:0;width:100%;bottom:-8px;}');
+				});
+				it('will position to the left if position is start', function () {
+					theme.node[0].decorations.position = 'start';
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:0;bottom:-8px;}');
+				});
+			});
 
+			describe('when working on left edge', function () {
+				beforeEach(function () {
+					theme.node[0].decorations.edge = 'left';
+					theme.node[0].decorations.overlap = false;
+				});
+				it('creates link position styles', function () {
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;right:100%;bottom:0;}');
+				});
+				it('ignores overlap', function () {
+					theme.node[0].decorations.overlap = false;
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;right:100%;bottom:0;}');
+				});
+				it('will position in the middle if position is center', function () {
+					theme.node[0].decorations.position = 'center';
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;right:100%;top:calc(50% - 8px);}');
+				});
+				it('will position to the left if position is start', function () {
+					theme.node[0].decorations.position = 'start';
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;right:100%;top:0;}');
+				});
+			});
+			describe('when working on right edge', function () {
+				beforeEach(function () {
+					theme.node[0].decorations.edge = 'right';
+					theme.node[0].decorations.overlap = false;
+				});
+				it('creates link position styles', function () {
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:100%;bottom:0;}');
+				});
+				it('ignores overlap', function () {
+					theme.node[0].decorations.overlap = false;
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:100%;bottom:0;}');
+				});
+				it('will position in the middle if position is center', function () {
+					theme.node[0].decorations.position = 'center';
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:100%;top:calc(50% - 8px);}');
+				});
+				it('will position to the left if position is start', function () {
+					theme.node[0].decorations.position = 'start';
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:100%;top:0;}');
+				});
+			});
+
+
+		});
 		describe('border', function () {
 			beforeEach(function () {
 				theme = {
