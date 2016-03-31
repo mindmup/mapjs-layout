@@ -51,14 +51,10 @@ module.exports = {
 			}
 		},
 		'decorations': {
-			'attachment': {
-				'h': 'right',
-				'v': 'top'
-			},
-			'link': {
-				'h': 'right',
-				'v': 'bottom'
-			}
+			'height': 32,
+			'edge': 'top',
+			'overlap': true,
+			'position': 'end'
 		}
 	},
 	{
