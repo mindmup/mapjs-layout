@@ -124,7 +124,7 @@ module.exports = function ThemeProcessor() {
 						} else if (style.position === 'start') {
 							result.push('left:0;');
 						} else {
-							result.push('left:0;width:100%;');
+							result.push('left:0;width:100%;text-align:center;');
 						}
 						result.push(style.edge);
 						result.push(':-');

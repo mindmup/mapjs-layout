@@ -149,7 +149,7 @@ describe('MAPJS.ThemeProcessor', function () {
 				});
 				it('will position in the middle if position is center', function () {
 					theme.node[0].decorations.position = 'center';
-					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:0;width:100%;top:-8px;}');
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:0;width:100%;text-align:center;top:-8px;}');
 				});
 				it('will position to the left if position is start', function () {
 					theme.node[0].decorations.position = 'start';
@@ -169,7 +169,7 @@ describe('MAPJS.ThemeProcessor', function () {
 				});
 				it('will position in the middle if position is center', function () {
 					theme.node[0].decorations.position = 'center';
-					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:0;width:100%;bottom:-8px;}');
+					expect(underTest.process(theme).css).toEqual('.mapjs-node{}.mapjs-node .mapjs-decorations{position:absolute;left:0;width:100%;text-align:center;bottom:-8px;}');
 				});
 				it('will position to the left if position is start', function () {
 					theme.node[0].decorations.position = 'start';
