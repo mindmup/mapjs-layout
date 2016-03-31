@@ -29,9 +29,9 @@ module.exports = {
 			'lightColor': '#EEEEEE',
 			'darkColor': '#000000',
 			'font': {
-				'lineSpacing': 3.5,
-				'size': 12,
-				'weight': 'semibold'
+				'lineSpacing': 2.5,
+				'size': 9,
+				'weight': 'bold'
 			}
 		},
 		'connections': {
@@ -51,7 +51,7 @@ module.exports = {
 			}
 		},
 		'decorations': {
-			'height': 32,
+			'height': 20,
 			'edge': 'top',
 			'overlap': true,
 			'position': 'end'
