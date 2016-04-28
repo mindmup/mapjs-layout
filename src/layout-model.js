@@ -1,7 +1,7 @@
 /*global module, require*/
 var _ = require('underscore');
 
-module.exports = function LayoutModel() {
+module.exports = function LayoutModel(emptyLayout) {
 	'use strict';
 	var self = this,
 		options = {
@@ -9,9 +9,6 @@ module.exports = function LayoutModel() {
 			majorAxisRatio: 3
 		},
 		layout,
-		getNode = function (nodeId) {
-			return layout && layout.nodes && layout.nodes[nodeId];
-		},
 		getNodesForPredicate = function (predicate) {
 			var nodes = layout && _.values(layout.nodes),
 				filtered = nodes && _.filter(nodes, predicate);
@@ -110,33 +107,37 @@ module.exports = function LayoutModel() {
 			});
 			return result;
 		};
+
+	self.getNode = function (nodeId) {
+		return (layout && layout.nodes && layout.nodes[nodeId]);
+	};
 	self.setLayout = function (newLayout) {
-		layout = newLayout;
+		layout = newLayout || emptyLayout;
 	};
 	self.getLayout = function () {
-		return layout;
+		return layout || emptyLayout;
 	};
 	self.nodeIdLeft = function (nodeId) {
-		var referenceNode = getNode(nodeId),
+		var referenceNode = self.getNode(nodeId),
 			nodes = referenceNode && (getNodesLeft(referenceNode, options.coneRatio) || getNodesLeft(referenceNode)),
 			node = nodes && getNearest(referenceNode, nodes, 1, options.majorAxisRatio);
 		return node && node.id;
 	};
 	self.nodeIdRight = function (nodeId) {
-		var referenceNode = getNode(nodeId),
+		var referenceNode = self.getNode(nodeId),
 			nodes = referenceNode && (getNodesRight(referenceNode, options.coneRatio) || getNodesRight(referenceNode)),
 			node = nodes && getNearest(referenceNode, nodes, 1, options.majorAxisRatio);
 		return node && node.id;
 	};
 
 	self.nodeIdUp = function (nodeId) {
-		var referenceNode = getNode(nodeId),
+		var referenceNode = self.getNode(nodeId),
 			nodes = referenceNode && (getNodesUp(referenceNode, options.coneRatio) || getNodesUp(referenceNode)),
 			node = nodes && getNearest(referenceNode, nodes, options.majorAxisRatio, 1);
 		return node && node.id;
 	};
 	self.nodeIdDown = function (nodeId) {
-		var referenceNode = getNode(nodeId),
+		var referenceNode = self.getNode(nodeId),
 			nodes = referenceNode && (getNodesDown(referenceNode, options.coneRatio) || getNodesDown(referenceNode)),
 			node = nodes && getNearest(referenceNode, nodes, options.majorAxisRatio, 1);
 		return node && node.id;

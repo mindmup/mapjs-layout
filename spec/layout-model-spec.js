@@ -3,11 +3,70 @@ describe('MAPJS.LayoutModel', function () {
 	'use strict';
 	var underTest, layout;
 	beforeEach(function () {
-		underTest = new MAPJS.LayoutModel();
+		underTest = new MAPJS.LayoutModel({bar: 'foo'});
 	});
-	it('should return layout', function () {
-		underTest.setLayout({foo: 'bar'});
-		expect(underTest.getLayout()).toEqual({foo: 'bar'});
+	describe('getLayout', function () {
+		it('should return empty Layout if none set', function () {
+			expect(underTest.getLayout()).toEqual({bar: 'foo'});
+		});
+		it('should return empty Layout if falsy set', function () {
+			underTest.setLayout(false);
+			expect(underTest.getLayout()).toEqual({bar: 'foo'});
+		});
+		it('should return layout', function () {
+			underTest.setLayout({foo: 'bar'});
+			expect(underTest.getLayout()).toEqual({foo: 'bar'});
+		});
+	});
+	describe('getNode', function () {
+		beforeEach(function () {
+			layout = {
+				nodes: {
+					1: {
+						id: 1,
+						width: 30,
+						height: 84,
+						level: 1,
+						x: -15,
+						y: -42
+					},
+					2: {
+						id: 2,
+						width: 40,
+						height: 49,
+						level: 2,
+						x: -20,
+						y: 62
+					},
+					3: {
+						id: 3,
+						width: 30,
+						height: 76,
+						level: 2,
+						x: -15,
+						y: -138
+					}
+				}
+			};
+			underTest.setLayout(layout);
+		});
+		it('should return node for Id', function () {
+			expect(underTest.getNode(2)).toEqual({
+				id: 2,
+				width: 40,
+				height: 49,
+				level: 2,
+				x: -20,
+				y: 62
+			});
+		});
+		it('should return falsy for invalid id', function () {
+			expect(underTest.getNode(4)).toBeFalsy();
+		});
+		it('should return falsy undefined layout', function () {
+			underTest = new MAPJS.LayoutModel();
+			expect(underTest.getNode(4)).toBeFalsy();
+		});
 	});
 	describe('vertical relationships', function () {
 		beforeEach(function () {
