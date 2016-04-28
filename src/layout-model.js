@@ -85,6 +85,11 @@ module.exports = function LayoutModel(layout) {
 				referenceNodeCenter = {
 					x: Math.round(referenceNode.x + referenceNode.width * 0.5),
 					y: Math.round(referenceNode.y + referenceNode.height * 0.5)
+				},
+				calculateDistance = function (point1, point2) {
+					var dx = xRatio * (point1.x - point2.x),
+						dy = yRatio * (point1.y - point2.y);
+					return Math.pow(dx, 2)  + Math.pow(dy, 2);
 				};
 			if (!nodes) {
 				return false;
@@ -93,15 +98,14 @@ module.exports = function LayoutModel(layout) {
 				return nodes[0];
 			}
 			result = _.min(nodes, function (node) {
-				var nodeCenter = {
-						x: Math.round(node.x + node.width * 0.5),
-						y: Math.round(node.y + node.height * 0.5)
-					},
-					dx = xRatio * (nodeCenter.x - referenceNodeCenter.x),
-					dy = yRatio * (nodeCenter.y - referenceNodeCenter.y),
-					d1 =  Math.pow(dx, 2)  + Math.pow(dy, 2);
-				// console.log(node.id, dx, dy, d1);
-				return d1;
+				var d = [
+						calculateDistance(node, referenceNodeCenter),
+						calculateDistance({x: node.x + node.width, y: node.y + node.height}, referenceNodeCenter),
+						calculateDistance({x: node.x + node.width, y: node.y}, referenceNodeCenter),
+						calculateDistance({x: node.x, y: node.y + node.height}, referenceNodeCenter),
+						calculateDistance({x: Math.round(node.x + node.width * 0.5), y: Math.round(node.y + node.height * 0.5)}, referenceNodeCenter)
+					];
+				return _.min(d);
 			});
 			return result;
 		};

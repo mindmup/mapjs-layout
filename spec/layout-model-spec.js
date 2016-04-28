@@ -84,16 +84,16 @@ describe('MAPJS.LayoutModel', function () {
 					width: 10,
 					height: 10,
 					level: 2,
-					x: -8, // (3 * 3)^2 = 81 = 130
-					y: -12 // 7^2 = 49
+					x: -14,
+					y: -12
 				};
 				layout.nodes[5] = {
 					id: 5,
 					width: 10,
 					height: 10,
 					level: 2,
-					x: -7, // (2 * 3)^2 = 36 = 117
-					y: -14 // 9^2 = 81
+					x: -12,
+					y: -14
 				};
 				expect(underTest.nodeIdAbove(1)).toEqual(5);
 			});
@@ -163,16 +163,16 @@ describe('MAPJS.LayoutModel', function () {
 					width: 10,
 					height: 10,
 					level: 2,
-					x: -8, // (3 * 3)^2 = 81 = 480
-					y: 15 // 20^2 = 400
+					x: -18,
+					y: 14
 				};
 				layout.nodes[5] = {
 					id: 5,
 					width: 10,
 					height: 10,
 					level: 2,
-					x: -7, // (2 * 3)^2 = 36 = 477
-					y: 16 // 21^2 = 441
+					x: -14,
+					y: 18
 				};
 				expect(underTest.nodeIdBelow(1)).toEqual(5);
 			});
@@ -275,16 +275,16 @@ describe('MAPJS.LayoutModel', function () {
 					width: 10,
 					height: 10,
 					level: 2,
-					x: 15, // 20^2 = 400
-					y: -8 // (3 * 3)^2 = 81 = 480
+					x: 14,
+					y: -18
 				};
 				layout.nodes[5] = {
 					id: 5,
 					width: 10,
 					height: 10,
 					level: 2,
-					x: 16, // 21^2 = 441
-					y: -7 // (2 * 3)^2 = 36 = 477
+					x: 18,
+					y: -14
 				};
 				expect(underTest.nodeIdToRightOf(1)).toEqual(5);
 			});
@@ -354,16 +354,16 @@ describe('MAPJS.LayoutModel', function () {
 					width: 10,
 					height: 10,
 					level: 2,
-					x: -12, // 7^2 = 49
-					y: -8 // (3 * 3)^2 = 81 = 130
+					x: -14,
+					y: -18
 				};
 				layout.nodes[5] = {
 					id: 5,
 					width: 10,
 					height: 10,
 					level: 2,
-					x: -14, // 9^2 = 81
-					y: -7 // (2 * 3)^2 = 36 = 117
+					x: -18,
+					y: -14
 				};
 				expect(underTest.nodeIdToLeftOf(1)).toEqual(5);
 			});
