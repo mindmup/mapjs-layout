@@ -34,17 +34,17 @@ describe('MAPJS.LayoutModel', function () {
 			};
 			underTest = new MAPJS.LayoutModel(layout);
 		});
-		describe('nodeIdAbove', function () {
+		describe('nodeIdUp', function () {
 			it('should return the id of the node above', function () {
-				expect(underTest.nodeIdAbove(1)).toEqual(3);
+				expect(underTest.nodeIdUp(1)).toEqual(3);
 			});
 			it('should return the id of the node above when it is to the right', function () {
 				layout.nodes[3].x = -1000;
-				expect(underTest.nodeIdAbove(1)).toEqual(3);
+				expect(underTest.nodeIdUp(1)).toEqual(3);
 			});
 			it('should return the id of the node above when it is to the left', function () {
 				layout.nodes[3].x = 1000;
-				expect(underTest.nodeIdAbove(1)).toEqual(3);
+				expect(underTest.nodeIdUp(1)).toEqual(3);
 			});
 			it('should prioritise nodes in a 45/2 degree arc above the node', function () {
 				layout.nodes[3].y = -10000;
@@ -64,7 +64,7 @@ describe('MAPJS.LayoutModel', function () {
 					x: 139,
 					y: -138
 				};
-				expect(underTest.nodeIdAbove(1)).toEqual(3);
+				expect(underTest.nodeIdUp(1)).toEqual(3);
 			});
 			it('should prioritise nodes within the cone by proximity', function () {
 				layout.nodes[3].y = -10000;
@@ -76,7 +76,7 @@ describe('MAPJS.LayoutModel', function () {
 					x: -93,
 					y: -138
 				};
-				expect(underTest.nodeIdAbove(1)).toEqual(4);
+				expect(underTest.nodeIdUp(1)).toEqual(4);
 			});
 			it('should give weighting to nodes that are nearest vertically in a 3:1 ratio', function () {
 				layout.nodes[4] = {
@@ -95,10 +95,10 @@ describe('MAPJS.LayoutModel', function () {
 					x: -12,
 					y: -14
 				};
-				expect(underTest.nodeIdAbove(1)).toEqual(5);
+				expect(underTest.nodeIdUp(1)).toEqual(5);
 			});
 			it('should return falsy when there are no nodes to the right', function () {
-				expect(underTest.nodeIdAbove(3)).toBeFalsy();
+				expect(underTest.nodeIdUp(3)).toBeFalsy();
 			});
 			it('should exclude nodes that have a right edge to the right of the reference nodes center', function () {
 				layout.nodes[2].y = -10000;
@@ -110,20 +110,20 @@ describe('MAPJS.LayoutModel', function () {
 					x: -15,
 					y: -100
 				};
-				expect(underTest.nodeIdAbove(1)).toEqual(3);
+				expect(underTest.nodeIdUp(1)).toEqual(3);
 			});
 		});
-		describe('nodeIdBelow', function () {
+		describe('nodeIdDown', function () {
 			it('should return the id of the node to the right', function () {
-				expect(underTest.nodeIdBelow(1)).toEqual(2);
+				expect(underTest.nodeIdDown(1)).toEqual(2);
 			});
 			it('should return the id of the node to the right when it is above', function () {
 				layout.nodes[2].x = -200;
-				expect(underTest.nodeIdBelow(1)).toEqual(2);
+				expect(underTest.nodeIdDown(1)).toEqual(2);
 			});
-			it('should return the id of the node to the right when it is below', function () {
+			it('should return the id of the node to the right when it is Down', function () {
 				layout.nodes[2].x = 200;
-				expect(underTest.nodeIdBelow(1)).toEqual(2);
+				expect(underTest.nodeIdDown(1)).toEqual(2);
 			});
 			it('should prioritise nodes in a 45/2 degree arc to the right of the node', function () {
 				layout.nodes[2].y = 10000;
@@ -143,7 +143,7 @@ describe('MAPJS.LayoutModel', function () {
 					x: 139,
 					y: 62
 				};
-				expect(underTest.nodeIdBelow(1)).toEqual(2);
+				expect(underTest.nodeIdDown(1)).toEqual(2);
 			});
 			it('should prioritise nodes within the cone by proximity', function () {
 				layout.nodes[2].y = 10000;
@@ -155,7 +155,7 @@ describe('MAPJS.LayoutModel', function () {
 					x: -93,
 					y: 62
 				};
-				expect(underTest.nodeIdBelow(1)).toEqual(4);
+				expect(underTest.nodeIdDown(1)).toEqual(4);
 			});
 			it('should give weighting to nodes that are nearest vertically in a 3:1 ratio', function () {
 				layout.nodes[4] = {
@@ -174,10 +174,10 @@ describe('MAPJS.LayoutModel', function () {
 					x: -14,
 					y: 18
 				};
-				expect(underTest.nodeIdBelow(1)).toEqual(5);
+				expect(underTest.nodeIdDown(1)).toEqual(5);
 			});
 			it('should return falsy when there are no nodes to the right', function () {
-				expect(underTest.nodeIdBelow(2)).toBeFalsy();
+				expect(underTest.nodeIdDown(2)).toBeFalsy();
 			});
 			it('should exclude nodes that have a right edge to the right of the reference nodes center', function () {
 				layout.nodes[2].y = 10000;
@@ -189,7 +189,7 @@ describe('MAPJS.LayoutModel', function () {
 					x: -15,
 					y: 0
 				};
-				expect(underTest.nodeIdBelow(1)).toEqual(2);
+				expect(underTest.nodeIdDown(1)).toEqual(2);
 			});
 		});
 	});

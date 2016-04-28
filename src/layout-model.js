@@ -16,7 +16,7 @@ module.exports = function LayoutModel(layout) {
 				filtered = _.filter(nodes, predicate);
 			return filtered.length && filtered;
 		},
-		getNodesBelow = function (referenceNode, coneRatio) {
+		getNodesDown = function (referenceNode, coneRatio) {
 			var predicate  = function (node) {
 				var dy = (node.y + node.height) - (referenceNode.y + referenceNode.height),
 					x1 = referenceNode.x  - Math.abs(dy * coneRatio),
@@ -48,7 +48,7 @@ module.exports = function LayoutModel(layout) {
 			};
 			return getNodesForPredicate(predicate);
 		},
-		getNodesAbove = function (referenceNode, coneRatio) {
+		getNodesUp = function (referenceNode, coneRatio) {
 			var predicate = function (node) {
 				var dy = node.y - referenceNode.y,
 					x1 = referenceNode.x - Math.abs(dy * coneRatio),
@@ -123,15 +123,15 @@ module.exports = function LayoutModel(layout) {
 		return node && node.id;
 	};
 
-	self.nodeIdAbove = function (nodeId) {
+	self.nodeIdUp = function (nodeId) {
 		var referenceNode = getNode(nodeId),
-			nodes = getNodesAbove(referenceNode, options.coneRatio) || getNodesAbove(referenceNode),
+			nodes = getNodesUp(referenceNode, options.coneRatio) || getNodesUp(referenceNode),
 			node = getNearest(referenceNode, nodes, options.majorAxisRatio, 1);
 		return node && node.id;
 	};
-	self.nodeIdBelow = function (nodeId) {
+	self.nodeIdDown = function (nodeId) {
 		var referenceNode = getNode(nodeId),
-			nodes = getNodesBelow(referenceNode, options.coneRatio) || getNodesBelow(referenceNode),
+			nodes = getNodesDown(referenceNode, options.coneRatio) || getNodesDown(referenceNode),
 			node = getNearest(referenceNode, nodes, options.majorAxisRatio, 1);
 		return node && node.id;
 	};
