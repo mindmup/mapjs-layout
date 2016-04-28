@@ -2,6 +2,13 @@
 describe('MAPJS.LayoutModel', function () {
 	'use strict';
 	var underTest, layout;
+	beforeEach(function () {
+		underTest = new MAPJS.LayoutModel();
+	});
+	it('should return layout', function () {
+		underTest.setLayout({foo: 'bar'});
+		expect(underTest.getLayout()).toEqual({foo: 'bar'});
+	});
 	describe('vertical relationships', function () {
 		beforeEach(function () {
 			layout = {
@@ -32,12 +39,13 @@ describe('MAPJS.LayoutModel', function () {
 					}
 				}
 			};
-			underTest = new MAPJS.LayoutModel(layout);
+			underTest.setLayout(layout);
 		});
 		describe('nodeIdUp', function () {
 			it('should return the id of the node above', function () {
 				expect(underTest.nodeIdUp(1)).toEqual(3);
 			});
+
 			it('should return the id of the node above when it is to the right', function () {
 				layout.nodes[3].x = -1000;
 				expect(underTest.nodeIdUp(1)).toEqual(3);
@@ -99,6 +107,10 @@ describe('MAPJS.LayoutModel', function () {
 			});
 			it('should return falsy when there are no nodes to the right', function () {
 				expect(underTest.nodeIdUp(3)).toBeFalsy();
+			});
+			it('should return falsy when there is no layout set', function () {
+				underTest.setLayout();
+				expect(underTest.nodeIdUp(1)).toBeFalsy();
 			});
 			it('should exclude nodes that have a right edge to the right of the reference nodes center', function () {
 				layout.nodes[2].y = -10000;
@@ -179,6 +191,10 @@ describe('MAPJS.LayoutModel', function () {
 			it('should return falsy when there are no nodes to the right', function () {
 				expect(underTest.nodeIdDown(2)).toBeFalsy();
 			});
+			it('should return falsy when there is no layout set', function () {
+				underTest.setLayout();
+				expect(underTest.nodeIdDown(1)).toBeFalsy();
+			});
 			it('should exclude nodes that have a right edge to the right of the reference nodes center', function () {
 				layout.nodes[2].y = 10000;
 				layout.nodes[4] = {
@@ -223,7 +239,7 @@ describe('MAPJS.LayoutModel', function () {
 					}
 				}
 			};
-			underTest = new MAPJS.LayoutModel(layout);
+			underTest.setLayout(layout);
 		});
 		describe('nodeIdRight', function () {
 			it('should return the id of the node to the right', function () {
@@ -290,6 +306,10 @@ describe('MAPJS.LayoutModel', function () {
 			});
 			it('should return falsy when there are no nodes to the right', function () {
 				expect(underTest.nodeIdRight(2)).toBeFalsy();
+			});
+			it('should return falsy when there is no layout set', function () {
+				underTest.setLayout();
+				expect(underTest.nodeIdRight(1)).toBeFalsy();
 			});
 			it('should exclude nodes that have a right edge to the right of the reference nodes center', function () {
 				layout.nodes[2].x = 10000;
@@ -369,6 +389,10 @@ describe('MAPJS.LayoutModel', function () {
 			});
 			it('should return falsy when there are no nodes to the left', function () {
 				expect(underTest.nodeIdLeft(3)).toBeFalsy();
+			});
+			it('should return falsy when there is no layout set', function () {
+				underTest.setLayout();
+				expect(underTest.nodeIdLeft(1)).toBeFalsy();
 			});
 			it('should exclude nodes that have a right edge to the right of the reference nodes center', function () {
 				layout.nodes[3].x = -10000;

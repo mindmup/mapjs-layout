@@ -1,20 +1,21 @@
 /*global module, require*/
 var _ = require('underscore');
 
-module.exports = function LayoutModel(layout) {
+module.exports = function LayoutModel() {
 	'use strict';
 	var self = this,
 		options = {
 			coneRatio: 0.5,
 			majorAxisRatio: 3
 		},
+		layout,
 		getNode = function (nodeId) {
 			return layout && layout.nodes && layout.nodes[nodeId];
 		},
 		getNodesForPredicate = function (predicate) {
-			var nodes = _.values(layout.nodes),
-				filtered = _.filter(nodes, predicate);
-			return filtered.length && filtered;
+			var nodes = layout && _.values(layout.nodes),
+				filtered = nodes && _.filter(nodes, predicate);
+			return nodes && filtered.length && filtered;
 		},
 		getNodesDown = function (referenceNode, coneRatio) {
 			var predicate  = function (node) {
@@ -109,30 +110,35 @@ module.exports = function LayoutModel(layout) {
 			});
 			return result;
 		};
-
+	self.setLayout = function (newLayout) {
+		layout = newLayout;
+	};
+	self.getLayout = function () {
+		return layout;
+	};
 	self.nodeIdLeft = function (nodeId) {
 		var referenceNode = getNode(nodeId),
-			nodes = getNodesLeft(referenceNode, options.coneRatio) || getNodesLeft(referenceNode),
-			node = getNearest(referenceNode, nodes, 1, options.majorAxisRatio);
+			nodes = referenceNode && (getNodesLeft(referenceNode, options.coneRatio) || getNodesLeft(referenceNode)),
+			node = nodes && getNearest(referenceNode, nodes, 1, options.majorAxisRatio);
 		return node && node.id;
 	};
 	self.nodeIdRight = function (nodeId) {
 		var referenceNode = getNode(nodeId),
-			nodes = getNodesRight(referenceNode, options.coneRatio) || getNodesRight(referenceNode),
-			node = getNearest(referenceNode, nodes, 1, options.majorAxisRatio);
+			nodes = referenceNode && (getNodesRight(referenceNode, options.coneRatio) || getNodesRight(referenceNode)),
+			node = nodes && getNearest(referenceNode, nodes, 1, options.majorAxisRatio);
 		return node && node.id;
 	};
 
 	self.nodeIdUp = function (nodeId) {
 		var referenceNode = getNode(nodeId),
-			nodes = getNodesUp(referenceNode, options.coneRatio) || getNodesUp(referenceNode),
-			node = getNearest(referenceNode, nodes, options.majorAxisRatio, 1);
+			nodes = referenceNode && (getNodesUp(referenceNode, options.coneRatio) || getNodesUp(referenceNode)),
+			node = nodes && getNearest(referenceNode, nodes, options.majorAxisRatio, 1);
 		return node && node.id;
 	};
 	self.nodeIdDown = function (nodeId) {
 		var referenceNode = getNode(nodeId),
-			nodes = getNodesDown(referenceNode, options.coneRatio) || getNodesDown(referenceNode),
-			node = getNearest(referenceNode, nodes, options.majorAxisRatio, 1);
+			nodes = referenceNode && (getNodesDown(referenceNode, options.coneRatio) || getNodesDown(referenceNode)),
+			node = nodes && getNearest(referenceNode, nodes, options.majorAxisRatio, 1);
 		return node && node.id;
 	};
 };
