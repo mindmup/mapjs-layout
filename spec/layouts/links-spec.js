@@ -1,7 +1,7 @@
 /*global describe, expect, it, beforeEach, require*/
-var layoutLinks = require('../src/layout-links');
+var layoutLinks = require('../../src/layouts/links');
 
-describe('layoutLinks', function () {
+describe('layouts/links', function () {
 	'use strict';
 	var contentAggregate, visibleNodes;
 	beforeEach(function () {
