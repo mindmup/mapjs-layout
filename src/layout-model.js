@@ -110,13 +110,13 @@ module.exports = function LayoutModel(layout) {
 			return result;
 		};
 
-	self.nodeIdToLeftOf = function (nodeId) {
+	self.nodeIdLeft = function (nodeId) {
 		var referenceNode = getNode(nodeId),
 			nodes = getNodesLeft(referenceNode, options.coneRatio) || getNodesLeft(referenceNode),
 			node = getNearest(referenceNode, nodes, 1, options.majorAxisRatio);
 		return node && node.id;
 	};
-	self.nodeIdToRightOf = function (nodeId) {
+	self.nodeIdRight = function (nodeId) {
 		var referenceNode = getNode(nodeId),
 			nodes = getNodesRight(referenceNode, options.coneRatio) || getNodesRight(referenceNode),
 			node = getNearest(referenceNode, nodes, 1, options.majorAxisRatio);
