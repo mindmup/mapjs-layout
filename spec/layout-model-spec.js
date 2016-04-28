@@ -63,6 +63,9 @@ describe('MAPJS.LayoutModel', function () {
 		it('should return falsy for invalid id', function () {
 			expect(underTest.getNode(4)).toBeFalsy();
 		});
+		it('should return falsy for undefined id', function () {
+			expect(underTest.getNode()).toBeFalsy();
+		});
 		it('should return falsy undefined layout', function () {
 			underTest = new MAPJS.LayoutModel();
 			expect(underTest.getNode(4)).toBeFalsy();
