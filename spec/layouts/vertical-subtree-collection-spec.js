@@ -87,6 +87,18 @@ describe('Vertical Subtree Collection', function () {
 			expect(underTest.widestLevelIndex()).toEqual(1);
 		});
 	});
+	describe('existsOnLevel', function () {
+		it('returns true if the subtree with a particular rank existis level', function () {
+			var underTest = new VerticalSubtreeCollection({
+				/* rank */ 4: { levels: [{xOffset: -20, width: 40}, {xOffset: -40, width: 300}]},
+				/* rank */ 1: { levels: [{xOffset: -20, width: 40}]}
+			}, 10);
+			expect(underTest.existsOnLevel(4, 1)).toBeTruthy();
+			expect(underTest.existsOnLevel(4, 0)).toBeTruthy();
+			expect(underTest.existsOnLevel(1, 1)).toBeFalsy();
+			expect(underTest.existsOnLevel(1, 0)).toBeTruthy();
+		});
+	});
 	describe('getExpectedTranslation', function () {
 		it('returns the expected horizontal translation to bring the left-most node of the combined tree is aligned to x=0', function () {
 			var childLayouts = {
@@ -97,6 +109,7 @@ describe('Vertical Subtree Collection', function () {
 			expect(underTest.getExpectedTranslation(1)).toEqual(35);
 			expect(underTest.getExpectedTranslation(4)).toEqual(120);
 		});
+		/* what if the left-most does not exist on the widest level ? */
 	});
 	describe('getMergedLevels', function () {
 		it('returns an array of level widths and offsets aligned to the widest level offset', function () {
@@ -108,5 +121,25 @@ describe('Vertical Subtree Collection', function () {
 
 			expect(underTest.getMergedLevels(-100)).toEqual([{xOffset: -80, width: 130}, {xOffset: -100, width: 170}]);
 		});
+		/*
+		it('works if the left-most does not exist on the widest level', function () {
+			var childLayouts = {
+					4: { levels: [{xOffset: -20, width: 40}, {xOffset: -200, width: 400}] },
+					1: { levels: [{xOffset: -20, width: 40}] }
+				},
+				underTest = new VerticalSubtreeCollection(childLayouts, 10);
+
+			expect(underTest.getMergedLevels(-200)).toEqual([{xOffset: -70, width: 90}, {xOffset: -200, width: 400}]);
+
+		});
+		it('works if the levels have the same width', function () {
+			var childLayouts = {
+					4: { levels: [{xOffset: -20, width: 40}, {xOffset: -40, width: 90}] },
+					1: { levels: [{xOffset: -20, width: 40}] }
+				},
+				underTest = new VerticalSubtreeCollection(childLayouts, 10);
+
+			expect(underTest.getMergedLevels(-100)).toEqual([{xOffset: -80, width: 130}, {xOffset: -100, width: 170}]);
+		});*/
 	});
 });

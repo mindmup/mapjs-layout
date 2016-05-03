@@ -66,10 +66,16 @@ module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
 		return translations[rank];
 
 	};
+	self.existsOnLevel = function (rank, level) {
+		return subtreeMap[rank].levels.length > level;
+	};
 	self.getMergedLevels = function (targetCombinedLeftOffset) {
 		return self.getLevelWidths().map(function (val, index) {
-			var referenceLeft = sortedRanks()[0], /* won't work if the first child layout does not exist on the widest level */
-				referenceRight = sortedRanks()[sortedRanks().length - 1],
+			var candidateRanks = sortedRanks().filter(function (rank) {
+					return self.existsOnLevel(rank, index);
+				}),
+				referenceLeft = candidateRanks[0], /* won't work if the first child layout does not exist on the widest level */
+				referenceRight = candidateRanks[candidateRanks.length - 1],
 				rightLayout = subtreeMap[referenceRight],
 				leftLayout = subtreeMap[referenceLeft];
 			return {
