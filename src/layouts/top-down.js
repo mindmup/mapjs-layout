@@ -1,30 +1,56 @@
 /*global module, require */
 var _ = require('underscore'),
-	layoutLinks = require('./links'),
-	treeUtils = require('../tree');
-module.exports  = function topdownLayout(idea, dimensionProvider, margin) {
+	combineVerticalSubtrees = require('./combine-vertical-subtrees');
+module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 	'use strict';
-	var nodeLayout = function (margin) {
-			var positiveTree, negativeTree, layout, negativeLayout,
-				positive = function (rank, parentId) {
-					return parentId !== idea.id || rank > 0;
-				},
-				negative = function (rank, parentId) {
-					return parentId !== idea.id || rank < 0;
-				};
-			positiveTree = treeUtils.calculateTree(idea, dimensionProvider, margin, positive);
-			negativeTree = treeUtils.calculateTree(idea, dimensionProvider, margin, negative);
-			layout = positiveTree.toLayout();
-			negativeLayout = negativeTree.toLayout();
-			_.each(negativeLayout.nodes, function (n) {
-				n.x = -1 * n.x - n.width;
-			});
-			_.extend(negativeLayout.nodes, layout.nodes);
-			_.extend(negativeLayout.connectors, layout.connectors);
-			return negativeLayout;
+	var layout = { nodes: {}, connectors: {}, links: {} },
+		toNode = function (idea, level) {
+			var dimensions = dimensionProvider(idea, level);
+			return _.extend({level: level}, dimensions, _.pick(idea, ['id', 'title', 'attr']));
 		},
-		layout = nodeLayout(margin);
-	layout.links = layoutLinks(idea, layout.nodes);
+		traverse = function (idea, predicate, level) {
+			var childResults;
+			level = level || 1;
+			if (idea.ideas) {
+				childResults = Object.keys(idea.ideas).map(function (subNodeRank) {
+					return traverse(idea.ideas[subNodeRank], predicate, level + 1);
+				});
+			}
+			return predicate(idea, childResults, level);
+		},
+		traversalLayout = function (idea, childLayouts, level) {
+			var node = toNode(idea, level);
+			return combineVerticalSubtrees(node, childLayouts, margin);
+		},
+		setLevelHeights = function (nodes, levelHeights) {
+			_.each(layout.nodes, function (node) {
+				node.y = levelHeights[node.level - 1];
+			});
+		},
+		getLevelHeights = function (nodes) {
+			var maxHeights = [],
+				level,
+				heights = [];
+
+			_.each(nodes, function (node) {
+				if (!maxHeights[node.level - 1]) {
+					maxHeights[node.level - 1] = node.height; /* do max later */
+				}
+			});
+
+			heights[0] = Math.round(-0.5 * layout.nodes[aggregate.id].height);
+
+			for (level = 1; level < maxHeights.length; level++) {
+				heights [level] = heights [level - 1] + margin + maxHeights[level - 1];
+			}
+			return heights;
+		},
+		tree;
+
+	tree = traverse(aggregate, traversalLayout);
+	layout.nodes = tree.nodes;
+	setLevelHeights(layout.nodes, getLevelHeights(layout.nodes));
+
 	return layout;
 };
 
