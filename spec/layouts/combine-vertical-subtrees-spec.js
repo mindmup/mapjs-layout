@@ -1,6 +1,6 @@
 /*global describe, it, expect, require */
 var combineVerticalSubtrees = require('../../src/layouts/combine-vertical-subtrees');
-describe('Top down layout', function () {
+describe('Combine Vertical Subtrees', function () {
 	'use strict';
 	it('should set the width properties of the root node', function () {
 		var node = {id: 1, width: 50, height: 10},
@@ -19,7 +19,6 @@ describe('Top down layout', function () {
 
 	});
 	it('should rank-sort child layouts', function () {
-
 		var node = {id: 1, width: 50, height: 10},
 			childLayouts = {
 				/* rank */ 4: { levels: [{xOffset: -20, width: 40}], nodes: { /* id */ 14: { id: 14, x: -20, width: 40, height: 10 } } },
@@ -37,5 +36,20 @@ describe('Top down layout', function () {
 		expect(result.nodes[13].x).toEqual(5);
 		expect(result.nodes[14].x).toEqual(55);
 
+	});
+	it('should arrange multi-level layouts where child nodes require spacing out parent levels', function () {
+
+		var node = {id: 1, width: 50, height: 10},
+			childLayouts = {
+				/* rank */ 4: { levels: [{xOffset: -20, width: 40}, {xOffset: -40, width: 80}], nodes: { /* id */ 12: { id: 12, x: -20, width: 40, height: 10 } } },
+				/* rank */ 1: { levels: [{xOffset: -20, width: 40}, {xOffset: -40, width: 80}], nodes: { /* id */ 11: { id: 11, x: -20, width: 40, height: 10 } } }
+			},
+			result = combineVerticalSubtrees(node, childLayouts, 10);
+
+		expect(result.levels).toEqual([{xOffset: -25, width: 50}, {xOffset: -65, width: 130}, {xOffset: -85, width: 170}]);
+
+		expect(result.nodes[1].x).toEqual(-25);
+		expect(result.nodes[11].x).toEqual(-65);
+		expect(result.nodes[12].x).toEqual(25);
 	});
 });

@@ -1,19 +1,10 @@
 /*global module, require */
-var _ = require('underscore');
+var _ = require('underscore'),
+	VerticalSubtreeCollection = require('./vertical-subtree-collection');
 module.exports = function combineVerticalSubtrees(node, childLayouts, margin) {
 	'use strict';
 	var result = {
 			nodes: { }
-		},
-		getLevelWidth = function (childLayouts) {
-			var result = 0;
-			_.each(childLayouts, function (childLayout) {
-				if (result > 0) {
-					result += margin;
-				}
-				result += childLayout.levels[0].width;
-			});
-			return result;
 		},
 		shift = function (nodes, xOffset) {
 			_.each(nodes, function (node) {
@@ -21,26 +12,20 @@ module.exports = function combineVerticalSubtrees(node, childLayouts, margin) {
 			});
 			return nodes;
 		},
-		rankSort = function (childLayouts) {
-			return _.sortBy(Object.keys(childLayouts), parseFloat).map(function (key) {
-				return childLayouts[key];
-			});
-		},
-		currentX,
-		levelWidth;
+		treeOffset,
+		verticalSubtreeCollection = new VerticalSubtreeCollection(childLayouts, margin);
 
 	result.nodes[node.id] = node;
-
 	node.x = Math.round(-0.5 * node.width);
 	result.levels = [{width: node.width, xOffset: node.x}];
 
-	if (!_.isEmpty(childLayouts)) {
-		levelWidth = getLevelWidth(childLayouts);
-		currentX = Math.round(-0.5 * levelWidth);
-		result.levels.push({width: levelWidth, xOffset: currentX});
-		rankSort(childLayouts).forEach(function (childLayout) {
-			_.extend(result.nodes, shift(childLayout.nodes, currentX - childLayout.levels[0].xOffset)); /* horizontal spacing for multiple levels */
-			currentX += childLayout.levels[0].width + margin;
+	if (!verticalSubtreeCollection.isEmpty()) {
+		treeOffset = Math.round(-0.5 * verticalSubtreeCollection.widestLevelWidth());
+
+		result.levels = result.levels.concat(verticalSubtreeCollection.getMergedLevels(treeOffset));
+
+		Object.keys(childLayouts).forEach(function (subtreeRank) {
+			_.extend(result.nodes, shift(childLayouts[subtreeRank].nodes, treeOffset + verticalSubtreeCollection.getExpectedTranslation(subtreeRank)));
 		});
 	}
 	return result;
