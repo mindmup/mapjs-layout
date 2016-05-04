@@ -99,6 +99,58 @@ describe('Top down layout', function () {
 		expect(position(result.nodes[1])).toEqual({ x: -60, y: -30});
 		expect(position(result.nodes[11])).toEqual({ x: -172, y: 35});
 		expect(position(result.nodes[12])).toEqual({ x: -67, y: 35});
-
 	});
+	it('positions third level below the second level, even if uneven heights on 2nd', function () {
+		var idea = {
+				title: 'parent', /* 120, 60 */
+				id: 1,
+				ideas: {
+					5: {
+						title: 'second child', /* 240, 120 */
+						id: 12,
+						ideas: {
+							1: {
+								id: 112,
+								title: 'XYZ'
+							}
+						}
+					},
+					4: {
+						title: 'child', /* 100, 50 */
+						id: 11,
+						ideas: {
+							2: {
+								id: 113,
+								title: 'ZXY'
+							}
+						}
+					}
+				}
+			},
+			margin = 5,
+			result = layout(idea, dimensionProvider, margin);
+		expect(result.nodes[113].y).toEqual(160);
+		expect(result.nodes[113].y).toEqual(160);
+	});
+	/*
+	it('adds connector information', function () {
+		var idea = {
+				title: 'parent',
+				id: 1,
+				ideas: {
+					5: {
+						title: 'second child',
+						id: 12
+					},
+					4: {
+						title: 'child',
+						id: 11
+					}
+				}
+			},
+			margin = 5,
+			result = layout(idea, dimensionProvider, margin);
+		expect(result.connectors).toEqual([]);
+	});
+	*/
 });

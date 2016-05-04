@@ -34,9 +34,7 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 				heights = [];
 
 			_.each(nodes, function (node) {
-				if (!maxHeights[node.level - 1]) {
-					maxHeights[node.level - 1] = node.height; /* do max later */
-				}
+				maxHeights[node.level - 1] = Math.max(maxHeights[node.level - 1] || 0, node.height);
 			});
 
 			heights[0] = Math.round(-0.5 * layout.nodes[aggregate.id].height);
