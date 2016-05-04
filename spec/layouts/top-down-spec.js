@@ -132,25 +132,4 @@ describe('Top down layout', function () {
 		expect(result.nodes[113].y).toEqual(160);
 		expect(result.nodes[113].y).toEqual(160);
 	});
-	/*
-	it('adds connector information', function () {
-		var idea = {
-				title: 'parent',
-				id: 1,
-				ideas: {
-					5: {
-						title: 'second child',
-						id: 12
-					},
-					4: {
-						title: 'child',
-						id: 11
-					}
-				}
-			},
-			margin = 5,
-			result = layout(idea, dimensionProvider, margin);
-		expect(result.connectors).toEqual([]);
-	});
-	*/
 });

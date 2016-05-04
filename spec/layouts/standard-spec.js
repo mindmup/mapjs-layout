@@ -176,58 +176,6 @@ describe('layouts/standard', function () {
 			attr: {collapsed: true, style: { background: '#FFFFFF'}}
 		}));
 	});
-	it('should not include links between collapsed nodes', function () {
-		var contentAggregate = {
-			id: 1,
-			title: 'first',
-			attr: { collapsed: true },
-			ideas: {
-				100: {
-					id: 2,
-					title: 'second'
-				},
-				200: {
-					id: 3,
-					title: 'third'
-				}
-			},
-			links: [{
-				ideaIdFrom: 2,
-				ideaIdTo: 3
-			}]
-		},
-			result;
-
-		result = layout(contentAggregate, dimensionProvider, margin);
-
-		expect(result.links).toEqual({});
-	});
-	it('should include links between non-collapsed nodes', function () {
-		var contentAggregate = {
-			id: 1,
-			title: 'first',
-			ideas: {
-				100: {
-					id: 2,
-					title: 'second'
-				},
-				200: {
-					id: 3,
-					title: 'third'
-				}
-			},
-			links: [{
-				ideaIdFrom: 2,
-				ideaIdTo: 3,
-				attr: { name: 'val' }
-			}]
-		},
-			result;
-
-		result = layout(contentAggregate, dimensionProvider, margin);
-
-		expect(result.links).toEqual({ '2_3' : { ideaIdFrom : 2, ideaIdTo : 3, attr : { name: 'val' } } });
-	});
 	it('takes node spacing from the margin', function () {
 		var contentAggregate = {
 				id: 7,

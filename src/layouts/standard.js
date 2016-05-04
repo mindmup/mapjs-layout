@@ -1,6 +1,5 @@
 /*global module, require */
 var _ = require('underscore'),
-	layoutLinks = require('./links'),
 	treeUtils = require('../tree');
 module.exports  = function standardLayout(idea, dimensionProvider, margin) {
 	'use strict';
@@ -24,7 +23,6 @@ module.exports  = function standardLayout(idea, dimensionProvider, margin) {
 			return negativeLayout;
 		},
 		layout = nodeLayout(margin);
-	layout.links = layoutLinks(idea, layout.nodes);
 	return layout;
 };
 
