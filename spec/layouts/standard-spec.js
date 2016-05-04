@@ -19,7 +19,7 @@ describe('layouts/standard', function () {
 	it('should assign root node level 1', function () {
 		var contentAggregate = { id: 7 },
 			result = layout(contentAggregate, dimensionProvider, margin);
-		expect(result.nodes[7].level).toEqual(1);
+		expect(result[7].level).toEqual(1);
 	});
 	it('should assign child node levels recursively', function () {
 		var contentAggregate = {
@@ -39,10 +39,10 @@ describe('layouts/standard', function () {
 				}
 			},
 			result = layout(contentAggregate, dimensionProvider, margin);
-		expect(result.nodes[7].level).toEqual(1);
-		expect(result.nodes[2].level).toEqual(2);
-		expect(result.nodes[22].level).toEqual(3);
-		expect(result.nodes[3].level).toEqual(2);
+		expect(result[7].level).toEqual(1);
+		expect(result[2].level).toEqual(2);
+		expect(result[22].level).toEqual(3);
+		expect(result[3].level).toEqual(2);
 	});
 	it('should place a root node on (margin, margin)', function () {
 		var contentAggregate = {
@@ -51,7 +51,7 @@ describe('layouts/standard', function () {
 			},
 			result;
 		result = layout(contentAggregate, dimensionProvider, margin);
-		expect(result.nodes[7]).toEqual(jasmine.objectContaining({
+		expect(result[7]).toEqual(jasmine.objectContaining({
 			id: 7,
 			x: -60,
 			y: -30,
@@ -74,11 +74,11 @@ describe('layouts/standard', function () {
 			},
 			result;
 		result = layout(contentAggregate, dimensionProvider, margin);
-		expect(result.nodes[7]).toEqual(jasmine.objectContaining({
+		expect(result[7]).toEqual(jasmine.objectContaining({
 			x: -20,
 			y: -10
 		}));
-		expect(result.nodes[8]).toEqual(jasmine.objectContaining({
+		expect(result[8]).toEqual(jasmine.objectContaining({
 			x: 40,
 			y: -15
 		}));
@@ -100,7 +100,7 @@ describe('layouts/standard', function () {
 			},
 			result;
 		result = layout(contentAggregate, dimensionProvider, margin);
-		expect(result.nodes[9]).toEqual(jasmine.objectContaining({
+		expect(result[9]).toEqual(jasmine.objectContaining({
 			x: -120,
 			y: -20
 		}));
@@ -128,7 +128,7 @@ describe('layouts/standard', function () {
 			},
 			result;
 		result = layout(contentAggregate, dimensionProvider, margin);
-		expect(result.nodes[10].x).toBe(-240);
+		expect(result[10].x).toBe(-240);
 	});
 	it('should place child nodes below each other', function () {
 		var contentAggregate = {
@@ -147,8 +147,8 @@ describe('layouts/standard', function () {
 			},
 			result;
 		result = layout(contentAggregate, dimensionProvider, margin);
-		expect(result.nodes[9].y).toBe(-45);
-		expect(result.nodes[8].y).toBe(15);
+		expect(result[9].y).toBe(-45);
+		expect(result[8].y).toBe(15);
 	});
 	it('should center children vertically', function () {
 		var contentAggregate = {
@@ -163,7 +163,7 @@ describe('layouts/standard', function () {
 			},
 			result;
 		result = layout(contentAggregate, dimensionProvider, margin);
-		expect(result.nodes[11].y).toBe(-5);
+		expect(result[11].y).toBe(-5);
 	});
 	it('should copy style to nodes', function () {
 		var contentAggregate = {
@@ -172,7 +172,7 @@ describe('layouts/standard', function () {
 			attr: { collapsed: true, style: { background: '#FFFFFF'}}
 		},
 			result = layout(contentAggregate, dimensionProvider, margin);
-		expect(result.nodes[1]).toEqual(jasmine.objectContaining({
+		expect(result[1]).toEqual(jasmine.objectContaining({
 			attr: {collapsed: true, style: { background: '#FFFFFF'}}
 		}));
 	});
@@ -189,11 +189,11 @@ describe('layouts/standard', function () {
 			},
 			result;
 		result = layout(contentAggregate, dimensionProvider, 30);
-		expect(result.nodes[7]).toEqual(jasmine.objectContaining({
+		expect(result[7]).toEqual(jasmine.objectContaining({
 			x: -20,
 			y: -10
 		}));
-		expect(result.nodes[8]).toEqual(jasmine.objectContaining({
+		expect(result[8]).toEqual(jasmine.objectContaining({
 			x: 50,
 			y: -15
 		}));

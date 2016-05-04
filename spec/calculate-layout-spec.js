@@ -13,8 +13,8 @@ describe('MAPJS.calculateLayout', function () {
 		optional = {
 			layouts: layouts
 		};
-		layouts.standard.and.returnValue({nodes: []});
-		layouts['top-down'].and.returnValue({nodes: []});
+		layouts.standard.and.returnValue({});
+		layouts['top-down'].and.returnValue({});
 
 	});
 	describe('when the theme is not provided', function () {
@@ -91,7 +91,7 @@ describe('MAPJS.calculateLayout', function () {
 				},
 				result;
 
-			layouts.standard.and.returnValue({nodes: { 1: {id: 1}}});
+			layouts.standard.and.returnValue({ 1: {id: 1}});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
 			expect(result.links).toEqual({});
 		});
@@ -117,7 +117,7 @@ describe('MAPJS.calculateLayout', function () {
 				},
 				result;
 
-			layouts.standard.and.returnValue({nodes: { 1: {id: 1}, 2: {id: 2}, 3: {id: 3}}});
+			layouts.standard.and.returnValue({ 1: {id: 1}, 2: {id: 2}, 3: {id: 3}});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
 			expect(result.links).toEqual({ '2_3' : { ideaIdFrom : 2, ideaIdTo : 3, attr : { name: 'val' } } });
 		});

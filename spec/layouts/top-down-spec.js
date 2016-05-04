@@ -28,13 +28,13 @@ describe('Top down layout', function () {
 			margin = 5,
 			result = layout(idea, dimensionProvider, margin);
 
-		expect(result.nodes[1]).toEqual(jasmine.objectContaining({
+		expect(result[1]).toEqual(jasmine.objectContaining({
 			level: 1,
 			id: 1,
 			title: 'parent',
 			attr: { ax: 'a-parent' }
 		}));
-		expect(result.nodes[11]).toEqual(jasmine.objectContaining({
+		expect(result[11]).toEqual(jasmine.objectContaining({
 			level: 2,
 			id: 11,
 			title: 'child',
@@ -46,7 +46,7 @@ describe('Top down layout', function () {
 			margin = 5,
 			result = layout(idea, dimensionProvider, margin);
 
-		expect(result.nodes).toEqual({
+		expect(result).toEqual({
 			1: {
 				level: 1,
 				width: 220,
@@ -58,8 +58,6 @@ describe('Top down layout', function () {
 				attr: { ax: 'ay' }
 			}
 		});
-		expect(_.isEmpty(result.connectors)).toBeTruthy();
-		expect(_.isEmpty(result.links)).toBeTruthy();
 	});
 	it('positions a single child directly below the parent', function () {
 		var idea = {
@@ -75,8 +73,8 @@ describe('Top down layout', function () {
 			margin = 5,
 			result = layout(idea, dimensionProvider, margin);
 
-		expect(position(result.nodes[1])).toEqual({ x: -60, y: -30});
-		expect(position(result.nodes[11])).toEqual({ x: -50, y: 35});
+		expect(position(result[1])).toEqual({ x: -60, y: -30});
+		expect(position(result[11])).toEqual({ x: -50, y: 35});
 	});
 	it('positions two children centered below parent, in rank order', function () {
 		var idea = {
@@ -96,9 +94,9 @@ describe('Top down layout', function () {
 			margin = 5,
 			result = layout(idea, dimensionProvider, margin);
 
-		expect(position(result.nodes[1])).toEqual({ x: -60, y: -30});
-		expect(position(result.nodes[11])).toEqual({ x: -172, y: 35});
-		expect(position(result.nodes[12])).toEqual({ x: -67, y: 35});
+		expect(position(result[1])).toEqual({ x: -60, y: -30});
+		expect(position(result[11])).toEqual({ x: -172, y: 35});
+		expect(position(result[12])).toEqual({ x: -67, y: 35});
 	});
 	it('positions third level below the second level, even if uneven heights on 2nd', function () {
 		var idea = {
@@ -129,7 +127,7 @@ describe('Top down layout', function () {
 			},
 			margin = 5,
 			result = layout(idea, dimensionProvider, margin);
-		expect(result.nodes[113].y).toEqual(160);
-		expect(result.nodes[113].y).toEqual(160);
+		expect(result[113].y).toEqual(160);
+		expect(result[113].y).toEqual(160);
 	});
 });

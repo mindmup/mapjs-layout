@@ -3,8 +3,7 @@ var _ = require('underscore'),
 	combineVerticalSubtrees = require('./combine-vertical-subtrees');
 module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 	'use strict';
-	var layout = { nodes: {}, connectors: {}, links: {} },
-		toNode = function (idea, level) {
+	var toNode = function (idea, level) {
 			var dimensions = dimensionProvider(idea, level);
 			return _.extend({level: level}, dimensions, _.pick(idea, ['id', 'title', 'attr']));
 		},
@@ -24,7 +23,7 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			return result;
 		},
 		setLevelHeights = function (nodes, levelHeights) {
-			_.each(layout.nodes, function (node) {
+			_.each(nodes, function (node) {
 				node.y = levelHeights[node.level - 1];
 			});
 		},
@@ -37,7 +36,7 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 				maxHeights[node.level - 1] = Math.max(maxHeights[node.level - 1] || 0, node.height);
 			});
 
-			heights[0] = Math.round(-0.5 * layout.nodes[aggregate.id].height);
+			heights[0] = Math.round(-0.5 * nodes[aggregate.id].height);
 
 			for (level = 1; level < maxHeights.length; level++) {
 				heights [level] = heights [level - 1] + margin + maxHeights[level - 1];
@@ -47,9 +46,8 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 		tree;
 
 	tree = traverse(aggregate, traversalLayout);
-	layout.nodes = tree.nodes;
-	setLevelHeights(layout.nodes, getLevelHeights(layout.nodes));
+	setLevelHeights(tree.nodes, getLevelHeights(tree.nodes));
 
-	return layout;
+	return tree.nodes;
 };
 

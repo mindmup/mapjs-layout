@@ -1,6 +1,5 @@
 /*global module, require*/
 var Theme = require('./theme'),
-	_ = require('underscore'),
 	extractConnectors = require('./layouts/extract-connectors'),
 	layoutLinks = require('./layouts/links'),
 	defaultLayouts = {
@@ -19,12 +18,10 @@ module.exports = function calculateLayout(idea, dimensionProvider, optional) {
 	orientation = theme.attributeValue(['layout'], [], ['orientation'], 'standard');
 	calculator = layouts[orientation] || layouts.standard;
 	result = calculator(idea, dimensionProvider, margin);
-	return _.extend(
-		result,
-		{
-			connectors: extractConnectors(idea),
-			links: layoutLinks(idea, result.nodes)
-		}
-	);
+	return {
+		nodes: result,
+		connectors: extractConnectors(idea),
+		links: layoutLinks(idea, result)
+	};
 };
 
