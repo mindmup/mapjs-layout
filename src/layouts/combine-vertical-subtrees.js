@@ -20,10 +20,9 @@ module.exports = function combineVerticalSubtrees(node, childLayouts, margin) {
 	result.levels = [{width: node.width, xOffset: node.x}];
 
 	if (!verticalSubtreeCollection.isEmpty()) {
-		treeOffset = Math.round(-0.5 * verticalSubtreeCollection.widestLevelWidth());
 
-		result.levels = result.levels.concat(verticalSubtreeCollection.getMergedLevels(treeOffset));
-
+		result.levels = result.levels.concat(verticalSubtreeCollection.getMergedLevels());
+		treeOffset = result.levels[1].xOffset;
 		Object.keys(childLayouts).forEach(function (subtreeRank) {
 			_.extend(result.nodes, shift(childLayouts[subtreeRank].nodes, treeOffset + verticalSubtreeCollection.getExpectedTranslation(subtreeRank)));
 		});

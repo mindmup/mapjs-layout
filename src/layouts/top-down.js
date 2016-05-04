@@ -1,4 +1,4 @@
-/*global module, require */
+/*global module, require*/
 var _ = require('underscore'),
 	combineVerticalSubtrees = require('./combine-vertical-subtrees');
 module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
@@ -19,8 +19,9 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			return predicate(idea, childResults, level);
 		},
 		traversalLayout = function (idea, childLayouts, level) {
-			var node = toNode(idea, level);
-			return combineVerticalSubtrees(node, childLayouts, margin);
+			var node = toNode(idea, level),
+				result = combineVerticalSubtrees(node, childLayouts, margin);
+			return result;
 		},
 		setLevelHeights = function (nodes, levelHeights) {
 			_.each(layout.nodes, function (node) {

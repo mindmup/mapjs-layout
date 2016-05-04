@@ -8,17 +8,17 @@ module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
 		};
 	margin = margin || 0;
 	self.getLevelWidth = function (level) {
-		var result = 0;
-		_.each(subtreeMap, function (childLayout) {
-			if (!childLayout.levels[level]) {
-				return;
-			}
-			if (result > 0) {
-				result += margin;
-			}
-			result += childLayout.levels[level].width;
-		});
-		return result;
+		var candidateRanks = sortedRanks().filter(function (rank) {
+				return self.existsOnLevel(rank, level);
+			}),
+			referenceLeft = candidateRanks[0], /* won't work if the first child layout does not exist on the widest level */
+			referenceRight = candidateRanks[candidateRanks.length - 1],
+			leftLayout = subtreeMap[referenceLeft],
+			rightLayout = subtreeMap[referenceRight],
+			leftx = leftLayout.levels[level].xOffset + self.getExpectedTranslation(referenceLeft),
+			rightx = rightLayout.levels[level].xOffset + self.getExpectedTranslation(referenceRight);
+		return rightx + rightLayout.levels[level].width - leftx;
+
 	};
 	self.getLevelWidths = function () {
 		/* todo: cache */
@@ -44,44 +44,52 @@ module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
 			return subtreeMap[key];
 		});
 	};
-	self.widestLevelWidth = function () {
-		return _.max(self.getLevelWidths());
-	};
-	self.widestLevelIndex = function () {
-		var levelWidths = self.getLevelWidths();
-		return levelWidths.indexOf(self.widestLevelWidth());
-	};
+
 	self.getExpectedTranslation = function (rank) {
 		var ranks = sortedRanks(),
-			currentX = 0,
 			translations = {},
-			widestLevelIndex = self.widestLevelIndex();
+			currentWidthByLevel;
 
-		self.sortByRank().forEach(function (childLayout, index) {
-			var offsetAtLevel = (childLayout.levels[widestLevelIndex] && childLayout.levels[widestLevelIndex].xOffset) || 0,
-				widthAtLevel =  (childLayout.levels[widestLevelIndex] && childLayout.levels[widestLevelIndex].width) || 0;
-			translations[ranks[index]] = currentX - offsetAtLevel;
-			currentX += widthAtLevel + margin;
+		self.sortByRank().forEach(function (childLayout, rankIndex) {
+			var currentRank = ranks[rankIndex];
+			if (currentWidthByLevel === undefined) {
+				translations[currentRank] = 0 - childLayout.levels[0].xOffset;
+				currentWidthByLevel = childLayout.levels.map(function (level) {
+					return level.width + translations[currentRank] + level.xOffset;
+				});
+			} else {
+				childLayout.levels.forEach(function (level, levelIndex) {
+					var currentLevelWidth = currentWidthByLevel[levelIndex];
+					if (currentLevelWidth !== undefined) {
+						if (translations[currentRank] === undefined) {
+							translations[currentRank] = currentLevelWidth + margin - level.xOffset;
+						} else {
+							translations[currentRank] = Math.max(translations[currentRank], currentLevelWidth + margin - level.xOffset);
+						}
+					}
+				});
+
+				childLayout.levels.forEach(function (level, levelIndex) {
+					currentWidthByLevel[levelIndex] = translations[currentRank] + level.xOffset + level.width;
+				});
+			}
 		});
 		return translations[rank];
-
 	};
 	self.existsOnLevel = function (rank, level) {
 		return subtreeMap[rank].levels.length > level;
 	};
-	self.getMergedLevels = function (targetCombinedLeftOffset) {
-		return self.getLevelWidths().map(function (val, index) {
+	self.getMergedLevels = function () {
+		var targetCombinedLeftOffset = Math.round(self.getLevelWidth(0) * -0.5);
+		return self.getLevelWidths().map(function (levelWidth, index) {
 			var candidateRanks = sortedRanks().filter(function (rank) {
 					return self.existsOnLevel(rank, index);
 				}),
 				referenceLeft = candidateRanks[0], /* won't work if the first child layout does not exist on the widest level */
-				referenceRight = candidateRanks[candidateRanks.length - 1],
-				rightLayout = subtreeMap[referenceRight],
 				leftLayout = subtreeMap[referenceLeft];
 			return {
-				width:
-					self.getExpectedTranslation(referenceRight) + rightLayout.levels[index].width -	self.getExpectedTranslation(referenceLeft),
-				xOffset: self.getExpectedTranslation(referenceLeft) + targetCombinedLeftOffset + leftLayout.levels[index].xOffset
+				width: levelWidth,
+				xOffset: leftLayout.levels[index].xOffset + self.getExpectedTranslation(referenceLeft) + targetCombinedLeftOffset
 			};
 		});
 
