@@ -4,9 +4,57 @@ module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
 	'use strict';
 	var self = this,
 		sortedRanks = function () {
+			if (!subtreeMap) {
+				return [];
+			}
 			return _.sortBy(Object.keys(subtreeMap), parseFloat);
-		};
+		},
+		calculateExpectedTranslations = function () {
+			var ranks = sortedRanks(),
+				translations = {},
+				currentWidthByLevel,
+				sortByRank = function () {
+					/* todo: cache */
+					if (_.isEmpty(subtreeMap)) {
+						return [];
+					}
+					return sortedRanks().map(function (key) {
+						return subtreeMap[key];
+					});
+				};
+
+			sortByRank().forEach(function (childLayout, rankIndex) {
+				var currentRank = ranks[rankIndex];
+				if (currentWidthByLevel === undefined) {
+					translations[currentRank] = 0 - childLayout.levels[0].xOffset;
+					currentWidthByLevel = childLayout.levels.map(function (level) {
+						return level.width + translations[currentRank] + level.xOffset;
+					});
+				} else {
+					childLayout.levels.forEach(function (level, levelIndex) {
+						var currentLevelWidth = currentWidthByLevel[levelIndex];
+						if (currentLevelWidth !== undefined) {
+							if (translations[currentRank] === undefined) {
+								translations[currentRank] = currentLevelWidth + margin - level.xOffset;
+							} else {
+								translations[currentRank] = Math.max(translations[currentRank], currentLevelWidth + margin - level.xOffset);
+							}
+						}
+					});
+
+					childLayout.levels.forEach(function (level, levelIndex) {
+						currentWidthByLevel[levelIndex] = translations[currentRank] + level.xOffset + level.width;
+					});
+				}
+			});
+			return translations;
+		},
+		translationsByRank;
+
+
 	margin = margin || 0;
+	translationsByRank =  calculateExpectedTranslations();
+
 	self.getLevelWidth = function (level) {
 		var candidateRanks = sortedRanks().filter(function (rank) {
 				return self.existsOnLevel(rank, level);
@@ -18,7 +66,6 @@ module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
 			leftx = leftLayout.levels[level].xOffset + self.getExpectedTranslation(referenceLeft),
 			rightx = rightLayout.levels[level].xOffset + self.getExpectedTranslation(referenceRight);
 		return rightx + rightLayout.levels[level].width - leftx;
-
 	};
 	self.getLevelWidths = function () {
 		/* todo: cache */
@@ -35,46 +82,9 @@ module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
 	self.isEmpty = function () {
 		return _.isEmpty(subtreeMap);
 	};
-	self.sortByRank = function () {
-		/* todo: cache */
-		if (_.isEmpty(subtreeMap)) {
-			return [];
-		}
-		return sortedRanks().map(function (key) {
-			return subtreeMap[key];
-		});
-	};
 
 	self.getExpectedTranslation = function (rank) {
-		var ranks = sortedRanks(),
-			translations = {},
-			currentWidthByLevel;
-
-		self.sortByRank().forEach(function (childLayout, rankIndex) {
-			var currentRank = ranks[rankIndex];
-			if (currentWidthByLevel === undefined) {
-				translations[currentRank] = 0 - childLayout.levels[0].xOffset;
-				currentWidthByLevel = childLayout.levels.map(function (level) {
-					return level.width + translations[currentRank] + level.xOffset;
-				});
-			} else {
-				childLayout.levels.forEach(function (level, levelIndex) {
-					var currentLevelWidth = currentWidthByLevel[levelIndex];
-					if (currentLevelWidth !== undefined) {
-						if (translations[currentRank] === undefined) {
-							translations[currentRank] = currentLevelWidth + margin - level.xOffset;
-						} else {
-							translations[currentRank] = Math.max(translations[currentRank], currentLevelWidth + margin - level.xOffset);
-						}
-					}
-				});
-
-				childLayout.levels.forEach(function (level, levelIndex) {
-					currentWidthByLevel[levelIndex] = translations[currentRank] + level.xOffset + level.width;
-				});
-			}
-		});
-		return translations[rank];
+		return translationsByRank[rank];
 	};
 	self.existsOnLevel = function (rank, level) {
 		return subtreeMap[rank].levels.length > level;

@@ -63,23 +63,6 @@ describe('Vertical Subtree Collection', function () {
 			expect(new VerticalSubtreeCollection(false, 10).isEmpty()).toBeTruthy();
 		});
 	});
-	describe('sortByRank', function () {
-		it('sorts subtrees by rank', function () {
-			var underTest = new VerticalSubtreeCollection({
-				4: { levels: [{xOffset: -20, width: 40}], id: 1},
-				'-1': { levels: [{xOffset: -20, width: 40}], id: 2},
-				1: { levels: [{xOffset: -20, width: 40}], id: 3},
-				'-4': { levels: [{xOffset: -20, width: 40}], id: 4}
-			}, 10);
-			expect(underTest.sortByRank().map(function (subtree) {
-				return subtree.id;
-			})).toEqual([4,2,3,1]);
-		});
-		it('returns an empty array if no subtrees', function () {
-			var underTest = new VerticalSubtreeCollection({}, 10);
-			expect(underTest.sortByRank()).toEqual([]);
-		});
-	});
 	describe('existsOnLevel', function () {
 		it('returns true if the subtree with a particular rank existis level', function () {
 			var underTest = new VerticalSubtreeCollection({
