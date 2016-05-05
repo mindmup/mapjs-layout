@@ -7,10 +7,13 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			var dimensions = dimensionProvider(idea, level);
 			return _.extend({level: level}, dimensions, _.pick(idea, ['id', 'title', 'attr']));
 		},
+
 		traverse = function (idea, predicate, level) {
-			var childResults;
+			var childResults,
+				shouldIncludeSubIdeas = !(_.isEmpty(idea.ideas) || (idea.attr && idea.attr.collapsed));
+
 			level = level || 1;
-			if (idea.ideas) {
+			if (shouldIncludeSubIdeas) {
 				childResults = Object.keys(idea.ideas).map(function (subNodeRank) {
 					return traverse(idea.ideas[subNodeRank], predicate, level + 1);
 				});

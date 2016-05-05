@@ -6,6 +6,9 @@ var Theme = require ('./theme'),
 		if (calculatedConnector.nodeUnderline) {
 			connectorCurve.d += 'M' + (calculatedConnector.nodeUnderline.from.x - position.left) + ',' + (calculatedConnector.nodeUnderline.from.y - position.top) + ' H' + (calculatedConnector.nodeUnderline.to.x - position.left);
 		}
+		if (calculatedConnector.nodeOverline) {
+			connectorCurve.d += 'M' + (calculatedConnector.nodeOverline.from.x - position.left) + ',' + (calculatedConnector.nodeOverline.from.y - position.top) + ' H' + (calculatedConnector.nodeOverline.to.x - position.left);
+		}
 		return connectorCurve;
 	},
 	nodeConnectionPointX = {
@@ -69,6 +72,36 @@ var Theme = require ('./theme'),
 					'c0,' + (dy - (2 * dyIncrement)) + ' ' + Math.round(dx / 2  - dxIncrement) + ',' +  (dy - dyIncrement) + ' '  + (dx - dxIncrement) + ',' + (dy - dyIncrement),
 				'position': position
 			};
+
+		},
+		'top-down-s-curve': function (calculatedConnector, position) {
+			'use strict';
+			var dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
+				dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y),
+				initialRadius = 15,
+				dxIncrement = initialRadius * Math.sign(dx),
+				dyIncrement = initialRadius * Math.sign(dy),
+				verticalLine = Math.round(0.5 * dy) - dyIncrement;
+
+			if (initialRadius > Math.abs(dx / 2)) {
+				dyIncrement = verticalLine + Math.round(0.5 * dyIncrement);
+				return {
+					'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+						'v' + dyIncrement +
+						'l' + dx + ',' + (dy - dyIncrement),
+					'position': position
+				};
+			}
+
+			return {
+					'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+						'v' + verticalLine +
+						'q0,' + dyIncrement + ' ' + dxIncrement + ',' + dyIncrement +
+						'h' + (dx - (2 * dxIncrement)) +
+						'q' + dxIncrement + ',0 ' + dxIncrement + ',' +  dyIncrement +
+						'v' + verticalLine,
+					'position': position
+				};
 
 		},
 		'compact-s-curve': function (calculatedConnector, position) {
@@ -157,8 +190,8 @@ var Theme = require ('./theme'),
 			fromInset = theme.attributeValue(['node'], fromStyles, ['cornerRadius'], 10),
 			toInset = theme.attributeValue(['node'], toStyles, ['cornerRadius'], 10),
 			borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], ''),
-			nodeUnderline = false;
-		if (borderType === 'underline') {
+			nodeUnderline = false, nodeOverline = false;
+		if (borderType === 'underline' || borderType === 'under-overline') {
 			nodeUnderline = {
 				from: {
 					x: child.left,
@@ -170,6 +203,19 @@ var Theme = require ('./theme'),
 				}
 			};
 		}
+		if (borderType === 'overline' || borderType === 'under-overline') {
+			nodeOverline = {
+				from: {
+					x: child.left,
+					y: child.top
+				},
+				to: {
+					x: child.left + child.width,
+					y: child.top
+				}
+			};
+		}
+
 		return {
 			from: {
 				x: nodeConnectionPointX[connectionPositionFrom.h](parent, child, fromInset),
@@ -182,7 +228,8 @@ var Theme = require ('./theme'),
 			controlPointOffset: controlPointOffset,
 			connectionCurveType: connectionCurveType,
 			connectionStyle: connectionStyle,
-			nodeUnderline: nodeUnderline
+			nodeUnderline: nodeUnderline,
+			nodeOverline: nodeOverline
 		};
 	},
 	themePath = function (parent, child, theme) {

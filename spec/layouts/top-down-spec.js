@@ -98,6 +98,45 @@ describe('layouts/top-down', function () {
 		expect(position(result[11])).toEqual({ x: -172, y: 35});
 		expect(position(result[12])).toEqual({ x: -67, y: 35});
 	});
+	it('ignores children below collapsed parent', function () {
+		var idea = {
+				title: 'parent', /* 120, 60 */
+				id: 1,
+				ideas: {
+					5: {
+						title: 'second child', /* 240, 120 */
+						id: 12,
+						attr: {
+							collapsed: true
+						},
+						ideas: {
+							1: {
+								id: 112,
+								title: 'XYZ'
+							}
+						}
+					},
+					4: {
+						title: 'child', /* 100, 50 */
+						id: 11,
+						ideas: {
+							2: {
+								id: 113,
+								title: 'ZXY'
+							}
+						}
+					}
+				}
+			},
+			margin = {h: 5, v: 5},
+			result = layout(idea, dimensionProvider, margin);
+
+		expect(result[1]).toBeTruthy();
+		expect(result[11]).toBeTruthy();
+		expect(result[12]).toBeTruthy();
+		expect(result[113]).toBeTruthy();
+		expect(result[112]).toBeFalsy();
+	});
 	it('positions third level below the second level, even if uneven heights on 2nd', function () {
 		var idea = {
 				title: 'parent', /* 120, 60 */

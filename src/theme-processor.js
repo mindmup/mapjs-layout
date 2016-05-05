@@ -49,7 +49,7 @@ module.exports = function ThemeProcessor() {
 			'text.margin': addPx,
 			background: colorParser,
 			border: function (borderOb) {
-				if (borderOb.type === 'underline') {
+				if (!borderOb.line) {
 					return '0';
 				}
 				return borderOb.line.width + 'px ' + (borderOb.line.style || 'solid') + ' '  + borderOb.line.color;

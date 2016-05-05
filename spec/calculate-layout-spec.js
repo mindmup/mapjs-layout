@@ -66,7 +66,16 @@ describe('MAPJS.calculateLayout', function () {
 						}
 					}
 				},
-				result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+				result;
+			layouts.standard.and.returnValue({
+				1: true,
+				11: true,
+				12: true,
+				112: true,
+				111: true
+			});
+
+			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
 
 			expect(result.connectors).toEqual({
 				11: Object({ from: 1, to: 11 }),

@@ -20,7 +20,7 @@ module.exports = function calculateLayout(idea, dimensionProvider, optional) {
 	result = calculator(idea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
 	return {
 		nodes: result,
-		connectors: extractConnectors(idea),
+		connectors: extractConnectors(idea, result),
 		links: layoutLinks(idea, result)
 	};
 };

@@ -1,8 +1,11 @@
 /*global module */
-module.exports = function extractConnectors(idea) {
+module.exports = function extractConnectors(aggregate, visibleNodes) {
 	'use strict';
 	var result = {},
 		traverse = function (idea, parentId) {
+			if (!visibleNodes[idea.id]) {
+				return;
+			}
 			if (parentId) {
 				result[idea.id] = {from: parentId, to: idea.id};
 			}
@@ -12,6 +15,6 @@ module.exports = function extractConnectors(idea) {
 				});
 			}
 		};
-	traverse (idea);
+	traverse(aggregate);
 	return result;
 };

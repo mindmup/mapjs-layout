@@ -248,7 +248,7 @@ describe('MAPJS.ThemeProcessor', function () {
 				expect(underTest.process(theme).css).toEqual('.mapjs-node{border:1px dashed #707070;}');
 			});
 			it('sets no border in css if the border is underline -- will be handled with a connector', function () {
-				theme.node[0].border.type = 'underline';
+				delete theme.node[0].border.line;
 				result = underTest.process(theme);
 				expect(result.css).toEqual('.mapjs-node{border:0;}');
 			});
