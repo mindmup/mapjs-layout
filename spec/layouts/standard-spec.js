@@ -7,7 +7,7 @@ describe('layouts/standard', function () {
 		dimensionProvider;
 
 	beforeEach(function () {
-		margin = 20;
+		margin = {h: 20, v: 20};
 		dimensionProvider = function (idea) {
 			var length = (idea.title || '').length + 1;
 			return {
@@ -188,7 +188,7 @@ describe('layouts/standard', function () {
 				}
 			},
 			result;
-		result = layout(contentAggregate, dimensionProvider, 30);
+		result = layout(contentAggregate, dimensionProvider, {h: 30});
 		expect(result[7]).toEqual(jasmine.objectContaining({
 			x: -20,
 			y: -10

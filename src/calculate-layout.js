@@ -14,10 +14,10 @@ module.exports = function calculateLayout(idea, dimensionProvider, optional) {
 		theme = (optional && optional.theme) || new Theme({}),
 		calculator,
 		result;
-	margin = theme.attributeValue(['layout'], [], ['spacing'], 20);
+	margin = theme.attributeValue(['layout'], [], ['spacing'], {h: 20, v: 20});
 	orientation = theme.attributeValue(['layout'], [], ['orientation'], 'standard');
 	calculator = layouts[orientation] || layouts.standard;
-	result = calculator(idea, dimensionProvider, margin);
+	result = calculator(idea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
 	return {
 		nodes: result,
 		connectors: extractConnectors(idea),

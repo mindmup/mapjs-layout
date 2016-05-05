@@ -1,7 +1,7 @@
 /*global describe, it, expect, require, jasmine */
 var layout = require('../../src/layouts/top-down'),
 	_ = require('underscore');
-describe('Top down layout', function () {
+describe('layouts/top-down', function () {
 	'use strict';
 	var dimensionProvider = function (idea /*, level */) {
 			return {
@@ -25,7 +25,7 @@ describe('Top down layout', function () {
 					}
 				}
 			},
-			margin = 5,
+			margin = {h: 5, v: 5},
 			result = layout(idea, dimensionProvider, margin);
 
 		expect(result[1]).toEqual(jasmine.objectContaining({
@@ -43,7 +43,7 @@ describe('Top down layout', function () {
 	});
 	it('lays out a single node map with the root at 0,0 center', function () {
 		var idea = { title: 'Hello World', id: 1, attr: {ax: 'ay'} },
-			margin = 5,
+			margin = {h: 5, v: 5},
 			result = layout(idea, dimensionProvider, margin);
 
 		expect(result).toEqual({
@@ -70,7 +70,7 @@ describe('Top down layout', function () {
 					}
 				}
 			},
-			margin = 5,
+			margin = {h: 5, v: 5},
 			result = layout(idea, dimensionProvider, margin);
 
 		expect(position(result[1])).toEqual({ x: -60, y: -30});
@@ -91,7 +91,7 @@ describe('Top down layout', function () {
 					}
 				}
 			},
-			margin = 5,
+			margin = {h: 5, v: 5},
 			result = layout(idea, dimensionProvider, margin);
 
 		expect(position(result[1])).toEqual({ x: -60, y: -30});
@@ -125,9 +125,9 @@ describe('Top down layout', function () {
 					}
 				}
 			},
-			margin = 5,
+			margin = {h: 5, v: 10},
 			result = layout(idea, dimensionProvider, margin);
-		expect(result[113].y).toEqual(160);
-		expect(result[113].y).toEqual(160);
+		expect(result[113].y).toEqual(170);
+		expect(result[113].y).toEqual(170);
 	});
 });

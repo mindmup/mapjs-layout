@@ -1,8 +1,9 @@
 /*global describe, expect, it, MAPJS, jasmine, beforeEach*/
 describe('MAPJS.calculateLayout', function () {
 	'use strict';
-	var idea, dimensionProvider, layouts, optional;
+	var idea, dimensionProvider, layouts, optional, defaultMargin;
 	beforeEach(function () {
+		defaultMargin = {h: 20, v: 20};
 		idea = {};
 		dimensionProvider = {};
 
@@ -20,27 +21,32 @@ describe('MAPJS.calculateLayout', function () {
 	describe('when the theme is not provided', function () {
 		it('should use the standard layout and margin', function () {
 			MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, 20);
+			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, defaultMargin);
 		});
 	});
 	describe('when the theme is provided', function () {
 		it('should use the orientation to calculate the layout', function () {
 			optional.theme = new MAPJS.Theme({layout: {orientation: 'top-down'}});
 			MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(layouts['top-down']).toHaveBeenCalledWith(idea, dimensionProvider, 20);
+			expect(layouts['top-down']).toHaveBeenCalledWith(idea, dimensionProvider, defaultMargin);
 		});
 		it('should use the spacing as a margin', function () {
 			optional.theme = new MAPJS.Theme({layout: {spacing: 30}});
 			MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, 30);
+			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, {h: 30, v: 30});
+		});
+		it('should pass margin when it is an object with h and v attributes', function () {
+			optional.theme = new MAPJS.Theme({layout: {spacing: {h: 30, v: 50}}});
+			MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, {h: 30, v: 50});
+
 		});
 		it('should use the standard layout to calculate the layout when orientation is not recognised', function () {
 			optional.theme = new MAPJS.Theme({layout: {orientation: 'not-top-down'}});
 			MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, 20);
+			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, defaultMargin);
 			expect(layouts['top-down']).not.toHaveBeenCalled();
 		});
-
 	});
 	describe('common layout info', function () {
 		it('should include connectors regardless of the layout', function () {

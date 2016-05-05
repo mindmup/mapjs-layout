@@ -10,8 +10,8 @@ module.exports  = function standardLayout(idea, dimensionProvider, margin) {
 		negative = function (rank, parentId) {
 			return parentId !== idea.id || rank < 0;
 		};
-	positiveTree = treeUtils.calculateTree(idea, dimensionProvider, margin, positive);
-	negativeTree = treeUtils.calculateTree(idea, dimensionProvider, margin, negative);
+	positiveTree = treeUtils.calculateTree(idea, dimensionProvider, margin.h, positive);
+	negativeTree = treeUtils.calculateTree(idea, dimensionProvider, margin.h, negative);
 	layout = positiveTree.toLayout();
 	negativeLayout = negativeTree.toLayout();
 	_.each(negativeLayout.nodes, function (n) {

@@ -19,7 +19,7 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 		},
 		traversalLayout = function (idea, childLayouts, level) {
 			var node = toNode(idea, level),
-				result = combineVerticalSubtrees(node, childLayouts, margin);
+				result = combineVerticalSubtrees(node, childLayouts, margin.h);
 			return result;
 		},
 		setLevelHeights = function (nodes, levelHeights) {
@@ -39,7 +39,7 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			heights[0] = Math.round(-0.5 * nodes[aggregate.id].height);
 
 			for (level = 1; level < maxHeights.length; level++) {
-				heights [level] = heights [level - 1] + margin + maxHeights[level - 1];
+				heights [level] = heights [level - 1] + margin.v + maxHeights[level - 1];
 			}
 			return heights;
 		},
