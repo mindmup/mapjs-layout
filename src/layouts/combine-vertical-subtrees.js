@@ -15,6 +15,10 @@ module.exports = function combineVerticalSubtrees(node, childLayouts, margin) {
 		treeOffset,
 		verticalSubtreeCollection = new VerticalSubtreeCollection(childLayouts, margin);
 
+	if (Array.isArray(childLayouts)) {
+		throw 'child layouts are an array!';
+	}
+
 	result.nodes[node.id] = node;
 	node.x = Math.round(-0.5 * node.width);
 	result.levels = [{width: node.width, xOffset: node.x}];

@@ -1,5 +1,4 @@
 /* global describe, it, expect, require */
-/*global describe, it, expect, require */
 var VerticalSubtreeCollection = require('../../src/layouts/vertical-subtree-collection');
 describe('Vertical Subtree Collection', function () {
 	'use strict';
@@ -139,8 +138,6 @@ describe('Vertical Subtree Collection', function () {
 			expect(underTest.getExpectedTranslation(1)).toEqual(20);
 			expect(underTest.getExpectedTranslation(4)).toEqual(70);
 		});
-
-		/* what if the left-most does not exist on the widest level ? */
 	});
 	describe('getMergedLevels', function () {
 		it('returns an array of level widths and offsets aligned to the widest level offset', function () {

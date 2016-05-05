@@ -98,6 +98,44 @@ describe('layouts/top-down', function () {
 		expect(position(result[11])).toEqual({ x: -172, y: 35});
 		expect(position(result[12])).toEqual({ x: -67, y: 35});
 	});
+	it('sorts children in rank order', function () {
+		var idea = {
+				title: 'loses',
+				ideas: {
+					'1': {
+						title: 'text & line colors',
+						id: 215,
+						ideas: {
+							'1': { title: 'text decoration and line thickness', 'id': 224}
+						}
+					},
+					'3': {
+						title: 'multi-line nodes',
+						id: 220,
+						ideas: {
+							'1': {'title': 'makes node text into text attachment on blank node','id': 221 }
+						}
+					},
+					'4': {
+						title: 'relationship lines',
+						id: 223
+					},
+					'0.5': {
+						title: 'images',
+						id: 216,
+						ideas: {
+							'1': { 'title': 'including icons', 'id': 222 }
+						}
+					}
+				},
+				id: 214
+			},
+			margin = {h: 10, v: 10},
+			result = layout(idea, dimensionProvider, margin);
+		expect(_.sortBy([215, 220, 223, 216], function (id) {
+			return position(result[id]).x;
+		})).toEqual([216, 215, 220, 223]);
+	});
 	it('ignores children below collapsed parent', function () {
 		var idea = {
 				title: 'parent', /* 120, 60 */

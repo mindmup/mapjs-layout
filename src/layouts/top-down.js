@@ -9,13 +9,13 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 		},
 
 		traverse = function (idea, predicate, level) {
-			var childResults,
+			var childResults = {},
 				shouldIncludeSubIdeas = !(_.isEmpty(idea.ideas) || (idea.attr && idea.attr.collapsed));
 
 			level = level || 1;
 			if (shouldIncludeSubIdeas) {
-				childResults = Object.keys(idea.ideas).map(function (subNodeRank) {
-					return traverse(idea.ideas[subNodeRank], predicate, level + 1);
+				Object.keys(idea.ideas).forEach(function (subNodeRank) {
+					childResults[subNodeRank] = traverse(idea.ideas[subNodeRank], predicate, level + 1);
 				});
 			}
 			return predicate(idea, childResults, level);

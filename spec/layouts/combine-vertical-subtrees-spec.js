@@ -52,7 +52,7 @@ describe('Combine Vertical Subtrees', function () {
 		expect(result.nodes[11].x).toEqual(-65);
 		expect(result.nodes[12].x).toEqual(25);
 	});
-	it('should', function () {
+	it('should arrange children where left edge is not flat', function () {
 		var node = { level: 1, width: 120, height: 60, id: 1, title: 'parent', x: -60 },
 			childLayouts = {
 			4: {
@@ -87,6 +87,5 @@ describe('Combine Vertical Subtrees', function () {
 			}},
 			result = combineVerticalSubtrees(node, childLayouts, 5);
 		expect(result.levels).toEqual([{width: 120, xOffset: -60 }, { width: 345, xOffset: -172 }]);
-
 	});
 });
