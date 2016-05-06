@@ -49,6 +49,33 @@ describe('MAPJS.calculateLayout', function () {
 		});
 	});
 	describe('common layout info', function () {
+		it('should include the orientation from the theme', function () {
+			var idea = {
+					title: 'parent',
+					id: 1
+				},
+				result;
+			layouts.standard.and.returnValue({
+				1: true
+			});
+			optional.theme = new MAPJS.Theme({layout: {orientation: 'not-top-down'}});
+			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			expect(result.orientation).toEqual('not-top-down');
+		});
+		it('should include the theme id from the idea', function () {
+			var idea = {
+					title: 'parent',
+					id: 1,
+					attr: { theme: 'blue' }
+				},
+				result;
+			layouts.standard.and.returnValue({
+				1: true
+			});
+			optional.theme = new MAPJS.Theme({layout: {orientation: 'not-top-down'}});
+			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			expect(result.theme).toEqual('blue');
+		});
 		it('should include connectors regardless of the layout', function () {
 			var idea = {
 					title: 'parent',

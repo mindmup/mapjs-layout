@@ -18,6 +18,19 @@ describe('MAPJS.LayoutModel', function () {
 			expect(underTest.getLayout()).toEqual({foo: 'bar'});
 		});
 	});
+	describe('getOrientation', function () {
+		it('should return standard if the layout is never set', function () {
+			expect(underTest.getOrientation()).toEqual('standard');
+		});
+		it('should return standard if .orientation is not defined on the layout', function () {
+			underTest.setLayout({nodes: { 1: {}}});
+			expect(underTest.getOrientation()).toEqual('standard');
+		});
+		it('should return .orientation if it is defined', function () {
+			underTest.setLayout({nodes: { 1: {}}, orientation: 'all-over-the-place'});
+			expect(underTest.getOrientation()).toEqual('all-over-the-place');
+		});
+	});
 	describe('getNode', function () {
 		beforeEach(function () {
 			layout = {

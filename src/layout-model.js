@@ -142,4 +142,7 @@ module.exports = function LayoutModel(emptyLayout) {
 			node = nodes && getNearest(referenceNode, nodes, options.majorAxisRatio, 1);
 		return node && node.id;
 	};
+	self.getOrientation = function () {
+		return (layout && layout.orientation) || 'standard';
+	};
 };

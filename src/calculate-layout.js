@@ -19,9 +19,11 @@ module.exports = function calculateLayout(idea, dimensionProvider, optional) {
 	calculator = layouts[orientation] || layouts.standard;
 	result = calculator(idea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
 	return {
+		orientation: orientation,
 		nodes: result,
 		connectors: extractConnectors(idea, result),
-		links: layoutLinks(idea, result)
+		links: layoutLinks(idea, result),
+		theme: idea.attr && idea.attr.theme
 	};
 };
 
