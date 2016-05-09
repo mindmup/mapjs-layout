@@ -73,8 +73,8 @@ describe('layouts/top-down', function () {
 			margin = {h: 5, v: 5},
 			result = layout(idea, dimensionProvider, margin);
 
-		expect(position(result[1])).toEqual({ x: -60, y: -30});
-		expect(position(result[11])).toEqual({ x: -50, y: 35});
+		expect(position(result[1])).toEqual({ x: -60, y: -57});
+		expect(position(result[11])).toEqual({ x: -50, y: 8});
 	});
 	it('positions two children centered below parent, in rank order', function () {
 		var idea = {
@@ -94,9 +94,9 @@ describe('layouts/top-down', function () {
 			margin = {h: 5, v: 5},
 			result = layout(idea, dimensionProvider, margin);
 
-		expect(position(result[1])).toEqual({ x: -60, y: -30});
-		expect(position(result[11])).toEqual({ x: -172, y: 35});
-		expect(position(result[12])).toEqual({ x: -67, y: 35});
+		expect(position(result[1])).toEqual({ x: -60, y: -92});
+		expect(position(result[11])).toEqual({ x: -172, y: -27});
+		expect(position(result[12])).toEqual({ x: -67, y: -27});
 	});
 	it('sorts children in rank order', function () {
 		var idea = {
@@ -204,7 +204,7 @@ describe('layouts/top-down', function () {
 			},
 			margin = {h: 5, v: 10},
 			result = layout(idea, dimensionProvider, margin);
-		expect(result[113].y).toEqual(170);
-		expect(result[113].y).toEqual(170);
+		expect(result[113].y).toEqual(85);
+		expect(result[113].y).toEqual(85);
 	});
 });

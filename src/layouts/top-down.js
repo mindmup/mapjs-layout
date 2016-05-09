@@ -33,13 +33,17 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 		getLevelHeights = function (nodes) {
 			var maxHeights = [],
 				level,
-				heights = [];
+				heights = [],
+				totalHeight = 0;
 
 			_.each(nodes, function (node) {
 				maxHeights[node.level - 1] = Math.max(maxHeights[node.level - 1] || 0, node.height);
 			});
+			totalHeight = maxHeights.reduce(function (memo, item) {
+				return memo + item;
+			}, 0) + (margin.v *  (maxHeights.length - 1));
 
-			heights[0] = Math.round(-0.5 * nodes[aggregate.id].height);
+			heights[0] = Math.round(-0.5 * totalHeight);
 
 			for (level = 1; level < maxHeights.length; level++) {
 				heights [level] = heights [level - 1] + margin.v + maxHeights[level - 1];
