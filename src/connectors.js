@@ -6,10 +6,26 @@ var Theme = require ('./theme'),
 		if (calculatedConnector.nodeUnderline) {
 			connectorCurve.d += 'M' + (calculatedConnector.nodeUnderline.from.x - position.left) + ',' + (calculatedConnector.nodeUnderline.from.y - position.top) + ' H' + (calculatedConnector.nodeUnderline.to.x - position.left);
 		}
+		return connectorCurve;
+	},
+	appendOverLine = function (connectorCurve, calculatedConnector) {
+		'use strict';
+		var halfWidth,
+			initialRadius = connectorCurve.initialRadius || 0;
+
 		if (calculatedConnector.nodeOverline) {
-			connectorCurve.d += 'M' + (calculatedConnector.nodeOverline.from.x - position.left) + ',' + (calculatedConnector.nodeOverline.from.y - position.top) + ' H' + (calculatedConnector.nodeOverline.to.x - position.left);
+			halfWidth = Math.floor(0.5 * Math.abs(calculatedConnector.nodeOverline.to.x - calculatedConnector.nodeOverline.from.x)) - 1;
+			connectorCurve.d += 'm' + (-1 * halfWidth) + ',' + initialRadius +
+				'q0,' + (-1 * initialRadius) + ' ' + initialRadius + ',' +  (-1 * initialRadius) +
+				' h' + (2 * (halfWidth - initialRadius)) +
+				'q' + initialRadius + ',0 ' + initialRadius + ',' +  initialRadius;
 		}
 		return connectorCurve;
+
+	},
+	appendBorderLines = function (connectorCurve, calculatedConnector, position) {
+		'use strict';
+		return appendOverLine(appendUnderLine(connectorCurve, calculatedConnector, position), calculatedConnector);
 	},
 	nodeConnectionPointX = {
 		'center': function (node) {
@@ -89,7 +105,8 @@ var Theme = require ('./theme'),
 					'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
 						'v' + dyIncrement +
 						'l' + dx + ',' + (dy - dyIncrement),
-					'position': position
+					'position': position,
+					'initialRadius': 5
 				};
 			}
 
@@ -100,7 +117,8 @@ var Theme = require ('./theme'),
 						'h' + (dx - (2 * dxIncrement)) +
 						'q' + dxIncrement + ',0 ' + dxIncrement + ',' +  dyIncrement +
 						'v' + verticalLine,
-					'position': position
+					'position': position,
+					'initialRadius': 5
 				};
 
 		},
@@ -244,7 +262,7 @@ var Theme = require ('./theme'),
 		position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left + 1) - position.left;
 		position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top + 2;
 		calculatedConnector = calculateConnector(parent, child, theme);
-		result = appendUnderLine(connectorPaths[calculatedConnector.connectionCurveType](calculatedConnector, position, parent, child), calculatedConnector, position);
+		result = appendBorderLines(connectorPaths[calculatedConnector.connectionCurveType](calculatedConnector, position, parent, child), calculatedConnector, position);
 		result.color = theme.attributeValue(['connector'], [calculatedConnector.connectionStyle], ['line', 'color'], '#707070');
 		return result;
 	},

@@ -52,7 +52,7 @@ module.exports = function ThemeProcessor() {
 				if (!borderOb.line) {
 					return '0';
 				}
-				return borderOb.line.width + 'px ' + (borderOb.line.style || 'solid') + ' '  + borderOb.line.color;
+				return borderOb.line.width + 'px ' + (borderOb.line.style || 'solid') + ' '  + borderOb.line.color + ';margin:' + (-1 * borderOb.line.width) + 'px';
 			},
 			shadow: function (shadowArray) {
 				var boxshadows = [];

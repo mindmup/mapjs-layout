@@ -64,8 +64,11 @@ module.exports = {
 	{
 		'name': 'activated',
 		'border': {
+			'type': 'surround',
 			'line': {
-				'color': '#22AAE0'
+				'color': '#22AAE0',
+				'width': 2.0,
+				'style': 'dashed'
 			}
 		}
 	},

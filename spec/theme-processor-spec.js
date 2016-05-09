@@ -240,12 +240,12 @@ describe('MAPJS.ThemeProcessor', function () {
 
 			it('reads it into the border css when border type is surround', function () {
 				var result = underTest.process(theme);
-				expect(result.css).toEqual('.mapjs-node{border:1px solid #707070;}');
+				expect(result.css).toEqual('.mapjs-node{border:1px solid #707070;margin:-1px;}');
 
 			});
 			it('interprets line style dashed', function () {
 				theme.node[0].border.line.style = 'dashed';
-				expect(underTest.process(theme).css).toEqual('.mapjs-node{border:1px dashed #707070;}');
+				expect(underTest.process(theme).css).toEqual('.mapjs-node{border:1px dashed #707070;margin:-1px;}');
 			});
 			it('sets no border in css if the border is underline -- will be handled with a connector', function () {
 				delete theme.node[0].border.line;
