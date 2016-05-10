@@ -483,4 +483,81 @@ describe('MAPJS.LayoutModel', function () {
 			});
 		});
 	});
+	describe('layoutBounds', function () {
+		beforeEach(function () {
+			layout = {
+				'nodes': {
+					'1': {
+						'id': 1,
+						'width': 272,
+						'height': 308,
+						'x': -136,
+						'y': -154,
+						'title': '1',
+						'level': 1,
+						'attr': {'style': {'background': '#FF0000'}}
+					},
+					'4': {
+						'id': 4,
+						'width': 23,
+						'height': 34,
+						'x': 156,
+						'y': -71,
+						'title': '4',
+						'level': 2
+					},
+					'7': {
+						'id': 7,
+						'width': 66,
+						'height': 34,
+						'x': 199,
+						'y': -71,
+						'title': '7'
+					},
+					'9': {
+						'id': 9,
+						'width': 30,
+						'height': 34,
+						'x': 285,
+						'y': -125,
+						'title': '9'
+					}
+				},
+				'connectors': {
+					'12': {
+						'from': 1,
+						'to': 4
+					},
+					'15': {
+						'from': 1,
+						'to': 7
+					},
+					'34': {
+						'from': 7,
+						'to': 9
+					}
+				},
+				'links': {
+					'4_7': {
+						'ideaIdFrom': 4,
+						'ideaIdTo': 7,
+						'attr': {
+							'style': {
+								'color': '#FF0000'
+							}
+						}
+					}
+				}
+			};
+
+		});
+		it('calculates max and min coordinates for nodes in the layout', function () {
+			underTest.setLayout(layout);
+			expect(underTest.layoutBounds()).toEqual({minX: -136, minY: -154, maxX: 285 + 30, maxY: 308 - 154, width: 285 + 30 + 136, height: 308});
+		});
+		it('returns falsy if there are no nodes', function () {
+			underTest.setLayout({});
+			expect(underTest.layoutBounds()).toBeFalsy();
+		});
+	});
 });

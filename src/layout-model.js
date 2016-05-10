@@ -145,4 +145,24 @@ module.exports = function LayoutModel(emptyLayout) {
 	self.getOrientation = function () {
 		return (layout && layout.orientation) || 'standard';
 	};
+	self.layoutBounds = function () {
+		var minx, miny, maxx, maxy;
+		if (_.isEmpty(layout.nodes)) {
+			return false;
+		}
+		_.each(layout.nodes, function (node) {
+			if (!minx) {
+				minx = node.x;
+				miny = node.y;
+				maxx = node.x + node.width;
+				maxy = node.y + node.height;
+			} else {
+				minx = Math.min(node.x, minx);
+				miny = Math.min(node.y, miny);
+				maxx = Math.max(node.x + node.width, maxx);
+				maxy = Math.max(node.y + node.height, maxy);
+			}
+		});
+		return {minX: minx, minY: miny, maxX: maxx, maxY: maxy, width: (maxx - minx), height: (maxy - miny)};
+	};
 };
