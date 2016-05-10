@@ -169,4 +169,5 @@ module.exports = function ThemeProcessor() {
 			css: nodeStyles
 		};
 	};
+	self.cssFont = parsers['text.font'];
 };
