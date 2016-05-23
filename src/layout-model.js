@@ -165,4 +165,30 @@ module.exports = function LayoutModel(emptyLayout) {
 		});
 		return {minX: minx, minY: miny, maxX: maxx, maxY: maxy, width: (maxx - minx), height: (maxy - miny)};
 	};
+
+	self.clipRectTransform = function (centerNodeId, options) {
+		var centerNode = self.getNode(centerNodeId),
+			bounds = self.layoutBounds(),
+			imgCenter = {
+				x: centerNode.x + (centerNode.width / 2),
+				y: centerNode.y + (centerNode.height / 2)
+			};
+		if (options && options.clipRect) {
+			return {
+				x: (options.clipRect.width / 2) - imgCenter.x,
+				y: (options.clipRect.height / 2) - imgCenter.y,
+				width: options.clipRect.width,
+				height: options.clipRect.height
+			};
+
+		} else {
+			return {
+				x: -1 *  bounds.minX,
+				y: -1 *  bounds.minY,
+				width: bounds.width,
+				height: bounds.height
+			};
+		}
+	};
+
 };

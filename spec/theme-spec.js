@@ -54,4 +54,47 @@ describe('Theme', function () {
 			expect(underTest.attributeValue(['layout'], [], ['spacing'])).toEqual(30);
 		});
 	});
+	describe('nodeTheme', function () {
+		it('should return default values for empty theme', function () {
+			underTest = new MAPJS.Theme({});
+			expect(underTest.nodeTheme([])).toEqual({
+				margin: 5,
+				font: {
+					size: 12,
+					weight: 'semibold',
+					linespacing: 3.5
+				},
+				maxWidth: 146,
+				backgroundColor: '#E0E0E0',
+				borderType: 'surround',
+				cornerRadius: 5,
+				lineColor: '#707070',
+				text: {
+					color: '#4F4F4F',
+					lightColor: '#EEEEEE',
+					darkColor: '#000000'
+				}
+			});
+		});
+		it('should return the overridden values in the theme', function () {
+			expect(underTest.nodeTheme(['default'])).toEqual({
+				margin: 5,
+				font: {
+					size: 12,
+					weight: 'semibold',
+					linespacing: 3.5
+				},
+				maxWidth: 146,
+				backgroundColor: 'transparent',
+				borderType: 'surround',
+				cornerRadius: 10,
+				lineColor: '#707070',
+				text: {
+					color: '#4F4F4F',
+					lightColor: '#EEEEEE',
+					darkColor: '#000000'
+				}
+			});
+		});
+	});
 });

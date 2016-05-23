@@ -7,6 +7,7 @@ module.exports = {
 	foregroundStyle: require('./foreground-style'),
 	formattedNodeTitle: require('./formatted-node-title'),
 	LayoutModel: require('./layout-model'),
+	nodeToBox: require('./node-to-box'),
 	Theme: require('./theme'),
 	ThemeProcessor: require('./theme-processor'),
 	ThemeDimensionProvider: require('./theme-dimension-provider'),
