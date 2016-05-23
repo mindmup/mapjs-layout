@@ -1,5 +1,6 @@
 /*global module, require*/
-var _ = require('underscore');
+var _ = require('underscore'),
+	nodeToBox = require('./node-to-box');
 
 module.exports = function LayoutModel(emptyLayout) {
 	'use strict';
@@ -110,6 +111,9 @@ module.exports = function LayoutModel(emptyLayout) {
 
 	self.getNode = function (nodeId) {
 		return (layout && layout.nodes && layout.nodes[nodeId]);
+	};
+	self.getNodeBox = function (nodeId) {
+		return nodeToBox(self.getNode(nodeId));
 	};
 	self.setLayout = function (newLayout) {
 		layout = newLayout || emptyLayout;

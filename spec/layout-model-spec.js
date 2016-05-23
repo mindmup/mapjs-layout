@@ -63,6 +63,59 @@ describe('MAPJS.LayoutModel', function () {
 			};
 			underTest.setLayout(layout);
 		});
+		it('should return node box for Id', function () {
+			expect(underTest.getNodeBox(2)).toEqual({
+				width: 40,
+				height: 49,
+				level: 2,
+				left: -20,
+				top: 62
+			});
+		});
+		it('should return falsy for invalid id', function () {
+			expect(underTest.getNodeBox(4)).toBeFalsy();
+		});
+		it('should return falsy for undefined id', function () {
+			expect(underTest.getNodeBox()).toBeFalsy();
+		});
+		it('should return falsy undefined layout', function () {
+			underTest = new MAPJS.LayoutModel();
+			expect(underTest.getNodeBox(4)).toBeFalsy();
+		});
+
+	});
+	describe('getNode', function () {
+		beforeEach(function () {
+			layout = {
+				nodes: {
+					1: {
+						id: 1,
+						width: 30,
+						height: 84,
+						level: 1,
+						x: -15,
+						y: -42
+					},
+					2: {
+						id: 2,
+						width: 40,
+						height: 49,
+						level: 2,
+						x: -20,
+						y: 62
+					},
+					3: {
+						id: 3,
+						width: 30,
+						height: 76,
+						level: 2,
+						x: -15,
+						y: -138
+					}
+				}
+			};
+			underTest.setLayout(layout);
+		});
 		it('should return node for Id', function () {
 			expect(underTest.getNode(2)).toEqual({
 				id: 2,

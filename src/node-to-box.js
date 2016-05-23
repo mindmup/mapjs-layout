@@ -1,6 +1,9 @@
 /*global module*/
 module.exports = function nodeToBox(node) {
 	'use strict';
+	if (!node) {
+		return false;
+	}
 	return {
 		left: node.x,
 		top: node.y,
