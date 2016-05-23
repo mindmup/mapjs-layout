@@ -58,6 +58,7 @@ module.exports = function Theme(themeJson) {
 					linespacing: 3.5
 				},
 				maxWidth: 146,
+				backgroundColor: '#E0E0E0',
 				borderType: 'surround',
 				cornerRadius: 5,
 				lineColor: '#707070',
@@ -77,7 +78,7 @@ module.exports = function Theme(themeJson) {
 		result.font = _.extend(result.font, getElementForPath(merged, ['text', 'font']));
 		result.text = _.extend(result.text, getElementForPath(merged, ['text']));
 		result.borderType = getElementForPath(merged, ['border', 'type']) || result.borderType;
-		result.backgroundColor = getElementForPath(merged, ['backgroundColor']);
+		result.backgroundColor = getElementForPath(merged, ['backgroundColor']) || result.backgroundColor;
 		result.cornerRadius = getElementForPath(merged, ['cornerRadius']) || result.cornerRadius;
 		result.lineColor = getElementForPath(merged, ['border', 'line', 'color']) || result.lineColor;
 		return result;
