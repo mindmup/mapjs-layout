@@ -65,7 +65,7 @@ module.exports = function ThemeProcessor() {
 				return boxshadows.join(',');
 			},
 			'text.font': function (fontObj) {
-				return 'normal normal ' + fontWeightParser(fontObj) + ' ' +  fontSizeParser(fontObj) + ' -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif';
+				return 'normal normal ' + fontWeightParser(fontObj) + ' ' +  fontSizeParser(fontObj) + ' NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif';
 			}
 		},
 		processNodeStyles = function (nodeStyleArray) {

@@ -105,7 +105,7 @@ describe('MAPJS.ThemeProcessor', function () {
 									weight: 'light'
 								}
 							}}]});
-					expect(result.css).toEqual('.mapjs-node{font:normal normal 200 10pt/15pt -apple-system, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;}');
+					expect(result.css).toEqual('.mapjs-node{font:normal normal 200 10pt/15pt NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;}');
 				});
 
 			});
