@@ -692,6 +692,10 @@ describe('MAPJS.LayoutModel', function () {
 			underTest.setLayout(layout);
 			expect(underTest.clipRectTransform(1, {padding: 5})).toEqual({x: 141, y: 159, width: 285 + 30 + 136 + 10, height: 318, scale: 1});
 		});
+		it('divides padding with scale if both set, to use it in scaled coordinates', function () {
+			underTest.setLayout(layout);
+			expect(underTest.clipRectTransform(1, {padding: 10, scale: 2})).toEqual({x: 141, y: 159, width: 2 * (285 + 30 + 136) + 20, height: 2 * 308 + 20, scale: 2});
+		});
 		it('calculates the transform for nodes in the layout when clipRect is passed', function () {
 			underTest.setLayout(layout);
 			expect(underTest.clipRectTransform(1, {clipRect: {

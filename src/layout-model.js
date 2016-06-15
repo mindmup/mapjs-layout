@@ -189,8 +189,8 @@ module.exports = function LayoutModel(emptyLayout) {
 
 		} else {
 			return {
-				x: -1 *  bounds.minX + padding,
-				y: -1 *  bounds.minY + padding,
+				x: -1 *  bounds.minX + Math.floor (padding / scale), // in scaled coordinates
+				y: -1 *  bounds.minY + Math.floor (padding / scale), // in scaled coordinates
 				width: bounds.width * scale + 2 * padding,
 				height: bounds.height * scale + 2 * padding,
 				scale: scale
