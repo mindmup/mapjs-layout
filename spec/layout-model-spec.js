@@ -682,7 +682,15 @@ describe('MAPJS.LayoutModel', function () {
 		});
 		it('calculates the transform for nodes in the layout when clipRect not passed', function () {
 			underTest.setLayout(layout);
-			expect(underTest.clipRectTransform(1)).toEqual({x: 136, y: 154, width: 285 + 30 + 136, height: 308});
+			expect(underTest.clipRectTransform(1)).toEqual({x: 136, y: 154, width: 285 + 30 + 136, height: 308, scale: 1});
+		});
+		it('applies scale to width/height but not x and y if set', function () {
+			underTest.setLayout(layout);
+			expect(underTest.clipRectTransform(1, {scale: 2})).toEqual({x: 136, y: 154, width: 2 * (285 + 30 + 136), height: 2 * 308, scale: 2});
+		});
+		it('applies padding if set', function () {
+			underTest.setLayout(layout);
+			expect(underTest.clipRectTransform(1, {padding: 5})).toEqual({x: 141, y: 159, width: 285 + 30 + 136 + 10, height: 318, scale: 1});
 		});
 		it('calculates the transform for nodes in the layout when clipRect is passed', function () {
 			underTest.setLayout(layout);

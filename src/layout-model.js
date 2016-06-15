@@ -173,6 +173,8 @@ module.exports = function LayoutModel(emptyLayout) {
 	self.clipRectTransform = function (centerNodeId, options) {
 		var centerNode = self.getNode(centerNodeId),
 			bounds = self.layoutBounds(),
+			padding = (options && options.padding) || 0,
+			scale = (options && options.scale) || 1,
 			imgCenter = {
 				x: centerNode.x + (centerNode.width / 2),
 				y: centerNode.y + (centerNode.height / 2)
@@ -187,10 +189,11 @@ module.exports = function LayoutModel(emptyLayout) {
 
 		} else {
 			return {
-				x: -1 *  bounds.minX,
-				y: -1 *  bounds.minY,
-				width: bounds.width,
-				height: bounds.height
+				x: -1 *  bounds.minX + padding,
+				y: -1 *  bounds.minY + padding,
+				width: bounds.width * scale + 2 * padding,
+				height: bounds.height * scale + 2 * padding,
+				scale: scale
 			};
 		}
 	};
