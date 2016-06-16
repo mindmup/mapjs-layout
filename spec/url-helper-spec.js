@@ -9,6 +9,9 @@ describe('MAPJS.URLHelper', function () {
 			expect(MAPJS.URLHelper.containsLink('www.google.com')).toBeTruthy();
 			expect(MAPJS.URLHelper.containsLink('abc.google.com')).toBeFalsy();
 		});
+		it('can work with undefined', function () {
+			expect(MAPJS.URLHelper.containsLink(undefined)).toBeFalsy();
+		});
 	});
 	describe('stripLink', function () {
 		it('removes the first link and returns the remaining text', function () {
@@ -21,8 +24,14 @@ describe('MAPJS.URLHelper', function () {
 		it('leaves any other links intact', function () {
 			expect(MAPJS.URLHelper.stripLink('prefix http://www.google.com suffix http://xkcd.com')).toBe('prefix  suffix http://xkcd.com');
 		});
+		it('can work with undefined', function () {
+			expect(MAPJS.URLHelper.stripLink(undefined)).toEqual('');
+		});
 	});
 	describe('getLink', function () {
+		it('can work with undefined', function () {
+			expect(MAPJS.URLHelper.getLink(undefined)).toBeFalsy();
+		});
 		it('returns the first link, optionally adding http protocol', function () {
 			expect(MAPJS.URLHelper.getLink('http://www.google.com')).toBe('http://www.google.com');
 			expect(MAPJS.URLHelper.getLink('prefix http://www.google.com suffix')).toBe('http://www.google.com');

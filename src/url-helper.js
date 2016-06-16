@@ -9,7 +9,7 @@ var URLHelper = function () {
 	};
 
 	self.getLink  = function (text) {
-		var url = text.match(urlPattern);
+		var url = text && text.match(urlPattern);
 		if (url && url[0]) {
 			url = url[0];
 			if (!/https?:\/\//i.test(url)) {
@@ -20,6 +20,9 @@ var URLHelper = function () {
 	};
 
 	self.stripLink  = function (text) {
+		if (!text) {
+			return '';
+		}
 		return text.replace(urlPattern, '');
 	};
 };
