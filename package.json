@@ -28,6 +28,8 @@
   },
   "devDependencies": {
     "jasmine": "^2.4.1",
-    "jasmine-spec-reporter": "^2.4.0"
+    "jasmine-spec-reporter": "^2.4.0",
+    "jscs": "^3.0.5",
+    "jshint": "^2.9.2"
   }
 }
