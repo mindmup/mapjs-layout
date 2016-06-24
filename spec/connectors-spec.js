@@ -4,8 +4,8 @@ describe('MAPJS.Connectors', function () {
 	'use strict';
 	var parent, child;
 	beforeEach(function () {
-		parent = {top: 100, left: 200, width: 100, height: 40};
-		child = {top: 220, left: 330, width: 12, height: 44};
+		parent = {top: 100, left: 200, width: 100, height: 40, nodeStyles: ['default']};
+		child = {top: 220, left: 330, width: 12, height: 44, nodeStyles: ['default']};
 	});
 	describe('linkPath', function () {
 		it('draws a straight line between the borders of two nodes', function () {
@@ -96,7 +96,7 @@ describe('MAPJS.Connectors', function () {
 				});
 			});
 			it('should use child level to determine connector type', function () {
-				child.level = 2;
+				child.nodeStyles = ['level_2', 'default'];
 				expect(MAPJS.Connectors.themePath(parent, child, theme)).toEqual({
 					d: 'M100,41L130,142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
@@ -165,7 +165,7 @@ describe('MAPJS.Connectors', function () {
 				});
 			});
 			it('should use child level to determine connector type', function () {
-				child.level = 2;
+				child.nodeStyles = ['level_2', 'default'];
 				expect(MAPJS.Connectors.themePath(parent, child, theme)).toEqual({
 					d: 'M100,41L130,142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
@@ -173,7 +173,7 @@ describe('MAPJS.Connectors', function () {
 				});
 			});
 			it('should use the defaults when the child level is not in the theme', function () {
-				child.level = 3;
+				child.nodeStyles = ['level_3', 'default'];
 				expect(MAPJS.Connectors.themePath(parent, child, theme)).toEqual({
 					d: 'M100,41v47q0,15 15,15h0q15,0 15,15v47m-5,5q0,-5 5,-5 h0q5,0 5,5',
 					position: { left: 200, top: 100, width: 142, height: 166 },

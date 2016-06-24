@@ -3,15 +3,12 @@ var formattedNodeTitle = require('./formatted-node-title'),
 	_ = require('underscore');
 module.exports = function ThemeDimensionProvider(textSizer) {
 	'use strict';
-	var self = this,
-		nodeStyles = function (level) {
-			return ['level_' + level, 'default'];
-		};
+	var self = this;
 
 	self.dimensionProviderForTheme = function (theme) {
 		return function (idea, level) {
 			var icon = idea.attr && idea.attr.icon,
-				nodeTheme = theme.nodeTheme(nodeStyles(level)),
+				nodeTheme = theme.nodeTheme(theme.nodeStyles(level, idea.attr)),
 				title = formattedNodeTitle(idea.title),
 				textBox = textSizer(title, nodeTheme.maxWidth, nodeTheme.font);
 
@@ -38,7 +35,7 @@ module.exports = function ThemeDimensionProvider(textSizer) {
 			var image = node.attr && node.attr.icon,
 				textLayout, imageLayout,
 				offset,
-				nodeTheme = theme.nodeTheme(nodeStyles(node.level)),
+				nodeTheme = theme.nodeTheme(theme.nodeStyles(node.level, node.attr)),
 				title = formattedNodeTitle(node.title),
 				textBox = textSizer(title, nodeTheme.maxWidth, nodeTheme.font),
 				textWidth = Math.min(node.width - (2 * nodeTheme.margin), textBox.width);
