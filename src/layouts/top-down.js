@@ -1,5 +1,6 @@
 /*global module, require*/
 var _ = require('underscore'),
+	isEmptyGroup = require('../is-empty-group'),
 	combineVerticalSubtrees = require('./combine-vertical-subtrees');
 module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 	'use strict';
@@ -15,7 +16,10 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			level = level || 1;
 			if (shouldIncludeSubIdeas) {
 				Object.keys(idea.ideas).forEach(function (subNodeRank) {
-					childResults[subNodeRank] = traverse(idea.ideas[subNodeRank], predicate, level + 1);
+					var result = traverse(idea.ideas[subNodeRank], predicate, level + 1);
+					if (result) {
+						childResults[subNodeRank] = result;
+					}
 				});
 			}
 			return predicate(idea, childResults, level);
@@ -24,6 +28,9 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			var node = toNode(idea, level),
 				result = combineVerticalSubtrees(node, childLayouts, margin.h);
 			return result;
+		},
+		traversalLayoutWithoutEmptyGroups = function (idea, childLayouts, level) {
+			return (idea === aggregate || !isEmptyGroup(idea)) && traversalLayout(idea, childLayouts, level);
 		},
 		setLevelHeights = function (nodes, levelHeights) {
 			_.each(nodes, function (node) {
@@ -52,7 +59,7 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 		},
 		tree;
 
-	tree = traverse(aggregate, traversalLayout);
+	tree = traverse(aggregate, traversalLayoutWithoutEmptyGroups);
 	setLevelHeights(tree.nodes, getLevelHeights(tree.nodes));
 
 	return tree.nodes;

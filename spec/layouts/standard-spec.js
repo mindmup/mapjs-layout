@@ -1,5 +1,6 @@
 /*global describe, expect, it, jasmine, require, beforeEach*/
-var layout = require('../../src/layouts/standard');
+var layout = require('../../src/layouts/standard'),
+	_ = require('underscore');
 describe('layouts/standard', function () {
 	'use strict';
 
@@ -198,4 +199,53 @@ describe('layouts/standard', function () {
 			y: -15
 		}));
 	});
+	it('ignores empty groups', function () {
+		var contentAggregate = {
+				id: 7,
+				title: '1',
+				ideas: {
+					1: {
+						id: 8,
+						title: '12'
+					},
+					2: {
+						id: 9,
+						title: '13',
+						attr: { group: 'standard' },
+						ideas: {}
+					},
+					3: {
+						id: 10,
+						title: '14',
+						attr: { group: 'standard' }
+					},
+					4: {
+						id: 11,
+						title: '14',
+						attr: { group: 'standard' },
+						ideas: {
+							2: {
+								id: 16,
+								title: '15'
+							}
+						}
+					}
+				}
+			},
+			result;
+		result = layout(contentAggregate, dimensionProvider, {h: 30});
+		expect(_.sortBy(Object.keys(result), parseFloat)).toEqual(['7', '8', '11', '16']);
+	});
+	it('includes root even if empty group', function () {
+		var contentAggregate = {
+				id: 7,
+				title: '1',
+				attr: { group: 'standard' },
+				ideas: {}
+			},
+			result;
+		result = layout(contentAggregate, dimensionProvider, {h: 30});
+		expect(result[7]).toBeTruthy();
+	});
+
 });

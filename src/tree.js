@@ -1,5 +1,6 @@
 /*global module, require*/
 var _ = require('underscore'),
+	isEmptyGroup = require('./is-empty-group'),
 	outlineUtils = require('./outline'),
 	Tree = function (options) {
 		'use strict';
@@ -88,9 +89,12 @@ var _ = require('underscore'),
 			},
 			includedSubIdeaKeys = function () {
 				var allRanks = _.map(_.keys(content.ideas), parseFloat),
-					includedRanks = rankAndParentPredicate ? _.filter(allRanks, function (rank) {
+					candidateRanks = rankAndParentPredicate ? _.filter(allRanks, function (rank) {
 						return rankAndParentPredicate(rank, content.id);
-					}) : allRanks;
+					}) : allRanks,
+					includedRanks = _.filter(candidateRanks, function (rank) {
+						return !isEmptyGroup(content.ideas[rank]);
+					});
 				return _.sortBy(includedRanks, Math.abs);
 			},
 			includedSubIdeas = function () {
