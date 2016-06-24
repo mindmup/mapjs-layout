@@ -54,6 +54,25 @@ describe('Theme', function () {
 			expect(underTest.attributeValue(['layout'], [], ['spacing'])).toEqual(30);
 		});
 	});
+	describe('nodeStyles', function () {
+		it('attaches level only if attributes not provided', function () {
+			expect(underTest.nodeStyles(3)).toEqual(['level_3', 'default']);
+			expect(underTest.nodeStyles(3, {})).toEqual(['level_3', 'default']);
+			expect(underTest.nodeStyles(3, {nongroup: 'x'})).toEqual(['level_3', 'default']);
+		});
+		it('attaches group attr if it is provided', function () {
+			expect(underTest.nodeStyles(3, {group: 'blue'})).toEqual(['attr_group_blue', 'attr_group', 'level_3', 'default']);
+			expect(underTest.nodeStyles(3, {group: 1})).toEqual(['attr_group_1', 'attr_group', 'level_3', 'default']);
+			expect(underTest.nodeStyles(3, {group: true})).toEqual(['attr_group', 'level_3', 'default']);
+
+		});
+		it('does not explode when the group value is not a string', function () {
+			expect(underTest.nodeStyles(3, {group: undefined})).toEqual(['level_3', 'default']);
+			expect(underTest.nodeStyles(3, {group: false})).toEqual(['level_3', 'default']);
+			expect(underTest.nodeStyles(3, {group: {'a': 'b'}})).toEqual(['attr_group', 'level_3', 'default']);
+			expect(underTest.nodeStyles(3, {group: ['a', 'b']})).toEqual(['attr_group', 'level_3', 'default']);
+		});
+	});
 	describe('nodeTheme', function () {
 		it('should return default values for empty theme', function () {
 			underTest = new MAPJS.Theme({});

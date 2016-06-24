@@ -5,6 +5,14 @@ var Theme = require('./theme'),
 	defaultLayouts = {
 		'standard': require('./layouts/standard'),
 		'top-down': require('./layouts/top-down')
+	},
+	attachStyles = function (nodes, theme) {
+		'use strict';
+		Object.keys(nodes).forEach(function (nodeKey) {
+			var node = nodes[nodeKey];
+			node.styles = theme.nodeStyles(node.level, node.attr);
+		});
+		return nodes;
 	};
 
 module.exports = function calculateLayout(idea, dimensionProvider, optional) {
@@ -20,7 +28,7 @@ module.exports = function calculateLayout(idea, dimensionProvider, optional) {
 	result = calculator(idea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
 	return {
 		orientation: orientation,
-		nodes: result,
+		nodes: attachStyles(result, theme),
 		connectors: extractConnectors(idea, result),
 		links: layoutLinks(idea, result),
 		theme: idea.attr && idea.attr.theme

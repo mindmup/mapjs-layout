@@ -47,6 +47,16 @@ module.exports = function Theme(themeJson) {
 		}
 		return result;
 	};
+	self.nodeStyles = function (nodeLevel, nodeAttr) {
+		var result = ['level_' + nodeLevel, 'default'];
+		if (nodeAttr && nodeAttr.group) {
+			result.unshift('attr_group');
+			if (typeof nodeAttr.group === 'string' || typeof nodeAttr.group === 'number') {
+				result.unshift('attr_group_' + nodeAttr.group);
+			}
+		}
+		return result;
+	};
 	self.nodeTheme = function (styles) {
 		var rootElement = getElementForPath(themeDictionary, ['node']),
 			merged = {},

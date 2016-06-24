@@ -56,11 +56,21 @@ describe('MAPJS.calculateLayout', function () {
 				},
 				result;
 			layouts.standard.and.returnValue({
-				1: true
+				1: {}
 			});
 			optional.theme = new MAPJS.Theme({layout: {orientation: 'not-top-down'}});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
 			expect(result.orientation).toEqual('not-top-down');
+		});
+		it('should attach node styles', function () {
+			var result;
+			layouts.standard.and.returnValue({
+				1: {level: 3, attr: { group: 'blue'} },
+				4: {level: 6}
+			});
+			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			expect(result.nodes[1].styles).toEqual(['attr_group_blue', 'attr_group', 'level_3', 'default']);
+			expect(result.nodes[4].styles).toEqual(['level_6', 'default']);
 		});
 		it('should include the theme id from the idea', function () {
 			var idea = {
@@ -70,7 +80,7 @@ describe('MAPJS.calculateLayout', function () {
 				},
 				result;
 			layouts.standard.and.returnValue({
-				1: true
+				1: {}
 			});
 			optional.theme = new MAPJS.Theme({layout: {orientation: 'not-top-down'}});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
@@ -95,11 +105,11 @@ describe('MAPJS.calculateLayout', function () {
 				},
 				result;
 			layouts.standard.and.returnValue({
-				1: true,
-				11: true,
-				12: true,
-				112: true,
-				111: true
+				1: {},
+				11: {},
+				12: {},
+				112: {},
+				111: {}
 			});
 
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
