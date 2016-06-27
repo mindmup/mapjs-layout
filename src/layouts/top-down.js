@@ -29,7 +29,7 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			var node = toNode(idea, level),
 				result = combineVerticalSubtrees(node, childLayouts, margin.h);
 			if (node.attr && node.attr.group && !_.isEmpty(idea.ideas)) {
-				alignGroup(result.nodes, idea);
+				alignGroup(result, idea);
 			}
 			return result;
 		},

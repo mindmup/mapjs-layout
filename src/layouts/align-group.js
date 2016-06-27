@@ -1,12 +1,15 @@
 /*global module, require */
 var _ = require('underscore');
-module.exports = function alignGroup(nodes, rootIdea) {
+module.exports = function alignGroup(result, rootIdea) {
 	'use strict';
-	var childIds = _.values(rootIdea.ideas).map(function (idea) {
+	var nodes = result.nodes,
+		childIds = _.values(rootIdea.ideas).map(function (idea) {
 			return idea.id;
 		}),
 		childNodes = childIds.map(function (id) {
 			return nodes[id];
+		}).filter(function (node) {
+			return node;
 		}),
 		leftBorders = _.map(childNodes, function (node) {
 			return node.x;
@@ -21,6 +24,8 @@ module.exports = function alignGroup(nodes, rootIdea) {
 	if (!childIds.length) {
 		return;
 	}
-	rootNode.x = Math.min(minLeft, rootNode.x);
-	rootNode.width = Math.max(maxRight - rootNode.x,  rootNode.width);
+	rootNode.x = minLeft;
+	rootNode.width = maxRight - rootNode.x;
+	result.levels[0] = {width: rootNode.width, xOffset: rootNode.x};
+
 };
