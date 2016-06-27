@@ -95,8 +95,34 @@ describe('layouts/top-down', function () {
 			result = layout(idea, dimensionProvider, margin);
 
 		expect(position(result[1])).toEqual({ x: -60, y: -92});
+		expect(result[1].width).toEqual(120);
 		expect(position(result[11])).toEqual({ x: -172, y: -27});
 		expect(position(result[12])).toEqual({ x: -67, y: -27});
+	});
+	it('aligns groups', function () {
+		var idea = {
+				title: 'parent', /* 120, 60 */
+				attr: { group: 'blue' },
+				id: 1,
+				ideas: {
+					5: {
+						title: 'second child', /* 240, 120 */
+						id: 12
+					},
+					4: {
+						title: 'child', /* 100, 50 */
+						id: 11
+					}
+				}
+			},
+			margin = {h: 5, v: 5},
+			result = layout(idea, dimensionProvider, margin);
+
+		expect(position(result[1])).toEqual({ x: -172, y: -92});
+		expect(result[1].width).toEqual(345);
+		expect(position(result[11])).toEqual({ x: -172, y: -27});
+		expect(position(result[12])).toEqual({ x: -67, y: -27});
+
 	});
 	it('sorts children in rank order', function () {
 		var idea = {

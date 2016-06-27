@@ -1,6 +1,7 @@
 /*global module, require*/
 var _ = require('underscore'),
 	isEmptyGroup = require('../is-empty-group'),
+	alignGroup = require('./align-group'),
 	combineVerticalSubtrees = require('./combine-vertical-subtrees');
 module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 	'use strict';
@@ -27,6 +28,9 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 		traversalLayout = function (idea, childLayouts, level) {
 			var node = toNode(idea, level),
 				result = combineVerticalSubtrees(node, childLayouts, margin.h);
+			if (node.attr && node.attr.group && !_.isEmpty(idea.ideas)) {
+				alignGroup(result.nodes, idea);
+			}
 			return result;
 		},
 		traversalLayoutWithoutEmptyGroups = function (idea, childLayouts, level) {
