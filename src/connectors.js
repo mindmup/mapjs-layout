@@ -181,7 +181,15 @@ var Theme = require ('./theme'),
 				'd': 'M' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.from.y - position.top) + 'L' + Math.round(calculatedConnector.to.x - position.left) + ',' + Math.round(calculatedConnector.to.y - position.top),
 				'position': position
 			};
+		},
+		'no-connector': function (calculatedConnector, position) {
+			'use strict';
+			return {
+				'd': 'M' + Math.round(calculatedConnector.to.x - position.left) + ',' + Math.round(calculatedConnector.to.y - position.top),
+				'position': position
+			};
 		}
+
 	},
 	calculateConnector = function (parent, child, theme) {
 		'use strict';
@@ -201,7 +209,8 @@ var Theme = require ('./theme'),
 			connectionPositionDefaultTo = theme.attributeValue(['node'], toStyles, ['connections', 'default'], {h: 'nearest-inset', v: 'center'}),
 			connectionPositionFrom = _.extend({}, connectionPositionDefaultFrom, theme.attributeValue(['node'], fromStyles, ['connections', 'from', childPosition], {})),
 			connectionPositionTo = _.extend({}, connectionPositionDefaultTo, theme.attributeValue(['node'], toStyles, ['connections', 'to'], {})),
-			connectionStyle = theme.attributeValue(['node'], toStyles, ['connections', 'style'], 'default'),
+			connectionChildStyle = theme.attributeValue(['node'], fromStyles, ['connections', 'childstyle'], false),
+			connectionStyle = connectionChildStyle || theme.attributeValue(['node'], toStyles, ['connections', 'style'], 'default'),
 			connectionCurveType = theme.attributeValue(['connector'], [connectionStyle], ['type'], 'quadratic'),
 			controlPointOffsetFallBack = childPosition === 'horizontal' ? 1 : 1.75,
 			controlPointOffset = theme.attributeValue(['connector'], [connectionStyle], ['controlPoint', childPosition, 'height'], controlPointOffsetFallBack) - 1,
