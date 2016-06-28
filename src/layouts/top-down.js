@@ -29,10 +29,12 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			return predicate(idea, childResults, level);
 		},
 		traversalLayout = function (idea, childLayouts, level) {
-			var node = toNode(idea, level),
-				result = combineVerticalSubtrees(node, childLayouts, margin.h);
+			var node = toNode(idea, level), result;
 			if (isGroup(node) && !_.isEmpty(idea.ideas)) {
+				result = combineVerticalSubtrees(node, childLayouts, margin.h, true);
 				alignGroup(result, idea);
+			} else {
+				result = combineVerticalSubtrees(node, childLayouts, margin.h);
 			}
 			return result;
 		},

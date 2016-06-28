@@ -20,7 +20,6 @@ describe('alignGroup', function () {
 		};
 		alignGroup(layout, idea);
 		expect(layout.nodes[5]).toEqual({width: 250, height: 20, x: -100, y: 10 });
-		expect(layout.levels[0]).toEqual({width: 250, xOffset: -100});
 	});
 	it('ignores node size when layout out groups', function () {
 		var idea = {
@@ -40,7 +39,6 @@ describe('alignGroup', function () {
 		};
 		alignGroup(layout, idea);
 		expect(layout.nodes[5]).toEqual({width: 250, height: 20, x: -100, y: 10 });
-		expect(layout.levels[0]).toEqual({width: 250, xOffset: -100});
 	});
 	it('does not try to cover grandchildren', function () {
 		var idea = {
@@ -65,7 +63,6 @@ describe('alignGroup', function () {
 		};
 		alignGroup(layout, idea);
 		expect(layout.nodes[5]).toEqual({width: 250, height: 20, x: -100, y: 10 });
-		expect(layout.levels[0]).toEqual({width: 250, xOffset: -100});
 	});
 	it('does not blow up on empty groups', function () {
 		var idea = {

@@ -1,4 +1,4 @@
-/*global module, require*/
+/*global module, require */
 var _ = require('underscore');
 module.exports = function alignGroup(result, rootIdea) {
 	'use strict';
@@ -27,7 +27,6 @@ module.exports = function alignGroup(result, rootIdea) {
 	if (childIds.length) {
 		rootNode.x = minLeft;
 		rootNode.width = maxRight - rootNode.x;
-		result.levels[0] = {width: rootNode.width, xOffset: rootNode.x};
 	}
 	sameLevelNodes.forEach(function (node) {
 		node.verticalOffset = (node.verticalOffset || 0) + rootNode.height;

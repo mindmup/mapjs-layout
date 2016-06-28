@@ -52,6 +52,21 @@ describe('Combine Vertical Subtrees', function () {
 		expect(result.nodes[11].x).toEqual(-65);
 		expect(result.nodes[12].x).toEqual(25);
 	});
+	it('should not add a level if samelevel provided', function () {
+		var node = {id: 1, width: 50, height: 10},
+			childLayouts = {
+				4: { levels: [{xOffset: -20, width: 40}, {xOffset: -40, width: 80}], nodes: { /* id */ 12: { id: 12, x: -20, width: 40, height: 10 } } },
+				1: { levels: [{xOffset: -20, width: 40}, {xOffset: -40, width: 80}], nodes: { /* id */ 11: { id: 11, x: -20, width: 40, height: 10 } } }
+			},
+			result = combineVerticalSubtrees(node, childLayouts, 10, true);
+
+		expect(result.levels).toEqual([{xOffset: -65, width: 130}, {xOffset: -85, width: 170}]);
+
+		expect(result.nodes[1].x).toEqual(-25);
+		expect(result.nodes[11].x).toEqual(-65);
+		expect(result.nodes[12].x).toEqual(25);
+
+	});
 	it('should arrange children where left edge is not flat', function () {
 		var node = { level: 1, width: 120, height: 60, id: 1, title: 'parent', x: -60 },
 			childLayouts = {

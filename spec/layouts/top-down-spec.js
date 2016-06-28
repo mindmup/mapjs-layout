@@ -99,7 +99,7 @@ describe('layouts/top-down', function () {
 		expect(position(result[11])).toEqual({ x: -172, y: -27});
 		expect(position(result[12])).toEqual({ x: -67, y: -27});
 	});
-	it('aligns groups', function () {
+	it('aligns groups horizontally', function () {
 		var idea = {
 				title: 'parent', /* 120, 60 */
 				attr: { group: 'blue' },
@@ -179,6 +179,36 @@ describe('layouts/top-down', function () {
 			expect(result[1231].y - result[123].y).toEqual(80);
 			expect(result[1231].level).toEqual(2);
 		});
+	});
+	it('does not overlap children of sublevels created after groups', function () {
+		var idea = {
+				title: 'parent', /* 120, 60 */
+				id: 1,
+				ideas: {
+					5: {
+						title: 'group', /* 100 x 50 */
+						attr: { group: 'blue' },
+						id: 12,
+						ideas: {
+							1: { id: 121, title: 'child' /* 100, 50 */, ideas: {
+									1: {id: 121, title: 'subsubchild' /* 220 x 110*/ },
+									2: {id: 122, title: 'subsubchild' /* 220 x 110*/ },
+									3: {id: 123, title: 'subsubchild' /* 220 x 110*/ }
+								}
+							}
+						}
+					},
+					4: {
+						title: 'nogrp', /* 100 x 50 */
+						id: 11,
+						ideas: {
+							1: { id: 111, title: 'child' /* 100 x 50 */ }
+						}
+					}
+				}
+			},
+			result = layout(idea, dimensionProvider, {h: 5, v: 5});
+		expect(result[111].x + result[111].width).toBeLessThan(result[121].x);
 	});
 	it('sorts children in rank order', function () {
 		var idea = {

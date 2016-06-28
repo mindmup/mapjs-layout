@@ -1,7 +1,7 @@
 /*global module, require */
 var _ = require('underscore'),
 	VerticalSubtreeCollection = require('./vertical-subtree-collection');
-module.exports = function combineVerticalSubtrees(node, childLayouts, margin) {
+module.exports = function combineVerticalSubtrees(node, childLayouts, margin, sameLevel) {
 	'use strict';
 	var result = {
 			nodes: { }
@@ -14,7 +14,6 @@ module.exports = function combineVerticalSubtrees(node, childLayouts, margin) {
 		},
 		treeOffset,
 		verticalSubtreeCollection = new VerticalSubtreeCollection(childLayouts, margin);
-
 	if (Array.isArray(childLayouts)) {
 		throw 'child layouts are an array!';
 	}
@@ -24,9 +23,13 @@ module.exports = function combineVerticalSubtrees(node, childLayouts, margin) {
 	result.levels = [{width: node.width, xOffset: node.x}];
 
 	if (!verticalSubtreeCollection.isEmpty()) {
-
-		result.levels = result.levels.concat(verticalSubtreeCollection.getMergedLevels());
-		treeOffset = result.levels[1].xOffset;
+		if (sameLevel) {
+			result.levels = verticalSubtreeCollection.getMergedLevels();
+			treeOffset = result.levels[0].xOffset;
+		} else {
+			result.levels = result.levels.concat(verticalSubtreeCollection.getMergedLevels());
+			treeOffset = result.levels[1].xOffset;
+		}
 		Object.keys(childLayouts).forEach(function (subtreeRank) {
 			_.extend(result.nodes, shift(childLayouts[subtreeRank].nodes, treeOffset + verticalSubtreeCollection.getExpectedTranslation(subtreeRank)));
 		});
