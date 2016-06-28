@@ -7,9 +7,11 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 	'use strict';
 	var toNode = function (idea, level) {
 			var dimensions = dimensionProvider(idea, level);
-			return _.extend({level: level}, dimensions, _.pick(idea, ['id', 'title', 'attr']));
+			return _.extend({level: level, verticalOffset: 0}, dimensions, _.pick(idea, ['id', 'title', 'attr']));
 		},
-
+		isGroup = function (node) {
+			return node.attr && node.attr.group;
+		},
 		traverse = function (idea, predicate, level) {
 			var childResults = {},
 				shouldIncludeSubIdeas = !(_.isEmpty(idea.ideas) || (idea.attr && idea.attr.collapsed));
@@ -17,7 +19,8 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			level = level || 1;
 			if (shouldIncludeSubIdeas) {
 				Object.keys(idea.ideas).forEach(function (subNodeRank) {
-					var result = traverse(idea.ideas[subNodeRank], predicate, level + 1);
+					var newLevel = isGroup(idea) ? level : level + 1,
+						result = traverse(idea.ideas[subNodeRank], predicate, newLevel);
 					if (result) {
 						childResults[subNodeRank] = result;
 					}
@@ -28,7 +31,7 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 		traversalLayout = function (idea, childLayouts, level) {
 			var node = toNode(idea, level),
 				result = combineVerticalSubtrees(node, childLayouts, margin.h);
-			if (node.attr && node.attr.group && !_.isEmpty(idea.ideas)) {
+			if (isGroup(node) && !_.isEmpty(idea.ideas)) {
 				alignGroup(result, idea);
 			}
 			return result;
@@ -38,7 +41,8 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 		},
 		setLevelHeights = function (nodes, levelHeights) {
 			_.each(nodes, function (node) {
-				node.y = levelHeights[node.level - 1];
+				node.y = levelHeights[node.level - 1] + node.verticalOffset;
+				delete node.verticalOffset;
 			});
 		},
 		getLevelHeights = function (nodes) {
@@ -48,7 +52,7 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 				totalHeight = 0;
 
 			_.each(nodes, function (node) {
-				maxHeights[node.level - 1] = Math.max(maxHeights[node.level - 1] || 0, node.height);
+				maxHeights[node.level - 1] = Math.max(maxHeights[node.level - 1] || 0, node.height + node.verticalOffset);
 			});
 			totalHeight = maxHeights.reduce(function (memo, item) {
 				return memo + item;

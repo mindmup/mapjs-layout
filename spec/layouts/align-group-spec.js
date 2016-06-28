@@ -84,4 +84,21 @@ describe('alignGroup', function () {
 		expect(layout.nodes[5]).toEqual({width: 50, height: 20, x: -10, y: 10 });
 
 	});
+	it('increments vertical offset on nodes within same level', function () {
+		var idea = {
+			id: 5
+		},
+		layout = {
+			nodes: {
+				5: {id: 5, width: 400, height: 20, x: -200, y: 10, level: 1, verticalOffset: 0 },
+				6: {id: 6, width: 20, x: -100, level: 1},
+				7: {id: 7, width: 50, x: 100, level: 1, verticalOffset: 10}
+			},
+			levels: [{width: 400, xOffset: -200}]
+		};
+		alignGroup(layout, idea);
+		expect(layout.nodes[5].verticalOffset).toEqual(0);
+		expect(layout.nodes[6].verticalOffset).toEqual(20);
+		expect(layout.nodes[7].verticalOffset).toEqual(30);
+	});
 });

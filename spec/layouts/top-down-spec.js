@@ -1,4 +1,4 @@
-/*global describe, it, expect, require, jasmine */
+/*global describe, it, expect, require, jasmine, beforeEach */
 var layout = require('../../src/layouts/top-down'),
 	_ = require('underscore');
 describe('layouts/top-down', function () {
@@ -118,11 +118,67 @@ describe('layouts/top-down', function () {
 			margin = {h: 5, v: 5},
 			result = layout(idea, dimensionProvider, margin);
 
-		expect(position(result[1])).toEqual({ x: -172, y: -92});
+		expect(position(result[1])).toEqual({ x: -172, y: -90});
 		expect(result[1].width).toEqual(345);
-		expect(position(result[11])).toEqual({ x: -172, y: -27});
-		expect(position(result[12])).toEqual({ x: -67, y: -27});
+		expect(position(result[11])).toEqual({ x: -172, y: -30});
+		expect(position(result[12])).toEqual({ x: -67, y: -30});
+	});
+	describe('aligns grouped children within the same level', function () {
+		var idea, result;
+		beforeEach(function () {
+			idea = {
+				title: 'parent', /* 120, 60 */
+				id: 1,
+				ideas: {
+					5: {
+						title: 'second child', /* 240, 120 */
+						attr: { group: 'blue' },
+						id: 12,
+						ideas: {
+							1: { id: 121, title: 'child' /* 100, 50 */ },
+							2: { id: 122, title: 'third child' /* 220, 110 */ },
+							3: { id: 123, attr: { group: 'yellow' }, title: 'subgroup' /* 160 x 80 */,
+								ideas: {
+									1: {id: 1231, title: 'subsubchild' /* 220 x 110*/ }
+								}
+							}
+						}
+					},
+					4: {
+						title: 'child', /* 100, 50 */
+						id: 11,
+						ideas: {
+							1: { id: 111, title: 'child' /* 100, 50 */ }
+						}
+					}
+				}
+			};
 
+			result = layout(idea, dimensionProvider, {h: 5, v: 5});
+		});
+		it('aligns the non-grouped children with a margin', function () {
+			expect(result[12].y - result[1].y).toEqual(65);
+			expect(result[11].y - result[1].y).toEqual(65);
+
+			expect(result[12].level).toEqual(2);
+			expect(result[11].level).toEqual(2);
+		});
+		it('aligns the non-grouped second level children below the groups', function () {
+			expect(result[111].y - result[11].y).toEqual(315);
+			expect(result[111].level).toEqual(3);
+		});
+		it('aligns the grouped children inside the same level', function () {
+			expect(result[121].y).toEqual(result[122].y);
+			expect(result[123].y).toEqual(result[122].y);
+			expect(result[121].y - result[12].y).toEqual(120);
+			expect(result[121].level).toEqual(2);
+			expect(result[122].level).toEqual(2);
+			expect(result[123].level).toEqual(2);
+		});
+		it('aligns the subgroup children within the same level', function () {
+			expect(result[1231].y - result[123].y).toEqual(80);
+			expect(result[1231].level).toEqual(2);
+		});
 	});
 	it('sorts children in rank order', function () {
 		var idea = {
