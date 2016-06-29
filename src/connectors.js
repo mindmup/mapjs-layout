@@ -98,7 +98,6 @@ var Theme = require ('./theme'),
 				dxIncrement = initialRadius * Math.sign(dx),
 				dyIncrement = initialRadius * Math.sign(dy),
 				verticalLine = Math.round(0.5 * dy) - dyIncrement;
-
 			if (initialRadius > Math.abs(dx / 2)) {
 				dyIncrement = verticalLine + Math.round(0.5 * dyIncrement);
 				return {
@@ -273,6 +272,7 @@ var Theme = require ('./theme'),
 		calculatedConnector = calculateConnector(parent, child, theme);
 		result = appendBorderLines(connectorPaths[calculatedConnector.connectionCurveType](calculatedConnector, position, parent, child), calculatedConnector, position);
 		result.color = theme.attributeValue(['connector'], [calculatedConnector.connectionStyle], ['line', 'color'], '#707070');
+		result.width = theme.attributeValue(['connector'], [calculatedConnector.connectionStyle], ['line', 'width'], 2.0);
 		return result;
 	},
 	linkPath = function (parent, child, arrow) {

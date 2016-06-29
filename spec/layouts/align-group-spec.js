@@ -81,6 +81,50 @@ describe('alignGroup', function () {
 		expect(layout.nodes[5]).toEqual({width: 50, height: 20, x: -10, y: 10 });
 
 	});
+	it('ignores collapsed groups', function () {
+		var idea = {
+				'title': 'Mindmup',
+				'id': 1,
+				'ideas': {
+					'2': {
+						'title': 'group',
+						'id': 7,
+						'attr': {
+							'contentLocked': true,
+							'group': true,
+							'collapsed': true
+						},
+						'ideas': {
+							'1': {
+								'title': 'inside another group',
+								'id': 8,
+								'ideas': {}
+							}
+						}
+					},
+					'-1': {
+						'title': 'outside group',
+						'id': 6
+					}
+				},
+				'attr': {
+					'theme': 'topdown'
+				}
+			},
+			layout = {
+				nodes: {
+					1: {width: 50, height: 20, x: -10, y: 10 },
+					7: {width: 20, x: -100},
+					6: {width: 400, x: -200 }
+				},
+				levels: [{xOffset: -10, width: 50}]
+			};
+
+		alignGroup(layout, idea.ideas[2]);
+		expect(layout.nodes[6]).toEqual({width: 400, x: -200});
+		expect(layout.nodes[7]).toEqual({width: 20, x: -100});
+
+	});
 	it('increments vertical offset on nodes within same level', function () {
 		var idea = {
 			id: 5

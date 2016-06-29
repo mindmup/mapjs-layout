@@ -24,7 +24,7 @@ module.exports = function alignGroup(result, rootIdea) {
 			return node.level === rootNode.level && node.id !== rootNode.id;
 		});
 
-	if (childIds.length) {
+	if (childNodes.length) {
 		rootNode.x = minLeft;
 		rootNode.width = maxRight - rootNode.x;
 	}
