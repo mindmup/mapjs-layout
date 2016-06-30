@@ -64,7 +64,7 @@ var Theme = require ('./theme'),
 	connectorPaths = {
 		'quadratic': function (calculatedConnector, position, parent, child) {
 			'use strict';
-			var offset = calculatedConnector.controlPointOffset * (calculatedConnector.from.y - calculatedConnector.to.y),
+			var offset = calculatedConnector.connectorTheme.controlPoint.height * (calculatedConnector.from.y - calculatedConnector.to.y),
 				maxOffset = Math.min(child.height, parent.height) * 1.5;
 			offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
 
@@ -208,11 +208,7 @@ var Theme = require ('./theme'),
 			connectionPositionDefaultTo = theme.attributeValue(['node'], toStyles, ['connections', 'default'], {h: 'nearest-inset', v: 'center'}),
 			connectionPositionFrom = _.extend({}, connectionPositionDefaultFrom, theme.attributeValue(['node'], fromStyles, ['connections', 'from', childPosition], {})),
 			connectionPositionTo = _.extend({}, connectionPositionDefaultTo, theme.attributeValue(['node'], toStyles, ['connections', 'to'], {})),
-			connectionChildStyle = theme.attributeValue(['node'], fromStyles, ['connections', 'childstyle'], false),
-			connectionStyle = connectionChildStyle || theme.attributeValue(['node'], toStyles, ['connections', 'style'], 'default'),
-			connectionCurveType = theme.attributeValue(['connector'], [connectionStyle], ['type'], 'quadratic'),
-			controlPointOffsetFallBack = childPosition === 'horizontal' ? 1 : 1.75,
-			controlPointOffset = theme.attributeValue(['connector'], [connectionStyle], ['controlPoint', childPosition, 'height'], controlPointOffsetFallBack) - 1,
+			connectorTheme = theme.connectorTheme(childPosition, toStyles, fromStyles),
 			fromInset = theme.attributeValue(['node'], fromStyles, ['cornerRadius'], 10),
 			toInset = theme.attributeValue(['node'], toStyles, ['cornerRadius'], 10),
 			borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], ''),
@@ -251,9 +247,7 @@ var Theme = require ('./theme'),
 				x: nodeConnectionPointX[connectionPositionTo.h](child, parent, toInset),
 				y: nodeConnectionPointY[connectionPositionTo.v](child)
 			},
-			controlPointOffset: controlPointOffset,
-			connectionCurveType: connectionCurveType,
-			connectionStyle: connectionStyle,
+			connectorTheme: connectorTheme,
 			nodeUnderline: nodeUnderline,
 			nodeOverline: nodeOverline
 		};
@@ -270,9 +264,9 @@ var Theme = require ('./theme'),
 		position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left + 1) - position.left;
 		position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top + 2;
 		calculatedConnector = calculateConnector(parent, child, theme);
-		result = appendBorderLines(connectorPaths[calculatedConnector.connectionCurveType](calculatedConnector, position, parent, child), calculatedConnector, position);
-		result.color = theme.attributeValue(['connector'], [calculatedConnector.connectionStyle], ['line', 'color'], '#707070');
-		result.width = theme.attributeValue(['connector'], [calculatedConnector.connectionStyle], ['line', 'width'], 2.0);
+		result = appendBorderLines(connectorPaths[calculatedConnector.connectorTheme.type](calculatedConnector, position, parent, child), calculatedConnector, position);
+		result.color = calculatedConnector.connectorTheme.line.color;
+		result.width = calculatedConnector.connectorTheme.line.width;
 		return result;
 	},
 	linkPath = function (parent, child, arrow) {

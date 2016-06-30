@@ -1,26 +1,83 @@
-/*global MAPJS, describe, beforeEach, it, expect*/
+/*global MAPJS, describe, beforeEach, it, expect, spyOn*/
 
 describe('Theme', function () {
 	'use strict';
-	var underTest;
+	var underTest, theme;
 	beforeEach(function () {
-		var theme = {
+		theme = {
 			name: 'Mike',
 			'node': [
 				{
 					'name': 'default',
 					'cornerRadius': 10.0,
 					'backgroundColor': 'transparent'
+
 				},
 				{
 					'name': 'special',
-					'cornerRadius': 1.0
+					'cornerRadius': 1.0,
+					'connections': {
+						childstyle: 'no-connector',
+						style: 'green'
+					}
 				},
 				{
 					'name': 'sharp',
 					'cornerRadius': 0.0
+				},
+				{
+					'name': 'no-line',
+					'connections': {
+						style: 'no-line-curve'
+					}
 				}
 			],
+			connector: {
+				default: {
+					type: 'top-down-s-curve',
+					line: {
+						color: '#070707',
+						width: 2.0
+					}
+				},
+				'no-connector': {
+					type: 'no-connector',
+					line: {
+						color: '#707070',
+						width: 0
+					}
+				},
+				green: {
+					type: 'green-curve',
+					line: {
+						color: '#00FF00',
+						width: 3.0
+					}
+				},
+				'no-connector.green': {
+					type: 'no-connector-green',
+					line: {
+						color: '#FFFF00',
+						width: 4.0
+					}
+				},
+				'no-line-curve': {
+					type: 'no-line-curve'
+				},
+				controlPointCurve: {
+					type: 'control-curve',
+					line: {
+						color: '#00FF00',
+						width: 3.0
+					},
+					controlPoint: {
+						'above': {'width': 0.5, 'height': 2.75},
+						'below': {'width': 0.75, 'height': 0.5},
+						'horizontal': {'width': 2, 'height': 1}
+					}
+				}
+
+			},
 			layout: {
 				spacing: 30
 			}
@@ -113,6 +170,163 @@ describe('Theme', function () {
 					lightColor: '#EEEEEE',
 					darkColor: '#000000'
 				}
+			});
+		});
+	});
+	describe('connectorControlPoint', function () {
+		it('should return the default horizontal connector if no style provided', function () {
+			expect(underTest.connectorControlPoint('horizontal')).toEqual({'width': 0, 'height': 1});
+		});
+		it('should return the default horizontal connector if no style provided', function () {
+			expect(underTest.connectorControlPoint('above')).toEqual({'width': 0, 'height': 1.75});
+		});
+
+		it('should return the default horizontal connector if no control point is configured for the connector style', function () {
+			expect(underTest.connectorControlPoint('horizontal', 'green')).toEqual({'width': 0, 'height': 1});
+		});
+		it('should return the default non-horizontal connector if no control point is configured for the connector style', function () {
+			expect(underTest.connectorControlPoint('above', 'green')).toEqual({'width': 0, 'height': 1.75});
+		});
+		['above', 'below'].forEach(function (pos) {
+			it('should return the default ' + pos + ' connector if no style provided', function () {
+				expect(underTest.connectorControlPoint(pos)).toEqual({'width': 0, 'height': 1.75});
+			});
+		});
+		it('should return the configured controlPoint', function () {
+			expect(underTest.connectorControlPoint('horizontal', 'controlPointCurve')).toEqual({'width': 2, 'height': 1});
+			expect(underTest.connectorControlPoint('above', 'controlPointCurve')).toEqual({'width': 0.5, 'height': 2.75});
+			expect(underTest.connectorControlPoint('below', 'controlPointCurve')).toEqual({'width': 0.75, 'height': 0.5});
+		});
+		it('should return the default non-horizontal connector if unconfigured childPosition supplied', function () {
+			expect(underTest.connectorControlPoint('outside', 'controlPointCurve')).toEqual({'width': 0, 'height': 1.75});
+		});
+
+	});
+	describe('connectorTheme', function () {
+		var childPosition;
+		beforeEach(function () {
+			spyOn(underTest, 'connectorControlPoint').and.returnValue('testControlPoint');
+			childPosition = 'above';
+		});
+		it('should return default line if not configured', function () {
+			expect(underTest.connectorTheme(childPosition, ['no-line'])).toEqual({
+				type: 'no-line-curve',
+				controlPoint: 'testControlPoint',
+				line: {
+					color: '#707070',
+					width: 2.0
+				}
+			});
+		});
+		describe('should return the default style', function () {
+			it('should default to a horizontal child position and default style to calculate controlPoint', function () {
+				underTest.connectorTheme();
+				expect(underTest.connectorControlPoint).toHaveBeenCalledWith('horizontal', 'default');
+			});
+			it('when childStyles is undefined', function () {
+				expect(underTest.connectorTheme()).toEqual({
+					type: 'top-down-s-curve',
+					controlPoint: 'testControlPoint',
+					line: {
+						color: '#070707',
+						width: 2.0
+					}
+				});
+
+			});
+			it('when childStyles is empty', function () {
+				expect(underTest.connectorTheme(childPosition, [])).toEqual({
+					type: 'top-down-s-curve',
+					controlPoint: 'testControlPoint',
+					line: {
+						color: '#070707',
+						width: 2.0
+					}
+				});
+			});
+			it('when childStyles is undefined and there is no default style configured', function () {
+				delete theme.connector.default;
+				expect(underTest.connectorTheme()).toEqual({
+					type: 'quadratic',
+					controlPoint: 'testControlPoint',
+					line: {
+						color: '#707070',
+						width: 2.0
+					}
+				});
+
+			});
+		});
+		[['no parent', undefined], ['a parent with no child style configured', ['sharp']]].forEach(function (args) {
+			describe('when the node has ' + args[0], function () {
+				it('should use the child connector style to calculate the control point', function () {
+					underTest.connectorTheme(childPosition, ['special'], args[1]);
+					expect(underTest.connectorControlPoint).toHaveBeenCalledWith('above', 'green');
+				});
+				it('should return the default connector style when no connector style configured', function () {
+					expect(underTest.connectorTheme(childPosition, ['sharp'], args[1])).toEqual({
+						type: 'top-down-s-curve',
+						controlPoint: 'testControlPoint',
+						line: {
+							color: '#070707',
+							width: 2.0
+						}
+					});
+				});
+				it('should return the hard coded default connector style when the node has no connector style configured and there is no default style configured',  function () {
+					delete theme.connector.default;
+
+					expect(underTest.connectorTheme(childPosition, ['sharp'], args[1])).toEqual({
+						type: 'quadratic',
+						controlPoint: 'testControlPoint',
+						line: {
+							color: '#707070',
+							width: 2.0
+						}
+					});
+				});
+				it('should return the configured connector style when the node has a connector style configured', function () {
+					expect(underTest.connectorTheme(childPosition, ['special'], args[1])).toEqual({
+						type: 'green-curve',
+						controlPoint: 'testControlPoint',
+						line: {
+							color: '#00FF00',
+							width: 3.0
+						}
+					});
+				});
+			});
+		});
+		describe('when the node has a parent with a child style configured', function () {
+			it('should use the combined connector style to calculate the control point', function () {
+				underTest.connectorTheme(childPosition, ['special'], ['special']);
+				expect(underTest.connectorControlPoint).toHaveBeenCalledWith('above', 'no-connector.green');
+			});
+			it('should use the parent.childstyle connector style to calculate the control point', function () {
+				underTest.connectorTheme(childPosition, ['sharp'], ['special']);
+				expect(underTest.connectorControlPoint).toHaveBeenCalledWith('above', 'no-connector');
+			});
+
+			it('should return a connector style that matches parentchildstyle.childstyle if it exists', function () {
+				expect(underTest.connectorTheme(childPosition, ['special'], ['special'])).toEqual({
+					type: 'no-connector-green',
+					controlPoint: 'testControlPoint',
+					line: {
+						color: '#FFFF00',
+						width: 4.0
+					}
+				});
+			});
+
+			it('should return a connector style that matches parentchildstyle if parentchildstyle.childstyle does not exist', function () {
+				expect(underTest.connectorTheme(childPosition, ['sharp'], ['special'])).toEqual({
+					type: 'no-connector',
+					controlPoint: 'testControlPoint',
+					line: {
+						color: '#707070',
+						width: 0
+					}
+				});
 			});
 		});
 	});

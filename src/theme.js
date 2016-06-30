@@ -34,7 +34,7 @@ module.exports = function Theme(themeJson) {
 		if (!rootElement) {
 			return fallback;
 		}
-		if (styles.length) {
+		if (styles && styles.length) {
 			styles.slice(0).reverse().forEach(function (style) {
 				merged = _.extend(merged, rootElement[style]);
 			});
@@ -93,6 +93,37 @@ module.exports = function Theme(themeJson) {
 		result.lineColor = getElementForPath(merged, ['border', 'line', 'color']) || result.lineColor;
 		return result;
 	};
+
+	self.connectorControlPoint = function (childPosition, connectorStyle) {
+		var controlPointOffset = childPosition === 'horizontal' ? 1 : 1.75,
+			defaultControlPoint = {'width': 0, 'height': controlPointOffset},
+			configuredControlPoint = connectorStyle && getElementForPath(themeDictionary, ['connector', connectorStyle, 'controlPoint', childPosition]);
+
+		return configuredControlPoint || defaultControlPoint;
+	};
+	self.connectorTheme = function (childPosition, childStyles, parentStyles) {
+		var position = childPosition || 'horizontal',
+			childConnectorStyle = self.attributeValue(['node'], childStyles, ['connections', 'style'], 'default'),
+			parentConnectorStyle = parentStyles && self.attributeValue(['node'], parentStyles, ['connections', 'childstyle'], false),
+			childConnector = getElementForPath(themeDictionary, ['connector', childConnectorStyle]),
+			parentConnector = parentConnectorStyle && getElementForPath(themeDictionary, ['connector', parentConnectorStyle]),
+			combinedStyle = parentConnectorStyle && (parentConnectorStyle + '.' + childConnectorStyle),
+			combinedConnector = combinedStyle &&  getElementForPath(themeDictionary, ['connector', combinedStyle]),
+			connectorStyle  = (combinedConnector && combinedStyle) || (parentConnector && parentConnectorStyle) || childConnectorStyle || 'default',
+			controlPoint = self.connectorControlPoint(position, connectorStyle),
+			connectorDefaults = {
+				type: 'quadratic',
+				line: {
+					color: '#707070',
+					width: 2.0
+				}
+			},
+			returnedConnector =  combinedConnector || parentConnector || childConnector || connectorDefaults;
+		returnedConnector.controlPoint = controlPoint;
+		returnedConnector.line = returnedConnector.line || connectorDefaults.line;
+		return returnedConnector;
+	};
+
 	if (themeDictionary && themeDictionary.node && themeDictionary.node.forEach) {
 		themeDictionary.nodeArray = themeDictionary.node;
 		themeDictionary.node = {};
