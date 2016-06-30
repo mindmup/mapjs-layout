@@ -99,7 +99,7 @@ module.exports = function Theme(themeJson) {
 			defaultControlPoint = {'width': 0, 'height': controlPointOffset},
 			configuredControlPoint = connectorStyle && getElementForPath(themeDictionary, ['connector', connectorStyle, 'controlPoint', childPosition]);
 
-		return configuredControlPoint || defaultControlPoint;
+		return (configuredControlPoint && _.extend({}, configuredControlPoint)) || defaultControlPoint;
 	};
 	self.connectorTheme = function (childPosition, childStyles, parentStyles) {
 		var position = childPosition || 'horizontal',
@@ -119,6 +119,7 @@ module.exports = function Theme(themeJson) {
 				}
 			},
 			returnedConnector =  combinedConnector || parentConnector || childConnector || connectorDefaults;
+		returnedConnector = _.extend({}, returnedConnector);
 		returnedConnector.controlPoint = controlPoint;
 		returnedConnector.line = returnedConnector.line || connectorDefaults.line;
 		return returnedConnector;
