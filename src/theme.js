@@ -115,7 +115,7 @@ module.exports = function Theme(themeJson) {
 				type: 'quadratic',
 				line: {
 					color: '#707070',
-					width: 2.0
+					width: 1.0
 				}
 			},
 			returnedConnector =  combinedConnector || parentConnector || childConnector || connectorDefaults;

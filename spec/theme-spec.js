@@ -214,7 +214,7 @@ describe('Theme', function () {
 				controlPoint: 'testControlPoint',
 				line: {
 					color: '#707070',
-					width: 2.0
+					width: 1.0
 				}
 			});
 		});
@@ -251,7 +251,7 @@ describe('Theme', function () {
 					controlPoint: 'testControlPoint',
 					line: {
 						color: '#707070',
-						width: 2.0
+						width: 1.0
 					}
 				});
 
@@ -281,7 +281,7 @@ describe('Theme', function () {
 						controlPoint: 'testControlPoint',
 						line: {
 							color: '#707070',
-							width: 2.0
+							width: 1.0
 						}
 					});
 				});

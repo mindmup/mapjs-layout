@@ -42,7 +42,7 @@ describe('MAPJS.Connectors', function () {
 					d: 'M50,20Q50,202 140,142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					color: '#707070',
-					width: 2
+					width: 1
 				});
 			});
 		});
