@@ -5,12 +5,12 @@ var _ = require('underscore'),
 	combineVerticalSubtrees = require('./combine-vertical-subtrees');
 module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 	'use strict';
-	var toNode = function (idea, level) {
-			var dimensions = dimensionProvider(idea, level);
-			return _.extend({level: level, verticalOffset: 0}, dimensions, _.pick(idea, ['id', 'title', 'attr']));
-		},
-		isGroup = function (node) {
+	var isGroup = function (node) {
 			return node.attr && node.attr.group;
+		},
+		toNode = function (idea, level) {
+			var dimensions = dimensionProvider(idea, level);
+			return _.extend({level: level, verticalOffset: 0, title: isGroup(idea) ? '' : idea.title}, dimensions, _.pick(idea, ['id', 'attr']));
 		},
 		traverse = function (idea, predicate, level) {
 			var childResults = {},

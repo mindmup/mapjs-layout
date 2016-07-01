@@ -367,5 +367,26 @@ describe('layouts/top-down', function () {
 		result = layout(contentAggregate, dimensionProvider, {h: 30});
 		expect(result[7]).toBeTruthy();
 	});
-
+	it('removes titles from group nodes', function () {
+		var contentAggregate = {
+				id: 7,
+				title: '1',
+				attr: { group: 'standard' },
+				ideas: {}
+			},
+			result;
+		result = layout(contentAggregate, dimensionProvider, {h: 30});
+		expect(result[7].title).toBe('');
+	});
+	it('does not remove titles from non-group nodes', function () {
+		var contentAggregate = {
+				id: 7,
+				title: '1',
+				attr: { xgroup: 'standard' },
+				ideas: {}
+			},
+			result;
+		result = layout(contentAggregate, dimensionProvider, {h: 30});
+		expect(result[7].title).toBe('1');
+	});
 });

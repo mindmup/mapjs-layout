@@ -9,6 +9,7 @@ module.exports = function nodeToBox(node) {
 		top: node.y,
 		width: node.width,
 		height: node.height,
-		level: node.level
+		level: node.level,
+		styles: node.styles || ['default']
 	};
 };

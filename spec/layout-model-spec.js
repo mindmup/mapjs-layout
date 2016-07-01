@@ -69,7 +69,8 @@ describe('MAPJS.LayoutModel', function () {
 				height: 49,
 				level: 2,
 				left: -20,
-				top: 62
+				top: 62,
+				styles: ['default']
 			});
 		});
 		it('should return falsy for invalid id', function () {
