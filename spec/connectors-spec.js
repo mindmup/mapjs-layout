@@ -39,7 +39,7 @@ describe('MAPJS.Connectors', function () {
 			it('draws a quadratic curve between the centers of two nodes', function () {
 				var path = MAPJS.Connectors.themePath(parent, child);
 				expect(path).toEqual({
-					d: 'M50,20Q50,202 140,142',
+					d: 'M50,20Q50,190 140,142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					color: '#707070',
 					width: 1

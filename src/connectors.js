@@ -65,7 +65,7 @@ var Theme = require ('./theme'),
 		'quadratic': function (calculatedConnector, position, parent, child) {
 			'use strict';
 			var offset = calculatedConnector.connectorTheme.controlPoint.height * (calculatedConnector.from.y - calculatedConnector.to.y),
-				maxOffset = Math.min(child.height, parent.height) * 1.5;
+				maxOffset = Math.min(child.height, parent.height) * 1.2;
 			offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
 
 			return {
