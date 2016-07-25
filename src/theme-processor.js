@@ -112,7 +112,8 @@ module.exports = function ThemeProcessor() {
 
 				},
 				appendDecorationStyles = function (styleSelector, nodeStyle) {
-					var style = nodeStyle.decorations;
+					var style = nodeStyle.decorations,
+						margin = nodeStyle.text && nodeStyle.text.margin || 0;
 					if (!style) {
 						return;
 					}
@@ -128,7 +129,7 @@ module.exports = function ThemeProcessor() {
 						}
 						result.push(style.edge);
 						result.push(':-');
-						result.push (style.overlap ? Math.round(style.height / 2) : style.height);
+						result.push (style.overlap ? Math.round(style.height / 2) + margin : style.height);
 						result.push('px;');
 					} else if (style.edge === 'left' || style.edge === 'right') {
 						result.push(style.edge === 'left' ?  'right' : 'left');
