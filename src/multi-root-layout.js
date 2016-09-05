@@ -3,19 +3,20 @@ var _ = require('underscore');
 module.exports = function MultiRootLayout() {
 	'use strict';
 	var self = this,
-		mergeNodes = function (rootLayout, dx, rootId) {
+		mergeNodes = function (rootLayout, dx, rootIdea) {
 			_.each(rootLayout, function (node) {
 				node.x = node.x + dx;
-				node.rootId = rootId;
+				node.rootId = rootIdea.id;
+				node.y = node.y + ((rootIdea.attr && rootIdea.attr.position && rootIdea.attr.position[1]) || 0);
 			});
 		},
-		toStoredLayout = function (rootLayout, rootId) {
+		toStoredLayout = function (rootLayout, rootIdea) {
 			var dimensions = {
 				minX: 0,
 				maxX: 0,
 				minY: 0,
 				maxY: 0,
-				rootId: rootId,
+				rootIdea: rootIdea,
 				rootLayout: rootLayout
 			};
 			_.each(rootLayout, function (node) {
@@ -38,8 +39,8 @@ module.exports = function MultiRootLayout() {
 		},
 		combinedLayout = [];
 
-	self.appendRootNodeLayout = function (rootLayout, rootId) {
-		combinedLayout.push(toStoredLayout(rootLayout, rootId));
+	self.appendRootNodeLayout = function (rootLayout, rootIdea) {
+		combinedLayout.push(toStoredLayout(rootLayout, rootIdea));
 	};
 	self.getCombinedLayout = function (margin) {
 		var totalWidth, xOffset,
@@ -51,7 +52,7 @@ module.exports = function MultiRootLayout() {
 		xOffset = totalWidth * -0.5;
 		combinedLayout.forEach(function (storedRootLayout) {
 			var dx = xOffset - storedRootLayout.minX;
-			mergeNodes(storedRootLayout.rootLayout, dx, storedRootLayout.rootId);
+			mergeNodes(storedRootLayout.rootLayout, dx, storedRootLayout.rootIdea);
 			result = _.extend(result, storedRootLayout.rootLayout);
 			xOffset = xOffset + storedRootLayout.width + margin;
 		});

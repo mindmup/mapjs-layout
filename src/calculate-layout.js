@@ -30,7 +30,7 @@ module.exports = function calculateLayout(idea, dimensionProvider, optional) {
 	Object.keys(idea.ideas).forEach(function (rank) {
 		var rootIdea = idea.ideas[rank],
 			rootResult = calculator(rootIdea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
-		multiRootLayout.appendRootNodeLayout(rootResult, rootIdea.id);
+		multiRootLayout.appendRootNodeLayout(rootResult, rootIdea);
 	});
 
 	result = multiRootLayout.getCombinedLayout(10);
