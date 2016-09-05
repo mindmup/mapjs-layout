@@ -31,7 +31,7 @@ describe('MAPJS.LayoutModel', function () {
 			expect(underTest.getOrientation()).toEqual('all-over-the-place');
 		});
 	});
-	describe('getNode', function () {
+	describe('getNodeBox', function () {
 		beforeEach(function () {
 			layout = {
 				nodes: {
@@ -136,6 +136,48 @@ describe('MAPJS.LayoutModel', function () {
 		it('should return falsy undefined layout', function () {
 			underTest = new MAPJS.LayoutModel();
 			expect(underTest.getNode(4)).toBeFalsy();
+		});
+	});
+	describe('isRootNode', function () {
+		beforeEach(function () {
+			layout = {
+				nodes: {
+					1: {
+						id: 1,
+						width: 30,
+						height: 84,
+						level: 1,
+						x: -15,
+						y: -42
+					},
+					2: {
+						id: 2,
+						width: 40,
+						height: 49,
+						level: 2,
+						x: -20,
+						y: 62
+					},
+					3: {
+						id: 3,
+						width: 30,
+						height: 76,
+						level: 2,
+						x: -15,
+						y: -138
+					}
+				}
+			};
+			underTest.setLayout(layout);
+		});
+		it('returns false if node is not in the layout', function () {
+			expect(underTest.isRootNode(11)).toBeFalsy();
+		});
+		it('returns true if node is in the layout with level 1', function () {
+			expect(underTest.isRootNode(1)).toBeTruthy();
+		});
+		it('returns false if node is in the layout with level > 1', function () {
+			expect(underTest.isRootNode(3)).toBeFalsy();
 		});
 	});
 	describe('vertical relationships', function () {

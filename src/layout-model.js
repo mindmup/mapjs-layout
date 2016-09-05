@@ -112,6 +112,9 @@ module.exports = function LayoutModel(emptyLayout) {
 	self.getNode = function (nodeId) {
 		return (layout && layout.nodes && layout.nodes[nodeId]);
 	};
+	self.isRootNode = function (nodeId) {
+		return (layout && layout.nodes && layout.nodes[nodeId] && layout.nodes[nodeId].level === 1);
+	};
 	self.getNodeBox = function (nodeId) {
 		return nodeToBox(self.getNode(nodeId));
 	};

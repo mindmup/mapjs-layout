@@ -80,6 +80,43 @@ describe('MAPJS.calculateLayout', function () {
 			expect(result.nodes[1].styles).toEqual(['attr_group_blue', 'attr_group', 'level_3', 'default']);
 			expect(result.nodes[4].styles).toEqual(['level_6', 'default']);
 		});
+		it('should attach root node IDs', function () {
+			var result;
+			idea = {
+					ideas: {
+						1: {
+							title: 'parent',
+							id: 1
+						},
+						2: {
+							title: 'parent2',
+							id: 2
+						}
+					}
+				};
+			layouts.standard.and.callFake(function (idea) {
+				if (idea.id === 1) {
+					return {
+						1: {level: 1},
+						11: {level: 2},
+						111: {level: 3}
+					};
+				} else {
+					return {
+						2: {level: 1},
+						21: {level: 2},
+						211: {level: 3}
+					};
+				}
+			});
+			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			expect(result.nodes[1].rootId).toEqual(1);
+			expect(result.nodes[11].rootId).toEqual(1);
+			expect(result.nodes[111].rootId).toEqual(1);
+			expect(result.nodes[2].rootId).toEqual(2);
+			expect(result.nodes[21].rootId).toEqual(2);
+			expect(result.nodes[211].rootId).toEqual(2);
+		});
 		it('should include the theme id from the idea', function () {
 			var idea = {
 					attr: { theme: 'blue' },

@@ -3,17 +3,19 @@ var _ = require('underscore');
 module.exports = function MultiRootLayout() {
 	'use strict';
 	var self = this,
-		shiftCoordinates = function (rootLayout, dx) {
+		mergeNodes = function (rootLayout, dx, rootId) {
 			_.each(rootLayout, function (node) {
 				node.x = node.x + dx;
+				node.rootId = rootId;
 			});
 		},
-		toStoredLayout = function (rootLayout) {
+		toStoredLayout = function (rootLayout, rootId) {
 			var dimensions = {
 				minX: 0,
 				maxX: 0,
 				minY: 0,
 				maxY: 0,
+				rootId: rootId,
 				rootLayout: rootLayout
 			};
 			_.each(rootLayout, function (node) {
@@ -36,8 +38,8 @@ module.exports = function MultiRootLayout() {
 		},
 		combinedLayout = [];
 
-	self.appendRootNodeLayout = function (rootLayout) {
-		combinedLayout.push(toStoredLayout(rootLayout));
+	self.appendRootNodeLayout = function (rootLayout, rootId) {
+		combinedLayout.push(toStoredLayout(rootLayout, rootId));
 	};
 	self.getCombinedLayout = function (margin) {
 		var totalWidth, xOffset,
@@ -49,7 +51,7 @@ module.exports = function MultiRootLayout() {
 		xOffset = totalWidth * -0.5;
 		combinedLayout.forEach(function (storedRootLayout) {
 			var dx = xOffset - storedRootLayout.minX;
-			shiftCoordinates(storedRootLayout.rootLayout, dx);
+			mergeNodes(storedRootLayout.rootLayout, dx, storedRootLayout.rootId);
 			result = _.extend(result, storedRootLayout.rootLayout);
 			xOffset = xOffset + storedRootLayout.width + margin;
 		});
