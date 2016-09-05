@@ -4,7 +4,11 @@ describe('MAPJS.calculateLayout', function () {
 	var idea, dimensionProvider, layouts, optional, defaultMargin;
 	beforeEach(function () {
 		defaultMargin = {h: 20, v: 20};
-		idea = {};
+		idea = {
+			ideas: {
+				1: {}
+			}
+		};
 		dimensionProvider = {};
 
 		layouts = {
@@ -21,38 +25,42 @@ describe('MAPJS.calculateLayout', function () {
 	describe('when the theme is not provided', function () {
 		it('should use the standard layout and margin', function () {
 			MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, defaultMargin);
+			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, defaultMargin);
 		});
 	});
 	describe('when the theme is provided', function () {
 		it('should use the orientation to calculate the layout', function () {
 			optional.theme = new MAPJS.Theme({layout: {orientation: 'top-down'}});
 			MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(layouts['top-down']).toHaveBeenCalledWith(idea, dimensionProvider, defaultMargin);
+			expect(layouts['top-down']).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, defaultMargin);
 		});
 		it('should use the spacing as a margin', function () {
 			optional.theme = new MAPJS.Theme({layout: {spacing: 30}});
 			MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, {h: 30, v: 30});
+			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, {h: 30, v: 30});
 		});
 		it('should pass margin when it is an object with h and v attributes', function () {
 			optional.theme = new MAPJS.Theme({layout: {spacing: {h: 30, v: 50}}});
 			MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, {h: 30, v: 50});
+			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, {h: 30, v: 50});
 
 		});
 		it('should use the standard layout to calculate the layout when orientation is not recognised', function () {
 			optional.theme = new MAPJS.Theme({layout: {orientation: 'not-top-down'}});
 			MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, defaultMargin);
+			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, defaultMargin);
 			expect(layouts['top-down']).not.toHaveBeenCalled();
 		});
 	});
 	describe('common layout info', function () {
 		it('should include the orientation from the theme', function () {
 			var idea = {
-					title: 'parent',
-					id: 1
+					ideas: {
+						1: {
+							title: 'parent',
+							id: 1
+						}
+					}
 				},
 				result;
 			layouts.standard.and.returnValue({
@@ -74,9 +82,13 @@ describe('MAPJS.calculateLayout', function () {
 		});
 		it('should include the theme id from the idea', function () {
 			var idea = {
-					title: 'parent',
-					id: 1,
-					attr: { theme: 'blue' }
+					attr: { theme: 'blue' },
+					ideas: {
+						1: {
+							title: 'parent',
+							id: 1
+						}
+					}
 				},
 				result;
 			layouts.standard.and.returnValue({
@@ -88,18 +100,22 @@ describe('MAPJS.calculateLayout', function () {
 		});
 		it('should include connectors regardless of the layout', function () {
 			var idea = {
-					title: 'parent',
-					id: 1,
 					ideas: {
-						5: {
-							title: 'second child',
-							id: 12,
-							ideas: { 1: { id: 112, title: 'XYZ' } }
-						},
-						4: {
-							title: 'child',
-							id: 11,
-							ideas: { 1: { id: 111, title: 'XYZ' } }
+						1: {
+							title: 'parent',
+							id: 1,
+							ideas: {
+								5: {
+									title: 'second child',
+									id: 12,
+									ideas: { 1: { id: 112, title: 'XYZ' } }
+								},
+								4: {
+									title: 'child',
+									id: 11,
+									ideas: { 1: { id: 111, title: 'XYZ' } }
+								}
+							}
 						}
 					}
 				},
@@ -123,17 +139,21 @@ describe('MAPJS.calculateLayout', function () {
 		});
 		it('should not include links between collapsed nodes', function () {
 			var idea = {
-					id: 1,
-					title: 'first',
-					attr: { collapsed: true },
 					ideas: {
-						100: {
-							id: 2,
-							title: 'second'
-						},
-						200: {
-							id: 3,
-							title: 'third'
+						1: {
+							id: 1,
+							title: 'first',
+							attr: { collapsed: true },
+							ideas: {
+								100: {
+									id: 2,
+									title: 'second'
+								},
+								200: {
+									id: 3,
+									title: 'third'
+								}
+							}
 						}
 					},
 					links: [{
@@ -149,16 +169,20 @@ describe('MAPJS.calculateLayout', function () {
 		});
 		it('should include links between non-collapsed nodes', function () {
 			var idea = {
-					id: 1,
-					title: 'first',
 					ideas: {
-						100: {
-							id: 2,
-							title: 'second'
-						},
-						200: {
-							id: 3,
-							title: 'third'
+						1: {
+							id: 1,
+							title: 'first',
+							ideas: {
+								100: {
+									id: 2,
+									title: 'second'
+								},
+								200: {
+									id: 3,
+									title: 'third'
+								}
+							}
 						}
 					},
 					links: [{

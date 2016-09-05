@@ -5,18 +5,22 @@ describe('extractConnectors', function () {
 	var visibleNodes, idea;
 	beforeEach(function () {
 		idea = {
-			title: 'parent',
-			id: 1,
 			ideas: {
-				5: {
-					title: 'second child',
-					id: 12,
-					ideas: { 1: { id: 112, title: 'XYZ' } }
-				},
-				4: {
-					title: 'child',
-					id: 11,
-					ideas: { 1: { id: 111, title: 'XYZ' } }
+				1: {
+					title: 'parent',
+					id: 1,
+					ideas: {
+						5: {
+							title: 'second child',
+							id: 12,
+							ideas: { 1: { id: 112, title: 'XYZ' } }
+						},
+						4: {
+							title: 'child',
+							id: 11,
+							ideas: { 1: { id: 111, title: 'XYZ' } }
+						}
+					}
 				}
 			}
 		};

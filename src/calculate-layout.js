@@ -2,6 +2,7 @@
 var Theme = require('./theme'),
 	extractConnectors = require('./layouts/extract-connectors'),
 	layoutLinks = require('./layouts/links'),
+	MultiRootLayout = require('./multi-root-layout'),
 	defaultLayouts = {
 		'standard': require('./layouts/standard'),
 		'top-down': require('./layouts/top-down')
@@ -21,11 +22,19 @@ module.exports = function calculateLayout(idea, dimensionProvider, optional) {
 		layouts = (optional && optional.layouts) || defaultLayouts,
 		theme = (optional && optional.theme) || new Theme({}),
 		calculator,
+		multiRootLayout = new MultiRootLayout(),
 		result;
 	margin = theme.attributeValue(['layout'], [], ['spacing'], {h: 20, v: 20});
 	orientation = theme.attributeValue(['layout'], [], ['orientation'], 'standard');
 	calculator = layouts[orientation] || layouts.standard;
-	result = calculator(idea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
+	Object.keys(idea.ideas).forEach(function (rank) {
+		var rootIdea = idea.ideas[rank],
+			rootResult = calculator(rootIdea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
+		multiRootLayout.appendRootNodeLayout(rootResult);
+	});
+
+	result = multiRootLayout.getCombinedLayout(10);
+	// result = calculator(idea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
 	return {
 		orientation: orientation,
 		nodes: attachStyles(result, theme),
