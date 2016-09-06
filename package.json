@@ -25,6 +25,7 @@
   },
   "main": "src/mapjs-layout.js",
   "dependencies": {
+    "polybooljs": "^1.1.1",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

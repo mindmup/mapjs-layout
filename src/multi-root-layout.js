@@ -1,12 +1,13 @@
 /*global module, require*/
 var _ = require('underscore');
+
 module.exports = function MultiRootLayout() {
 	'use strict';
 	var self = this,
-		mergeNodes = function (storedLayout, dx, dy) {
+		mergeNodes = function (storedLayout, offset) {
 			_.each(storedLayout.rootLayout, function (node) {
-				node.x = node.x + dx;
-				node.y = node.y + dy;
+				node.x = node.x + offset.x;
+				node.y = node.y + offset.y;
 				node.rootId = storedLayout.rootIdea.id;
 			});
 		},
@@ -45,7 +46,7 @@ module.exports = function MultiRootLayout() {
 			var rootPosition = globalIdeaTopLeftPosition(storedLayout.rootIdea);
 			return {
 				x: (rootPosition.x + storedLayout.rootNode.width / 2),
-				y: (rootPosition.y + storedLayout.rootNode.height / 2),
+				y: (rootPosition.y + storedLayout.rootNode.height / 2)
 			};
 		},
 		positionedLayouts = [],
@@ -70,32 +71,32 @@ module.exports = function MultiRootLayout() {
 				return Math.pow(rootCenter.x - desiredRootCenter.x, 2) + Math.pow(rootCenter.y - desiredRootCenter.y, 2);
 			},
 			sortedPositionedLayouts = _.sortBy(positionedLayouts, rootDistance),
-			positionedLayouts = [],
-			positionLayout = function (storedLayout, desiredPosition) {
-				if (!storedLayout) {
+			placedLayouts = [],
+			layoutOffsetWithoutOverlap = function (storedLayout) {
+				var globalRootNodePosition = globalIdeaTopLeftPosition(storedLayout.rootIdea);
+
+				return {
+					x: globalRootNodePosition.x - storedLayout.rootNode.x,
+					y: globalRootNodePosition.y - storedLayout.rootNode.y
+				};
+			},
+			positionLayout = function (storedLayout) {
+				var offset;
+				if (!storedLayout || _.contains(placedLayouts, storedLayout)) {
 					return;
 				}
-				desiredPostion = desiredPosition ||  globalIdeaTopLeftPosition(storedLayout.rootIdea);
 				/* must not overlap previously positioned layouts*/
-				desiredPosition = adjustPositionWithoutOverlap(desiredPosition, storedLayout);
-				mergeNodes(storedLayout,
-					desiredPosition.x - storedLayout.rootNode.x,
-					desiredPosition.y - storedLayout.rootNode.y
-				);
-				positionedLayouts.push(storedLayout);
+				offset = layoutOffsetWithoutOverlap(storedLayout, storedLayout);
+				mergeNodes(storedLayout, offset);
+				placedLayouts.push(storedLayout);
 			};
-
-		positionLayout(mostRecentlyPositioned);
-		sortedPositionedLayouts.forEach(function (storedLayout) {
-			positionLayout(storedLayout);
-		});
-
-
 		if (!margin) {
 			throw 'invalid-args';
 		}
-		unpositionedLayouts.forEach(function (storedRootLayout) {
-		});
+
+		positionLayout(mostRecentlyPositioned);
+		sortedPositionedLayouts.forEach(positionLayout);
+		unpositionedLayouts.forEach(positionLayout);
 		return result;
 	};
 };
