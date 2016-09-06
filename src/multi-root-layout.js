@@ -70,15 +70,19 @@ module.exports = function MultiRootLayout() {
 				return Math.pow(rootCenter.x - desiredRootCenter.x, 2) + Math.pow(rootCenter.y - desiredRootCenter.y, 2);
 			},
 			sortedPositionedLayouts = _.sortBy(positionedLayouts, rootDistance),
+			positionedLayouts = [],
 			positionLayout = function (storedLayout, desiredPosition) {
 				if (!storedLayout) {
 					return;
 				}
 				desiredPostion = desiredPosition ||  globalIdeaTopLeftPosition(storedLayout.rootIdea);
+				/* must not overlap previously positioned layouts*/
+				desiredPosition = adjustPositionWithoutOverlap(desiredPosition, storedLayout);
 				mergeNodes(storedLayout,
 					desiredPosition.x - storedLayout.rootNode.x,
 					desiredPosition.y - storedLayout.rootNode.y
 				);
+				positionedLayouts.push(storedLayout);
 			};
 
 		positionLayout(mostRecentlyPositioned);
