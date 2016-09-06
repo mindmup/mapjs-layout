@@ -3,12 +3,20 @@ var _ = require('underscore');
 module.exports = function MultiRootLayout() {
 	'use strict';
 	var self = this,
-		mergeNodes = function (rootLayout, dx, rootIdea) {
-			_.each(rootLayout, function (node) {
+		mergeNodes = function (storedLayout, dx, dy) {
+			_.each(storedLayout.rootLayout, function (node) {
 				node.x = node.x + dx;
-				node.rootId = rootIdea.id;
-				node.y = node.y + ((rootIdea.attr && rootIdea.attr.position && rootIdea.attr.position[1]) || 0);
+				node.y = node.y + dy;
+				node.rootId = storedLayout.rootIdea.id;
 			});
+		},
+		globalIdeaTopLeftPosition = function (idea) {
+			var positionArray = (idea && idea.attr && idea.attr.position) || [0, 0, 0];
+			return {
+				x: positionArray[0],
+				y: positionArray[1],
+				priority: positionArray[2]
+			};
 		},
 		toStoredLayout = function (rootLayout, rootIdea) {
 			var dimensions = {
@@ -17,6 +25,7 @@ module.exports = function MultiRootLayout() {
 				minY: 0,
 				maxY: 0,
 				rootIdea: rootIdea,
+				rootNode: rootLayout[rootIdea.id],
 				rootLayout: rootLayout
 			};
 			_.each(rootLayout, function (node) {
@@ -29,32 +38,59 @@ module.exports = function MultiRootLayout() {
 			dimensions.width = dimensions.maxX - dimensions.minX;
 			return dimensions;
 		},
-		calcTotalWidth = function (margin) {
-			var totalWidth = 0;
-			combinedLayout.forEach(function (storedRootLayout) {
-				totalWidth = totalWidth + storedRootLayout.width;
-			});
-			totalWidth = totalWidth + (margin * (combinedLayout.length - 1));
-			return totalWidth;
+		isPositioned = function (rootIdea) {
+			return globalIdeaTopLeftPosition(rootIdea).priority;
 		},
-		combinedLayout = [];
+		calcDesiredRootNodeCenter = function (storedLayout) {
+			var rootPosition = globalIdeaTopLeftPosition(storedLayout.rootIdea);
+			return {
+				x: (rootPosition.x + storedLayout.rootNode.width / 2),
+				y: (rootPosition.y + storedLayout.rootNode.height / 2),
+			};
+		},
+		positionedLayouts = [],
+		unpositionedLayouts = [];
 
 	self.appendRootNodeLayout = function (rootLayout, rootIdea) {
-		combinedLayout.push(toStoredLayout(rootLayout, rootIdea));
+		var storedLayout = toStoredLayout(rootLayout, rootIdea);
+		if (isPositioned(rootIdea)) {
+			positionedLayouts.push(storedLayout);
+		} else {
+			unpositionedLayouts.push(storedLayout);
+		}
 	};
 	self.getCombinedLayout = function (margin) {
-		var totalWidth, xOffset,
-			result = {};
+		var result = {},
+			mostRecentlyPositioned = positionedLayouts.length && _.max(positionedLayouts, function (layout) {
+				return globalIdeaTopLeftPosition(layout.rootIdea).priority;
+			}),
+			desiredRootCenter = mostRecentlyPositioned && calcDesiredRootNodeCenter(mostRecentlyPositioned),
+			rootDistance = function (storedLayout) {
+				var rootCenter = calcDesiredRootNodeCenter(storedLayout);
+				return Math.pow(rootCenter.x - desiredRootCenter.x, 2) + Math.pow(rootCenter.y - desiredRootCenter.y, 2);
+			},
+			sortedPositionedLayouts = _.sortBy(positionedLayouts, rootDistance),
+			positionLayout = function (storedLayout, desiredPosition) {
+				if (!storedLayout) {
+					return;
+				}
+				desiredPostion = desiredPosition ||  globalIdeaTopLeftPosition(storedLayout.rootIdea);
+				mergeNodes(storedLayout,
+					desiredPosition.x - storedLayout.rootNode.x,
+					desiredPosition.y - storedLayout.rootNode.y
+				);
+			};
+
+		positionLayout(mostRecentlyPositioned);
+		sortedPositionedLayouts.forEach(function (storedLayout) {
+			positionLayout(storedLayout);
+		});
+
+
 		if (!margin) {
 			throw 'invalid-args';
 		}
-		totalWidth = calcTotalWidth(margin);
-		xOffset = totalWidth * -0.5;
-		combinedLayout.forEach(function (storedRootLayout) {
-			var dx = xOffset - storedRootLayout.minX;
-			mergeNodes(storedRootLayout.rootLayout, dx, storedRootLayout.rootIdea);
-			result = _.extend(result, storedRootLayout.rootLayout);
-			xOffset = xOffset + storedRootLayout.width + margin;
+		unpositionedLayouts.forEach(function (storedRootLayout) {
 		});
 		return result;
 	};
