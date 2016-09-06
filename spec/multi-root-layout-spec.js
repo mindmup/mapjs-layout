@@ -26,12 +26,12 @@ describe('MultiRootLayout', function () {
 		}).toThrow();
 	});
 	it('should return a single root layout unchanged', function () {
-		underTest.appendRootNodeLayout(rootLayouts.first, 1);
+		underTest.appendRootNodeLayout(rootLayouts.first, {id: 1});
 		expect(underTest.getCombinedLayout(defaultRootMargin)).toEqual(rootLayouts.first);
 	});
 	it('should reposition when to single root nodes are appended', function () {
-		underTest.appendRootNodeLayout(rootLayouts.first, 1);
-		underTest.appendRootNodeLayout(rootLayouts.second, 2);
+		underTest.appendRootNodeLayout(rootLayouts.first, {id: 1});
+		underTest.appendRootNodeLayout(rootLayouts.second, {id: 2});
 		expect(underTest.getCombinedLayout(defaultRootMargin)).toEqual({
 			1: {x: -110, y: -10, height: 20, width: 100, rootId: 1},
 			2: {x: 10, y: -10, height: 20, width: 100, rootId: 2}
