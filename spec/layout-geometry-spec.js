@@ -30,5 +30,26 @@ describe('layoutGeometry', function () {
 		});
 
 	});
+	describe('orderPointsOnVector', function () {
+		it('should order points on a horizontal line left to right', function () {
+			expect(layoutGeometry.orderPointsOnVector([[2,1], [3,1], [0,1], [-2,1]], [0,1], [1,0])).toEqual([[-2,1], [0,1], [2,1], [3,1]]);
+		});
+		it('should order points on a horizontal line right to left', function () {
+			expect(layoutGeometry.orderPointsOnVector([[2,1], [3,1], [0,1], [-2,1]], [0,1], [-1,0])).toEqual([[3,1], [2,1], [0,1], [-2,1]]);
+		});
+		it('should order points on a vertical line bottom to top', function () {
+			expect(layoutGeometry.orderPointsOnVector([[1,2], [1,3], [1,0], [1, -2]], [1,0], [0,1])).toEqual([[1, -2], [1, 0], [1, 2], [1, 3]]);
+		});
+		it('should order points on a vertical line top to bottom', function () {
+			expect(layoutGeometry.orderPointsOnVector([[1,2], [1,3], [1,0], [1, -2]], [1,0], [0,-1])).toEqual([[1, 3], [1, 2], [1, 0], [1, -2]]);
+		});
+		it('should order points on a sloped line top to bottom', function () {
+			expect(layoutGeometry.orderPointsOnVector([[4, 2], [2, 4], [3, 3], [7, -1]], [3,3], [1,-1])).toEqual([[2, 4], [3, 3], [4, 2], [7, -1]]);
+		});
+		it('should order points on a sloped line bottom to top', function () {
+			expect(layoutGeometry.orderPointsOnVector([[4, 2], [2, 4], [3, 3], [7, -1]], [3,3], [-1,1])).toEqual([[7, -1], [4, 2], [3, 3], [2, 4]]);
+		});
+	});
 });
+
 
