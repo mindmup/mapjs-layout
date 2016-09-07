@@ -50,6 +50,17 @@ describe('layoutGeometry', function () {
 			expect(layoutGeometry.orderPointsOnVector([[4, 2], [2, 4], [3, 3], [7, -1]], [3,3], [-1,1])).toEqual([[7, -1], [4, 2], [3, 3], [2, 4]]);
 		});
 	});
+	describe('translatePoly', function () {
+		it('should move all points of all regions in the poly', function () {
+			expect(layoutGeometry.translatePoly([
+				[[1,2], [2,3]],
+				[[2,1], [3,2]]
+			], [2,3])).toEqual([
+				[[3,5], [4,6]],
+				[[4,4], [5,5]]
+			]);
+		});
+	});
 });
 
 

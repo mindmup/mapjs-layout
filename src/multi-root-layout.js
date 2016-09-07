@@ -1,5 +1,6 @@
 /*global module, require*/
-var _ = require('underscore');
+var _ = require('underscore'),
+	layoutGeometry = require('./layout-geometry');
 
 module.exports = function MultiRootLayout() {
 	'use strict';
@@ -65,30 +66,46 @@ module.exports = function MultiRootLayout() {
 			mostRecentlyPositioned = positionedLayouts.length && _.max(positionedLayouts, function (layout) {
 				return globalIdeaTopLeftPosition(layout.rootIdea).priority;
 			}),
-			desiredRootCenter = mostRecentlyPositioned && calcDesiredRootNodeCenter(mostRecentlyPositioned),
+			origin = mostRecentlyPositioned && calcDesiredRootNodeCenter(mostRecentlyPositioned),
+			originVector = [origin.x, origin.y],
 			rootDistance = function (storedLayout) {
 				var rootCenter = calcDesiredRootNodeCenter(storedLayout);
-				return Math.pow(rootCenter.x - desiredRootCenter.x, 2) + Math.pow(rootCenter.y - desiredRootCenter.y, 2);
+				return Math.pow(rootCenter.x - origin.x, 2) + Math.pow(rootCenter.y - origin.y, 2);
 			},
 			sortedPositionedLayouts = _.sortBy(positionedLayouts, rootDistance),
 			placedLayouts = [],
-			layoutOffsetWithoutOverlap = function (storedLayout) {
-				var globalRootNodePosition = globalIdeaTopLeftPosition(storedLayout.rootIdea);
-
-				return {
-					x: globalRootNodePosition.x - storedLayout.rootNode.x,
-					y: globalRootNodePosition.y - storedLayout.rootNode.y
-				};
+			placedLayoutPoly = [],
+			layoutOffsetWithoutOverlap = function (storedLayoutPoly, vector, offset) {
+				var intersectionPoint = layoutGeometry.furthestIntersectionPoint(storedLayoutPoly, placedLayoutPoly, originVector, vector),
+					currentIntersection = layoutGeometry.firstProjectedPolyPointOnVector(storedLayoutPoly, originVector, vector),
+					translation;
+				offset = offset || {x: 0, y: 0};
+				if (intersectionPoint) {
+					translation =  {
+						x: intersectionPoint[0] - currentIntersection[0],
+						y: intersectionPoint[1] - currentIntersection[1]
+					};
+					offset = {
+						x: offset.x + translation.x,
+						y: offset.y + translation.y
+					};
+					return layoutOffsetWithoutOverlap(layoutGeometry.translatePoly(storedLayoutPoly, translation), vector, offset);
+				}
+				return offset;
 			},
 			positionLayout = function (storedLayout) {
-				var offset;
+				var placedRootCenter = calcDesiredRootNodeCenter(storedLayout),
+					storedLayoutPoly = layoutGeometry.tolayoutPolygon(storedLayout),
+					offset,
+					vector = [placedRootCenter.x - origin.x, placedRootCenter.y - origin.y];
 				if (!storedLayout || _.contains(placedLayouts, storedLayout)) {
 					return;
 				}
+				storedLayoutPoly = layoutGeometry.translatePoly(storedLayoutPoly, vector);
 				/* must not overlap previously positioned layouts*/
-				offset = layoutOffsetWithoutOverlap(storedLayout, storedLayout);
+				offset = layoutOffsetWithoutOverlap(storedLayoutPoly, vector);
 				mergeNodes(storedLayout, offset);
-				placedLayouts.push(storedLayout);
+				placedLayoutPoly = placedLayoutPoly.concat(layoutGeometry.tolayoutPolygon(storedLayout));
 			};
 		if (!margin) {
 			throw 'invalid-args';

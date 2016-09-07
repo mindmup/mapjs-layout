@@ -54,11 +54,27 @@ var _ = require('underscore'),
 			maxY = Math.max(maxY, node.y + node.width);
 		});
 		return [
-			[minX, minY],
-			[maxX, minY],
-			[maxX, maxY],
-			[minX, maxY]
+			[
+				[minX, minY], [maxX, minY], [maxX, maxY], [minX, maxY]
+			]
 		];
+	},
+	translatePoly = function (poly, translation) {
+		'use strict';
+		return poly.map(function (region) {
+			return region.map(function (point) {
+				return [point[0] + translation[0], point[1] + translation[1]];
+			});
+		});
+	},
+	firstProjectedPolyPointOnVector = function (poly, vectorOrigin, vector) {
+		'use strict';
+		var polyPoints = _.flatten(poly, true),
+			intersectionsOnLine = polyPoints.map(function (intersection) {
+				return projectPointOnLineVector(intersection, vectorOrigin, vector);
+			}),
+			orderedIntersectionsOnLine = orderPointsOnVector(intersectionsOnLine, vectorOrigin, vector);
+		return orderedIntersectionsOnLine.length && orderedIntersectionsOnLine[0];
 	},
 	furthestIntersectionPoint = function (poly1, poly2, vectorOrigin, vector) {
 		'use strict';
@@ -74,5 +90,7 @@ module.exports = {
 	tolayoutPolygon: tolayoutPolygon,
 	furthestIntersectionPoint: furthestIntersectionPoint,
 	projectPointOnLineVector: projectPointOnLineVector,
-	orderPointsOnVector: orderPointsOnVector
+	orderPointsOnVector: orderPointsOnVector,
+	firstProjectedPolyPointOnVector: firstProjectedPolyPointOnVector,
+	translatePoly: translatePoly
 };
