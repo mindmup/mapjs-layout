@@ -97,20 +97,28 @@ module.exports = function MultiRootLayout() {
 				var placedRootCenter = calcDesiredRootNodeCenter(storedLayout),
 					storedLayoutPoly = layoutGeometry.tolayoutPolygon(storedLayout),
 					offset,
-					vector = [placedRootCenter.x - origin.x, placedRootCenter.y - origin.y];
+					vector = [placedRootCenter.x - origin.x, placedRootCenter.y - origin.y],
+					initialTranslation = [placedRootCenter.x, placedRootCenter.y];
 				if (!storedLayout || _.contains(placedLayouts, storedLayout)) {
 					return;
 				}
-				storedLayoutPoly = layoutGeometry.translatePoly(storedLayoutPoly, vector);
-				/* must not overlap previously positioned layouts*/
-				offset = layoutOffsetWithoutOverlap(storedLayoutPoly, vector);
+				if (positionedLayouts.length) {
+					if (vector[0] === 0 && vector[1] === 0) {
+						vector = [1, 0];
+					}
+					storedLayoutPoly = layoutGeometry.translatePoly(storedLayoutPoly, initialTranslation);
+					offset = layoutOffsetWithoutOverlap(storedLayoutPoly, vector);
+				} else {
+					offset = placedRootCenter;
+				}
 				mergeNodes(storedLayout, offset);
+
+				placedLayouts.push(storedLayout);
 				placedLayoutPoly = placedLayoutPoly.concat(layoutGeometry.tolayoutPolygon(storedLayout));
 			};
 		if (!margin) {
 			throw 'invalid-args';
 		}
-
 		positionLayout(mostRecentlyPositioned);
 		sortedPositionedLayouts.forEach(positionLayout);
 		unpositionedLayouts.forEach(positionLayout);
