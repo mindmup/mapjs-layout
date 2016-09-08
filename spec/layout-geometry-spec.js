@@ -61,6 +61,76 @@ describe('layoutGeometry', function () {
 			]);
 		});
 	});
+	describe('addVectors', function () {
+		it('should add vectors', function () {
+			expect(layoutGeometry.addVectors([1,2], [3,4])).toEqual([4,6]);
+		});
+		describe('should throw exception', function () {
+			it('when vector1 is falsy', function () {
+				expect(function () {
+					layoutGeometry.addVectors(undefined, [3,4]);
+				}).toThrow();
+			});
+			it('when vector2 is falsy', function () {
+				expect(function () {
+					layoutGeometry.addVectors([1,2]);
+				}).toThrow();
+			});
+			it('when result is not a number', function () {
+				expect(function () {
+					layoutGeometry.addVectors([1, 'a'], [3,4]);
+				}).toThrow();
+			});
+		});
+	});
+	describe('subtractVectors', function () {
+		it('should subtract vectors', function () {
+			expect(layoutGeometry.subtractVectors([1,2], [3,4])).toEqual([-2,-2]);
+		});
+		describe('should throw exception', function () {
+			it('when vector1 is falsy', function () {
+				expect(function () {
+					layoutGeometry.subtractVectors(undefined, [3,4]);
+				}).toThrow();
+			});
+			it('when vector2 is falsy', function () {
+				expect(function () {
+					layoutGeometry.subtractVectors([1,2]);
+				}).toThrow();
+			});
+			it('when result is not a number', function () {
+				expect(function () {
+					layoutGeometry.subtractVectors([1, 'a'], [3,4]);
+				}).toThrow();
+			});
+		});
+	});
+	describe('translatePoly', function () {
+		it('should translate a single point in a single region', function () {
+			expect(layoutGeometry.translatePoly([[[1,2]]], [2,3])).toEqual([[[3,5]]]);
+		});
+		it('should translate a multiple points in a multiple regions', function () {
+			var poly = [
+					[
+						[1,2], [3,4]
+					],
+					[
+						[2,4], [6,8]
+					]
+				];
+			expect(layoutGeometry.translatePoly(poly, [2,3])).toEqual([
+					[
+						[3,5], [5,7]
+					],
+					[
+						[4,7], [8,11]
+					]
+				]);
+		});
+	});
+	describe('firstProjectedPolyPointOnVector', function () {
+
+	});
 });
 
 
