@@ -1,4 +1,4 @@
-/*global describe, it, expect, require*/
+/*global describe, it, expect, require, beforeEach*/
 var layoutGeometry = require('../src/layout-geometry');
 describe('layoutGeometry', function () {
 	'use strict';
@@ -129,7 +129,17 @@ describe('layoutGeometry', function () {
 		});
 	});
 	describe('firstProjectedPolyPointOnVector', function () {
-
+		var poly;
+		beforeEach(function () {
+			poly = [
+				[
+					[10,90], [90,90], [90, 10], [10, 10]
+				]
+			];
+		});
+		it('should return first projected point for horizontal vector', function () {
+			expect(layoutGeometry.firstProjectedPolyPointOnVector(poly, [0,0], [1,0])).toEqual([10,90]);
+		});
 	});
 });
 
