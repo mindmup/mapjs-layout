@@ -28,18 +28,37 @@ var _ = require('underscore'),
 		if (!vector[0] && !vector[1]) {
 			throw 'invalid-args';
 		}
-		// console.log('point', point, 'vectorOrigin', vectorOrigin, 'vector', vector, 'pointVector', pointVector, 'valDp', valDp, 'len2', len2);
 		return resultVector;
 	},
+
 	orderPointsOnVector = function (points, vectorOrigin, vector) {
 		'use strict';
-		return _.sortBy(points, function (point) {
-			var dx = point[0] - vectorOrigin[0],
-				dy = point[1] - vectorOrigin[1],
-				val = dx === 0 ? dy / vector[1] : dx / vector[0],
-				sign = val >= 0 ? 1 : -1;
-			return sign * (Math.pow(dx, 2) + Math.pow(dy, 2));
-		});
+		var pointScale = function (point) {
+				var dx = point[0] - vectorOrigin[0],
+					dy = point[1] - vectorOrigin[1],
+					val = (function () {
+						if (dx === 0) {
+							if (vector[1] === 0) {
+								return 1;
+							}
+							return dy / vector[1];
+						} else {
+							if (vector[0] === 0) {
+								return 1;
+							}
+							return dx / vector[0];
+						}
+					}()),
+					pointSign = val >= 0 ? 1 : -1,
+					vectorScale = pointSign * (Math.pow(dx, 2) + Math.pow(dy, 2));
+				return vectorScale;
+			},
+			filteredPoints = _.filter(points, function (point) {
+				return pointScale(point) >= 0;
+			});
+
+
+		return _.sortBy(filteredPoints, pointScale);
 	},
 	tolayoutPolygon = function (layout) {
 		'use strict';
@@ -101,7 +120,7 @@ var _ = require('underscore'),
 				return projectPointOnLineVector(intersection, vectorOrigin, vector);
 			}),
 			orderedIntersectionsOnLine = orderPointsOnVector(intersectionsOnLine, vectorOrigin, vector);
-		return orderedIntersectionsOnLine.pop();
+		return orderedIntersectionsOnLine.length && orderedIntersectionsOnLine.pop();
 	},
 	translatePolyToIntersecton = function (polyToTranslate, intersectionPoint, vectorOrigin, vector, margin) {
 		'use strict';

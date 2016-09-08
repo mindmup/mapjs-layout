@@ -31,23 +31,41 @@ describe('layoutGeometry', function () {
 
 	});
 	describe('orderPointsOnVector', function () {
-		it('should order points on a horizontal line left to right', function () {
-			expect(layoutGeometry.orderPointsOnVector([[2,1], [3,1], [0,1], [-2,1]], [0,1], [1,0])).toEqual([[-2,1], [0,1], [2,1], [3,1]]);
+		var points;
+		describe('when vector is horizontal', function () {
+			beforeEach(function () {
+				points = [[2,1], [3,1], [0,1], [-2,1]];
+			});
+			it('should order points left to right', function () {
+				expect(layoutGeometry.orderPointsOnVector(points, [0,1], [1,0])).toEqual([[0,1], [2,1], [3,1]]);
+			});
+			it('should order points right to left', function () {
+				expect(layoutGeometry.orderPointsOnVector(points, [0,1], [-1,0])).toEqual([[0,1], [-2,1]]);
+			});
+
 		});
-		it('should order points on a horizontal line right to left', function () {
-			expect(layoutGeometry.orderPointsOnVector([[2,1], [3,1], [0,1], [-2,1]], [0,1], [-1,0])).toEqual([[3,1], [2,1], [0,1], [-2,1]]);
+		describe('when vector is vertical', function () {
+			beforeEach(function () {
+				points = [[1,2], [1,3], [1,0], [1, -2]];
+			});
+			it('should order points bottom to top', function () {
+				expect(layoutGeometry.orderPointsOnVector(points, [1,0], [0,1])).toEqual([[1, 0], [1, 2], [1, 3]]);
+			});
+			it('should order points top to bottom', function () {
+				expect(layoutGeometry.orderPointsOnVector(points, [1,0], [0,-1])).toEqual([[1, 0], [1, -2]]);
+			});
 		});
-		it('should order points on a vertical line bottom to top', function () {
-			expect(layoutGeometry.orderPointsOnVector([[1,2], [1,3], [1,0], [1, -2]], [1,0], [0,1])).toEqual([[1, -2], [1, 0], [1, 2], [1, 3]]);
-		});
-		it('should order points on a vertical line top to bottom', function () {
-			expect(layoutGeometry.orderPointsOnVector([[1,2], [1,3], [1,0], [1, -2]], [1,0], [0,-1])).toEqual([[1, 3], [1, 2], [1, 0], [1, -2]]);
-		});
-		it('should order points on a sloped line top to bottom', function () {
-			expect(layoutGeometry.orderPointsOnVector([[4, 2], [2, 4], [3, 3], [7, -1]], [3,3], [1,-1])).toEqual([[2, 4], [3, 3], [4, 2], [7, -1]]);
-		});
-		it('should order points on a sloped line bottom to top', function () {
-			expect(layoutGeometry.orderPointsOnVector([[4, 2], [2, 4], [3, 3], [7, -1]], [3,3], [-1,1])).toEqual([[7, -1], [4, 2], [3, 3], [2, 4]]);
+		describe('when line is sloped', function () {
+			beforeEach(function () {
+				points = [[4, 2], [2, 4], [3, 3], [7, -1]];
+			});
+			it('should order points top to bottom', function () {
+				expect(layoutGeometry.orderPointsOnVector(points, [3,3], [1,-1])).toEqual([[3, 3], [4, 2], [7, -1]]);
+			});
+			it('should order points bottom to top', function () {
+				expect(layoutGeometry.orderPointsOnVector(points, [3,3], [-1,1])).toEqual([[3, 3], [2, 4]]);
+			});
+
 		});
 	});
 	describe('translatePoly', function () {
@@ -129,16 +147,33 @@ describe('layoutGeometry', function () {
 		});
 	});
 	describe('firstProjectedPolyPointOnVector', function () {
-		var poly;
+		var poly, origin1, origin2, origin3, vector, vectorReversed, projection1, projection2;
 		beforeEach(function () {
 			poly = [
 				[
-					[10,90], [90,90], [90, 10], [10, 10]
+					[10,40], [40,40], [40, 10], [40, 10]
 				]
 			];
 		});
-		it('should return first projected point for horizontal vector', function () {
-			expect(layoutGeometry.firstProjectedPolyPointOnVector(poly, [0,0], [1,0])).toEqual([10,90]);
+		describe('should return first projected point', function () {
+			beforeEach(function () {
+				vector = [1,0];
+				vectorReversed = [-1, 0];
+				origin1 = [10,50];
+				origin2 = [20,50];
+				origin3 = [50,50];
+				projection1 = [10,50];
+				projection2 = [40,50];
+			});
+			it('when all points are after the origin', function () {
+				expect(layoutGeometry.firstProjectedPolyPointOnVector(poly, origin1, vector)).toEqual(projection1);
+			});
+			it('when some points are after the origin', function () {
+				expect(layoutGeometry.firstProjectedPolyPointOnVector(poly, origin2, vector)).toEqual(projection2);
+			});
+			it('should return falsy when all points are before the origin', function () {
+				expect(layoutGeometry.firstProjectedPolyPointOnVector(poly, origin3, vector)).toBeFalsy();
+			});
 		});
 	});
 });
