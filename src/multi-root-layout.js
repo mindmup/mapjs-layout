@@ -67,7 +67,6 @@ module.exports = function MultiRootLayout() {
 				return globalIdeaTopLeftPosition(layout.rootIdea).priority;
 			}),
 			origin = {x: 0,y: 0}, //mostRecentlyPositioned && calcDesiredRootNodeCenter(mostRecentlyPositioned),
-			originVector = [origin.x, origin.y],
 			rootDistance = function (storedLayout) {
 				// return globalIdeaTopLeftPosition(storedLayout.rootIdea).priority * -1;
 				return storedLayout.rootIdea.id;
@@ -78,31 +77,14 @@ module.exports = function MultiRootLayout() {
 			sortedUnpositionedLayouts = _.sortBy(unpositionedLayouts, rootDistance),
 			placedLayouts = [],
 			placedLayoutPoly = [],
-			layoutOffsetWithoutOverlap = function (storedLayoutPoly, vector, offset) {
-				var intersectionPoint = layoutGeometry.furthestIntersectionPoint(storedLayoutPoly, placedLayoutPoly, originVector, vector),
-					currentIntersection = layoutGeometry.firstProjectedPolyPointOnVector(storedLayoutPoly, originVector, vector),
-					translation;
-				offset = offset || {x: 0, y: 0};
-				// console.log('layoutOffsetWithoutOverlap', 'storedLayoutPoly', storedLayoutPoly, 'vector', vector, 'offset', offset, 'placedLayoutPoly', placedLayoutPoly, 'originVector', originVector);
-				if (intersectionPoint) {
-					translation =  [intersectionPoint[0] - currentIntersection[0], intersectionPoint[1] - currentIntersection[1]];
-					offset = {
-						x: offset.x + translation[0],
-						y: offset.y + translation[1]
-					};
-					// console.log('translation', translation, 'offset', offset);
-					// console.log('layoutGeometry.translatePoly(', storedLayoutPoly, ', ', translation, ')', 'intersectionPoint', intersectionPoint, 'currentIntersection', currentIntersection);
-					return layoutOffsetWithoutOverlap(layoutGeometry.translatePoly(storedLayoutPoly, translation), vector, offset);
-				}
-				return offset;
-			},
 			positionLayout = function (storedLayout) {
 				var placedRootCenter = calcDesiredRootNodeCenter(storedLayout),
 					storedLayoutPoly = layoutGeometry.tolayoutPolygon(storedLayout.rootLayout),
 					offset,
 					vector = [placedRootCenter.x - origin.x, placedRootCenter.y - origin.y],
 					initialTranslation = [placedRootCenter.x, placedRootCenter.y],
-					maxLayouts = localStorage && localStorage.maxLayouts;
+					maxLayouts = localStorage && localStorage.maxLayouts,
+					translationResult;
 
 				if (!storedLayout || _.contains(placedLayouts, storedLayout) || (maxLayouts && placedLayouts.length >= maxLayouts)) {
 					return;
@@ -114,11 +96,9 @@ module.exports = function MultiRootLayout() {
 					if (vector[0] === 0 && vector[1] === 0) {
 						vector = [1, 0];
 					}
-					if (storedLayout.rootIdea.id === 39) {
-						console.log('layoutGeometry.translatePoly(storedLayoutPoly:', storedLayoutPoly, ', initialTranslation:', initialTranslation, ')');
-					}
 					storedLayoutPoly = layoutGeometry.translatePoly(storedLayoutPoly, initialTranslation);
-					offset = layoutOffsetWithoutOverlap(storedLayoutPoly, vector, placedRootCenter);
+					translationResult = layoutGeometry.translatePolyToNotOverlap(storedLayoutPoly, placedLayoutPoly, [placedRootCenter.x, placedRootCenter.y], vector, initialTranslation);
+					offset = {x: translationResult.translation[0], y: translationResult.translation[1]};
 				} else {
 					offset = placedRootCenter;
 				}

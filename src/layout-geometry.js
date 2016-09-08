@@ -97,6 +97,7 @@ var _ = require('underscore'),
 		var x = vector1[0] - vector2[0],
 			y = vector1[1] - vector2[1];
 		if (isNaN(x) || isNaN(y)) {
+			console.log('subtractVectors invalid-args vector1', vector1, 'vector2', vector2);
 			throw 'invalid-args';
 		}
 		return [x, y];
