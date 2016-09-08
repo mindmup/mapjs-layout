@@ -1,4 +1,4 @@
-/*global module, require, isNaN*/
+/*global module, require, isNaN, console*/
 var _ = require('underscore'),
 	PolyBool = require('polybooljs'),
 	dotProduct = function (p1, p2) {
@@ -26,12 +26,13 @@ var _ = require('underscore'),
 				vectorOrigin[1] + ((valDp * vector[1]) / len2)
 			];
 		if (!vector[0] && !vector[1]) {
+			console.log('projectPointOnLineVector invalid-args point', point, 'vectorOrigin', vectorOrigin, 'vector', vector);
 			throw 'invalid-args';
 		}
 		return resultVector;
 	},
 
-	orderPointsOnVector = function (points, vectorOrigin, vector) {
+	orderPointsOnVector = function (points, vectorOrigin, vector, pointsBeforeOriginOnly) {
 		'use strict';
 		var pointScale = function (point) {
 				var dx = point[0] - vectorOrigin[0],
@@ -54,6 +55,9 @@ var _ = require('underscore'),
 				return vectorScale;
 			},
 			filteredPoints = _.filter(points, function (point) {
+				if (pointsBeforeOriginOnly) {
+					return pointScale(point) < 0;
+				}
 				return pointScale(point) >= 0;
 			});
 
@@ -83,6 +87,7 @@ var _ = require('underscore'),
 		var x = vector1[0] + vector2[0],
 			y = vector1[1] + vector2[1];
 		if (isNaN(x) || isNaN(y)) {
+			console.log('addVectors invalid-args x', x, 'y', y, 'vector1', vector1, 'vector2', vector2);
 			throw 'invalid-args';
 		}
 		return [x, y];
@@ -110,7 +115,7 @@ var _ = require('underscore'),
 			intersectionsOnLine = polyPoints.map(function (intersection) {
 				return projectPointOnLineVector(intersection, vectorOrigin, vector);
 			}),
-			orderedIntersectionsOnLine = orderPointsOnVector(intersectionsOnLine, vectorOrigin, vector);
+			orderedIntersectionsOnLine = orderPointsOnVector(intersectionsOnLine, vectorOrigin, vector, true);
 		return orderedIntersectionsOnLine.length && orderedIntersectionsOnLine[0];
 	},
 	furthestIntersectionPoint = function (poly1, poly2, vectorOrigin, vector) {
@@ -122,32 +127,34 @@ var _ = require('underscore'),
 			orderedIntersectionsOnLine = orderPointsOnVector(intersectionsOnLine, vectorOrigin, vector);
 		return orderedIntersectionsOnLine.length && orderedIntersectionsOnLine.pop();
 	},
-	translatePolyToIntersecton = function (polyToTranslate, intersectionPoint, vectorOrigin, vector, margin) {
+	translatePolyToIntersecton = function (polyToTranslate, intersectionPoint, vector) {
 		'use strict';
-		var currentIntersection = firstProjectedPolyPointOnVector(polyToTranslate, vectorOrigin, vector),
-			translation =  subtractVectors(intersectionPoint, currentIntersection);
+		var firstPolyPoint = firstProjectedPolyPointOnVector(polyToTranslate, intersectionPoint, vector),
+			translation =  firstPolyPoint && subtractVectors(intersectionPoint, firstPolyPoint);
 
-		if (margin) {
-			translation = addVectors(translation, [margin, margin]);
+		if (!firstPolyPoint) {
+			return false;
 		}
 		return {
 			translation: translation,
 			translatedPoly: translatePoly(polyToTranslate, translation)
 		};
 	},
-	translatePolyToNotOverlap = function (polyToFit, existingRegions, vectorOrigin, vector, margin, previousTranslation) {
+	translatePolyToNotOverlap = function (polyToFit, existingRegions, polyRootCenter, vector, previousTranslation) {
 		'use strict';
 
-		var intersectionPoint = furthestIntersectionPoint(polyToFit, existingRegions, vectorOrigin, vector),
+		var intersectionPoint = furthestIntersectionPoint(polyToFit, existingRegions, polyRootCenter, vector),
 			polyTranslation;
-
 		previousTranslation = previousTranslation || [0,0];
 
 		if (intersectionPoint) {
-			polyTranslation = translatePolyToIntersecton(polyToFit, intersectionPoint, vectorOrigin, vector, margin);
-			previousTranslation	= addVectors(previousTranslation, polyTranslation.translation);
-			polyToFit = polyTranslation.translatedPoly;
-			return translatePolyToNotOverlap(polyToFit, existingRegions, vector, previousTranslation);
+			polyTranslation = translatePolyToIntersecton(polyToFit, intersectionPoint, vector);
+			if (polyTranslation) {
+				previousTranslation	= addVectors(previousTranslation, polyTranslation.translation);
+				return translatePolyToNotOverlap(polyTranslation.translatedPoly, existingRegions, polyRootCenter, vector, previousTranslation);
+			} else {
+				console.log('unable to translate poly', polyToFit, 'to intersectionPoint', intersectionPoint, 'with vector', vector);
+			}
 		}
 		return {
 			translation: previousTranslation,
