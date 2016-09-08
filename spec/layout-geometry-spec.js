@@ -147,7 +147,7 @@ describe('layoutGeometry', function () {
 		});
 	});
 	describe('firstProjectedPolyPointOnVector', function () {
-		var poly, origin1, origin2, origin3, vector, vectorReversed, projection1, projection2;
+		var poly, origin1, origin2, origin3, vector, projection1, projection2;
 		beforeEach(function () {
 			poly = [
 				[
@@ -155,24 +155,29 @@ describe('layoutGeometry', function () {
 				]
 			];
 		});
-		describe('should return first projected point', function () {
+		describe('when the vector is horizontal', function () {
 			beforeEach(function () {
-				vector = [1,0];
-				vectorReversed = [-1, 0];
 				origin1 = [10,50];
 				origin2 = [20,50];
 				origin3 = [50,50];
 				projection1 = [10,50];
 				projection2 = [40,50];
 			});
-			it('when all points are after the origin', function () {
-				expect(layoutGeometry.firstProjectedPolyPointOnVector(poly, origin1, vector)).toEqual(projection1);
-			});
-			it('when some points are after the origin', function () {
-				expect(layoutGeometry.firstProjectedPolyPointOnVector(poly, origin2, vector)).toEqual(projection2);
-			});
-			it('should return falsy when all points are before the origin', function () {
-				expect(layoutGeometry.firstProjectedPolyPointOnVector(poly, origin3, vector)).toBeFalsy();
+			describe('left to right', function () {
+				beforeEach(function () {
+					vector = [1,0];
+				});
+				describe('should return first projected point', function () {
+					it('when all points are after the origin', function () {
+						expect(layoutGeometry.firstProjectedPolyPointOnVector(poly, origin1, vector)).toEqual(projection1);
+					});
+					it('when some points are after the origin', function () {
+						expect(layoutGeometry.firstProjectedPolyPointOnVector(poly, origin2, vector)).toEqual(projection2);
+					});
+				});
+				it('should return falsy when all points are before the origin', function () {
+					expect(layoutGeometry.firstProjectedPolyPointOnVector(poly, origin3, vector)).toBeFalsy();
+				});
 			});
 		});
 	});
