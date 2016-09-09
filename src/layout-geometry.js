@@ -1,6 +1,7 @@
 /*global module, require, isNaN, console*/
 var _ = require('underscore'),
 	PolyBool = require('polybooljs'),
+	convexHull = require('monotone-convex-hull-2d'),
 	dotProduct = function (p1, p2) {
 		'use strict';
 		return (p1[0] * p2[0]) + (p1[1] * p2[1]);
@@ -72,7 +73,28 @@ var _ = require('underscore'),
 
 		return _.sortBy(filteredPoints, pointScale);
 	},
-	tolayoutPolygon = function (layout) {
+	tolayoutPolygonHull = function (layout, margin) {
+		'use strict';
+		var points = [], hullIndices, hull;
+		_.each(layout, function (node) {
+			var x1 = Math.round(node.x - margin),
+				x2 = Math.round(node.x + node.width + margin),
+				y1 = Math.round(node.y - margin),
+				y2 = Math.round(node.y + node.height + margin);
+
+			points.push([x1, y1]);
+			points.push([x1, y2]);
+			points.push([x2, y2]);
+			points.push([x2, y1]);
+		});
+		hullIndices = convexHull(points);
+
+		hull =  _.map(hullIndices, function (hullIndex) {
+			return points[hullIndex];
+		});
+		return [hull];
+	},
+	tolayoutPolygonRect = function (layout) {
 		'use strict';
 		var minX =  0,
 			maxX = 0,
@@ -180,7 +202,8 @@ var _ = require('underscore'),
 	};
 
 module.exports = {
-	tolayoutPolygon: tolayoutPolygon,
+	tolayoutPolygonRect: tolayoutPolygonRect,
+	tolayoutPolygonHull: tolayoutPolygonHull,
 	furthestIntersectionPoint: furthestIntersectionPoint,
 	projectPointOnLineVector: projectPointOnLineVector,
 	orderPointsOnVector: orderPointsOnVector,

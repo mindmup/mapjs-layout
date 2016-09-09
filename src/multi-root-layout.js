@@ -69,7 +69,7 @@ module.exports = function MultiRootLayout() {
 			placedLayoutPoly = [],
 			positionLayout = function (storedLayout) {
 				var placedRootCenter = calcDesiredRootNodeCenter(storedLayout),
-					storedLayoutPoly = layoutGeometry.tolayoutPolygon(storedLayout.rootLayout),
+					storedLayoutPoly = layoutGeometry.tolayoutPolygonHull(storedLayout.rootLayout, margin),
 					offset,
 					vector = layoutGeometry.unitVector([placedRootCenter.x - origin.x, placedRootCenter.y - origin.y]),
 					initialTranslation = layoutGeometry.roundVector([placedRootCenter.x, placedRootCenter.y]),

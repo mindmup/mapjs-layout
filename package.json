@@ -25,6 +25,7 @@
   },
   "main": "src/mapjs-layout.js",
   "dependencies": {
+    "monotone-convex-hull-2d": "^1.0.1",
     "polybooljs": "^1.1.1",
     "underscore": "^1.8.3"
   },
