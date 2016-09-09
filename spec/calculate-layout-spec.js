@@ -64,7 +64,7 @@ describe('MAPJS.calculateLayout', function () {
 				},
 				result;
 			layouts.standard.and.returnValue({
-				1: {}
+				1: {x: 0, y: 0, height: 10, width: 10}
 			});
 			optional.theme = new MAPJS.Theme({layout: {orientation: 'not-top-down'}});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
@@ -73,8 +73,8 @@ describe('MAPJS.calculateLayout', function () {
 		it('should attach node styles', function () {
 			var result;
 			layouts.standard.and.returnValue({
-				1: {level: 3, attr: { group: 'blue'} },
-				4: {level: 6}
+				1: {level: 3, attr: { group: 'blue'}, x: 0, y: 0, height: 10, width: 10 },
+				4: {level: 6, x: 0, y: 0, height: 10, width: 10}
 			});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
 			expect(result.nodes[1].styles).toEqual(['attr_group_blue', 'attr_group', 'level_3', 'default']);
@@ -97,15 +97,15 @@ describe('MAPJS.calculateLayout', function () {
 			layouts.standard.and.callFake(function (idea) {
 				if (idea.id === 1) {
 					return {
-						1: {level: 1},
-						11: {level: 2},
-						111: {level: 3}
+						1: {level: 1, x: 0, y: 0, height: 10, width: 10},
+						11: {level: 2, x: 0, y: 0, height: 10, width: 10},
+						111: {level: 3, x: 0, y: 0, height: 10, width: 10}
 					};
 				} else {
 					return {
-						2: {level: 1},
-						21: {level: 2},
-						211: {level: 3}
+						2: {level: 1, x: 0, y: 0, height: 10, width: 10},
+						21: {level: 2, x: 0, y: 0, height: 10, width: 10},
+						211: {level: 3, x: 0, y: 0, height: 10, width: 10}
 					};
 				}
 			});
@@ -129,7 +129,7 @@ describe('MAPJS.calculateLayout', function () {
 				},
 				result;
 			layouts.standard.and.returnValue({
-				1: {}
+				1: {x: 0, y: 0, height: 10, width: 10}
 			});
 			optional.theme = new MAPJS.Theme({layout: {orientation: 'not-top-down'}});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
@@ -158,11 +158,11 @@ describe('MAPJS.calculateLayout', function () {
 				},
 				result;
 			layouts.standard.and.returnValue({
-				1: {},
-				11: {},
-				12: {},
-				112: {},
-				111: {}
+				1: {x: 0, y: 0, height: 10, width: 10},
+				11: {x: 0, y: 0, height: 10, width: 10},
+				12: {x: 0, y: 0, height: 10, width: 10},
+				112: {x: 0, y: 0, height: 10, width: 10},
+				111: {x: 0, y: 0, height: 10, width: 10}
 			});
 
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
@@ -200,7 +200,7 @@ describe('MAPJS.calculateLayout', function () {
 				},
 				result;
 
-			layouts.standard.and.returnValue({ 1: {id: 1}});
+			layouts.standard.and.returnValue({ 1: {id: 1, x: 0, y: 0, height: 10, width: 10}});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
 			expect(result.links).toEqual({});
 		});
@@ -230,7 +230,11 @@ describe('MAPJS.calculateLayout', function () {
 				},
 				result;
 
-			layouts.standard.and.returnValue({ 1: {id: 1}, 2: {id: 2}, 3: {id: 3}});
+			layouts.standard.and.returnValue({
+				1: {id: 1, x: 0, y: 0, height: 10, width: 10},
+				2: {id: 2, x: 0, y: 0, height: 10, width: 10},
+				3: {id: 3, x: 0, y: 0, height: 10, width: 10}
+			});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
 			expect(result.links).toEqual({ '2_3' : { ideaIdFrom : 2, ideaIdTo : 3, attr : { name: 'val' } } });
 		});

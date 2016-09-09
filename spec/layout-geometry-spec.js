@@ -2,6 +2,21 @@
 var layoutGeometry = require('../src/layout-geometry');
 describe('layoutGeometry', function () {
 	'use strict';
+	describe('unitVector', function () {
+		[
+			[[1,0], [1,0]],
+			[[2,0], [1,0]],
+			[[0,1], [0,1]],
+			[[0,2], [0,1]],
+			[[3,4], [3 / 5,4 / 5]],
+			[[0,0], [0, 0]]
+		].forEach(function (args) {
+			it('should return ' + JSON.stringify(args[1]) + ' as the unit vector for ' + JSON.stringify(args[0]), function () {
+				expect(layoutGeometry.unitVector(args[0])).toEqual(args[1]);
+			});
+		});
+
+	});
 	describe('projectPointOnLineVector', function () {
 		it('should project point on horizontal line', function () {
 			expect(layoutGeometry.projectPointOnLineVector([2,0], [0,1], [1,0])).toEqual([2,1]);
@@ -537,6 +552,54 @@ describe('layoutGeometry', function () {
 					expect(result.translatedPoly).toEqual([[[30, -30], [70, -30], [70, -70], [30, -70]]]);
 
 				});
+
+			});
+		});
+		describe('when the intersection is before the origin', function () {
+			beforeEach(function () {
+				placedPolys = [
+					[
+						[-15, 15], [-5, 15], [-5, -5], [-15, -5]
+					],
+					[
+						[-30, -10], [-10,-10], [-10, -30], [-30, -30]
+					]
+				];
+				vector = [1,0];
+			});
+			it('should return translation', function () {
+				var result = layoutGeometry.translatePolyToNotOverlap(movePoly, placedPolys, [0,0], vector);
+				expect(result.translation).toEqual([15,0]);
+			});
+			it('should return the translated poly', function () {
+				var result = layoutGeometry.translatePolyToNotOverlap(movePoly, placedPolys, [0,0], vector);
+				expect(result.translatedPoly).toEqual([[[-5, 20], [35, 20], [35, -20], [-5, -20]]]);
+
+			});
+
+		});
+		describe('when the first translation causes a new intersection', function () {
+			beforeEach(function () {
+				placedPolys = [
+					[
+						[-15, 15], [-5, 15], [-5, -5], [-15, -5]
+					],
+					[
+						[-30, -10], [-10,-10], [-10, -30], [-30, -30]
+					],
+					[
+						[25, -5], [45, -5], [45, -25], [25,-25]
+					]
+				];
+				vector = [1,0];
+			});
+			it('should return translation', function () {
+				var result = layoutGeometry.translatePolyToNotOverlap(movePoly, placedPolys, [0,0], vector);
+				expect(result.translation).toEqual([65,0]);
+			});
+			it('should return the translated poly', function () {
+				var result = layoutGeometry.translatePolyToNotOverlap(movePoly, placedPolys, [0,0], vector);
+				expect(result.translatedPoly).toEqual([[[45, 20], [85, 20], [85, -20], [45, -20]]]);
 
 			});
 

@@ -10,17 +10,17 @@ describe('MultiRootLayout', function () {
 		underTest = new MultiRootLayout();
 		rootLayouts = {
 			first: {
-				1: {x: -50, y: -10, height: 20, width: 100}
+				1: {level: 1, x: -50, y: -10, height: 20, width: 100}
 			},
 			second: {
-				2: {x: -50, y: -10, height: 20, width: 100}
+				2: {level: 1, x: -50, y: -10, height: 20, width: 100}
 			}
 
 		};
 		defaultRootMargin = 20;
 	});
-	it('should throw and exception if no margin supplied', function () {
-		underTest.appendRootNodeLayout(rootLayouts.first);
+	it('should throw an exception if no margin supplied', function () {
+		underTest.appendRootNodeLayout(rootLayouts.first, {id: 1});
 		expect(function () {
 			underTest.getCombinedLayout();
 		}).toThrow();
@@ -33,8 +33,8 @@ describe('MultiRootLayout', function () {
 		underTest.appendRootNodeLayout(rootLayouts.first, {id: 1});
 		underTest.appendRootNodeLayout(rootLayouts.second, {id: 2});
 		expect(underTest.getCombinedLayout(defaultRootMargin)).toEqual({
-			1: {x: -110, y: -10, height: 20, width: 100, rootId: 1},
-			2: {x: 10, y: -10, height: 20, width: 100, rootId: 2}
+			1: { level: 1, x: -50, y: -10, height: 20, width: 100, rootId: 1},
+			2: { level: 1, x: 50, y: -10, height: 20, width: 100, rootId: 2}
 		});
 	});
 });
