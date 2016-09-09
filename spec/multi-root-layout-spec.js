@@ -34,7 +34,7 @@ describe('MultiRootLayout', function () {
 		underTest.appendRootNodeLayout(rootLayouts.second, {id: 2});
 		expect(underTest.getCombinedLayout(defaultRootMargin)).toEqual({
 			1: { level: 1, x: -50, y: -10, height: 20, width: 100, rootId: 1},
-			2: { level: 1, x: 50, y: -10, height: 20, width: 100, rootId: 2}
+			2: { level: 1, x: 90, y: -10, height: 20, width: 100, rootId: 2}
 		});
 	});
 });
