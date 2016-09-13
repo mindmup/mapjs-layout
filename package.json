@@ -17,7 +17,7 @@
     "url": "https://github.com/mindmup/mapjs-layout/issues"
   },
   "homepage": "https://app.mindmup.com",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "scripts": {
     "pretest": "jshint src spec && jscs src spec",
     "test": "node spec/support/jasmine-runner.js"
