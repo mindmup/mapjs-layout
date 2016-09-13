@@ -2,7 +2,7 @@
 var URLHelper = function () {
 	'use strict';
 	var self = this,
-		urlPattern = /(https?:\/\/|www\.)[\w-]+(\.[\w-]+)+([\w.,!@?^=%&amp;:\/~+#-]*[\w!@?^=%&amp;\/~+#-])?/i;
+		urlPattern = /(https?:\/\/|www\.)[\w-]+(\.[\w-]+)+([\w\(\)\u0080-\u00FF.,!@?^=%&amp;:\/~+#-]*[\w\(\)\u0080-\u00FF!@?^=%&amp;\/~+#-])?/i;
 
 	self.containsLink = function (text) {
 		return urlPattern.test(text);
@@ -23,7 +23,7 @@ var URLHelper = function () {
 		if (!text) {
 			return '';
 		}
-		return text.replace(urlPattern, '');
+		return text.replace(urlPattern, '').trim();
 	};
 };
 
