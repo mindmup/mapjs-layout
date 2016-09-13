@@ -16,4 +16,15 @@ describe('formattedNodeTitle', function () {
 			expect(underTest(args[1])).toEqual(args[2]);
 		});
 	});
+	it('truncates link-only titles if maxlength is provided', function () {
+		expect(underTest('http://google.com/search?q=onlylink', 25)).toEqual('http://google.com/search?...');
+		expect(underTest('http://google.com/search?q=onlylink', 100)).toEqual('http://google.com/search?q=onlylink');
+	});
+	it('does not truncate links if maxlength is not provided', function () {
+		expect(underTest('http://google.com/search?q=onlylink')).toEqual('http://google.com/search?q=onlylink');
+	});
+	it('does not truncate text even if maxlength is provided', function () {
+		expect(underTest('http google.com search?q=onlylink', 25)).toEqual('http google.com search?q=onlylink');
+	});
+
 });
