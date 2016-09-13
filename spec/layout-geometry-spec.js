@@ -460,6 +460,18 @@ describe('layoutGeometry', function () {
 			];
 			vectorOrigin = [0, 0];
 		});
+		it('should return the containg poly is one is completely inside the other', function () {
+			var result;
+			vector = [1,0];
+			movePoly = [
+				[
+					[-25, -15], [-15,-15], [-15, -25], [-25, -25]
+				]
+			];
+			result = layoutGeometry.translatePolyToNotOverlap(movePoly, placedPolys, [0,0], vector);
+			expect(result.translation).toEqual([15,0]);
+			expect(result.translatedPoly).toEqual([[[-10,-15], [0,-15], [0,-25], [-10,-25]]]);
+		});
 		describe('when vector is horizontal', function () {
 			describe('left to right', function () {
 				beforeEach(function () {
@@ -602,7 +614,62 @@ describe('layoutGeometry', function () {
 				expect(result.translatedPoly).toEqual([[[45, 20], [85, 20], [85, -20], [45, -20]]]);
 
 			});
+		});
+	});
+	describe('polygonIntersectionPoints', function () {
+		var p1, p2;
+		beforeEach(function () {
+			p1 = [
+				[[-20, 20], [20, 20], [20, -20],[-20, -20]]
+			];
+			p2 = [
+				[[0, 30], [30, 30], [30, 0],[0, 0]],
+				[[-30, 0], [0, 0], [0, -30],[-30, -30]]
+			];
 
+		});
+		it('should return intersection between overlapping shapes', function () {
+			expect(layoutGeometry.polygonIntersectionPoints(p1, p2)).toEqual([[0, 0], [0, -20], [-20, -20], [-20, 0], [20, 20], [20, 0], [0, 0], [0, 20]]);
+		});
+		it('should return intersection between same shapes', function () {
+			p2 = [
+				[[-20, 20], [20, 20], [20, -20],[-20, -20]],
+				[[-130, -100], [-100, -100], [-110, -130],[-130, -130]]
+			];
+			expect(layoutGeometry.polygonIntersectionPoints(p1, p2)).toEqual([[20, 20], [20, -20], [-20, -20], [-20, 20]]);
+		});
+		it('should return second shape as intersection when second shape is contained in first', function () {
+			p2 = [
+				[[10, 10], [10, -10], [-10, -10], [-10, 10]]
+			];
+			expect(layoutGeometry.polygonIntersectionPoints(p1, p2)).toEqual(p2[0]);
+		});
+		it('should return second shape as intersection when first shape is contained in second', function () {
+			p1 = [
+				[[5, 15], [15, 15], [15, 5],[5, 5]]
+			];
+			expect(layoutGeometry.polygonIntersectionPoints(p1, p2)).toEqual([[0, 30], [30, 30], [30, 0],[0, 0]]);
+		});
+	});
+	describe('shapeContainingIntersection', function () {
+		var intersection, poly;
+		beforeEach(function () {
+			intersection = [
+				[[5, 15], [15, 15], [15, 5],[5, 5]]
+			];
+			poly = [
+				[[0, 30], [30, 30], [30, 0],[0, 0]],
+				[[-30, 0], [0, 0], [0, -30],[-30, -30]]
+			];
+		});
+		it('should return the shape containing the intersection', function () {
+			expect(layoutGeometry.shapeContainingIntersection(poly, intersection)).toEqual([[0, 30], [30, 30], [30, 0],[0, 0]]);
+		});
+		it('should return falsy when no shape contains the intersection', function () {
+			intersection = [
+				[[-15, 15], [15, 15], [15, -15],[-15, -15]]
+			];
+			expect(layoutGeometry.shapeContainingIntersection(poly, intersection)).toBeFalsy();
 		});
 	});
 });
