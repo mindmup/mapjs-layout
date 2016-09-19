@@ -7,7 +7,7 @@ module.exports = function extractConnectors(aggregate, visibleNodes) {
 				if (!visibleNodes[idea.id]) {
 					return;
 				}
-				if (parentId) {
+				if (parentId !== aggregate.id) {
 					result[idea.id] = {from: parentId, to: idea.id};
 				}
 			}

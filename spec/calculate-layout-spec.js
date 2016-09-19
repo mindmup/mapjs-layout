@@ -5,6 +5,7 @@ describe('MAPJS.calculateLayout', function () {
 	beforeEach(function () {
 		defaultMargin = {h: 20, v: 20};
 		idea = {
+			id: 'root',
 			ideas: {
 				1: {}
 			}
@@ -55,6 +56,7 @@ describe('MAPJS.calculateLayout', function () {
 	describe('common layout info', function () {
 		it('should include the orientation from the theme', function () {
 			var idea = {
+					id: 'root',
 					ideas: {
 						1: {
 							title: 'parent',
@@ -83,6 +85,7 @@ describe('MAPJS.calculateLayout', function () {
 		it('should attach root node IDs', function () {
 			var result;
 			idea = {
+					id: 'root',
 					ideas: {
 						1: {
 							title: 'parent',
@@ -119,6 +122,7 @@ describe('MAPJS.calculateLayout', function () {
 		});
 		it('should include the theme id from the idea', function () {
 			var idea = {
+					id: 'root',
 					attr: { theme: 'blue' },
 					ideas: {
 						1: {
@@ -137,6 +141,7 @@ describe('MAPJS.calculateLayout', function () {
 		});
 		it('should include connectors regardless of the layout', function () {
 			var idea = {
+					id: 'root',
 					ideas: {
 						1: {
 							title: 'parent',
@@ -176,6 +181,7 @@ describe('MAPJS.calculateLayout', function () {
 		});
 		it('should not include links between collapsed nodes', function () {
 			var idea = {
+					id: 'root',
 					ideas: {
 						1: {
 							id: 1,
@@ -206,6 +212,7 @@ describe('MAPJS.calculateLayout', function () {
 		});
 		it('should include links between non-collapsed nodes', function () {
 			var idea = {
+					id: 'root',
 					ideas: {
 						1: {
 							id: 1,

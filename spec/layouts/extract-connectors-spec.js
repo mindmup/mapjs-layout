@@ -5,6 +5,7 @@ describe('extractConnectors', function () {
 	var visibleNodes, idea;
 	beforeEach(function () {
 		idea = {
+			id: 'root',
 			ideas: {
 				1: {
 					title: 'parent',
