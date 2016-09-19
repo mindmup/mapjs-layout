@@ -17,12 +17,16 @@ describe('MAPJS.URLHelper', function () {
 		it('removes the first link and returns the remaining text', function () {
 			expect(MAPJS.URLHelper.stripLink('http://www.google.com')).toBe('');
 			expect(MAPJS.URLHelper.stripLink('prefix http://www.google.com suffix')).toBe('prefix  suffix');
+			expect(MAPJS.URLHelper.stripLink('prefix http://www.google.com')).toBe('prefix');
+			expect(MAPJS.URLHelper.stripLink('http://www.google.com suffix')).toBe('suffix');
 			expect(MAPJS.URLHelper.stripLink('https://www.google.com')).toBe('');
 			expect(MAPJS.URLHelper.stripLink('www.google.com')).toBe('');
 			expect(MAPJS.URLHelper.stripLink('abc.google.com')).toBe('abc.google.com');
+			expect(MAPJS.URLHelper.stripLink('https://sv.wikipedia.org/wiki/Mjölke_(växt)')).toBe('');
 		});
 		it('leaves any other links intact', function () {
 			expect(MAPJS.URLHelper.stripLink('prefix http://www.google.com suffix http://xkcd.com')).toBe('prefix  suffix http://xkcd.com');
+			expect(MAPJS.URLHelper.stripLink('https://sv.wikipedia.org/wiki/Mjölke_(växt) also')).toBe('also');
 		});
 		it('can work with undefined', function () {
 			expect(MAPJS.URLHelper.stripLink(undefined)).toEqual('');
@@ -50,6 +54,9 @@ describe('MAPJS.URLHelper', function () {
 		});
 		it('retrieves the has part of URL as well', function () {
 			expect(MAPJS.URLHelper.getLink('http://www.google.com#abcdef')).toBe('http://www.google.com#abcdef');
+		});
+		it('supports swedish letters', function () {
+			expect(MAPJS.URLHelper.getLink('https://sv.wikipedia.org/wiki/Mjölke_(växt)')).toBe('https://sv.wikipedia.org/wiki/Mjölke_(växt)');
 		});
 	});
 });

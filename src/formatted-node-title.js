@@ -1,6 +1,6 @@
 /*global module, require*/
 var urlHelper = require('./url-helper');
-module.exports = function (nodeTitle) {
+module.exports = function (nodeTitle, maxUrlLength) {
 	'use strict';
 	var strippedTitle;
 	if (!nodeTitle) {
@@ -8,7 +8,7 @@ module.exports = function (nodeTitle) {
 	}
 	strippedTitle = urlHelper.stripLink(nodeTitle);
 	if (strippedTitle.trim() === '') {
-		return nodeTitle;
+		return (!maxUrlLength || (nodeTitle.length < maxUrlLength) ? nodeTitle : (nodeTitle.substring(0, maxUrlLength) + '...'));
 	}  else {
 		return strippedTitle;
 	}
