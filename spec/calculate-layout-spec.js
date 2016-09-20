@@ -25,10 +25,12 @@ describe('MAPJS.calculateLayout', function () {
 
 	});
 	describe('version upgrades', function () {
-		it('lays out the entire thing when using v2', function () {
+		it('upgrades the content before layout', function () {
 			idea.formatVersion = 2;
 			MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, defaultMargin);
+			expect(idea.formatVersion).toEqual(3);
+			expect(idea.ideas[1].id).toEqual('root');
+			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, defaultMargin);
 		});
 		it('lays out subideas when using v3', function () {
 			idea.formatVersion = 3;
@@ -70,6 +72,7 @@ describe('MAPJS.calculateLayout', function () {
 		it('should include the orientation from the theme', function () {
 			var idea = {
 					id: 'root',
+					formatVersion: 3,
 					ideas: {
 						1: {
 							title: 'parent',
@@ -137,6 +140,7 @@ describe('MAPJS.calculateLayout', function () {
 		it('should include the theme id from the idea', function () {
 			var idea = {
 					id: 'root',
+					formatVersion: 3,
 					attr: { theme: 'blue' },
 					ideas: {
 						1: {
@@ -156,6 +160,7 @@ describe('MAPJS.calculateLayout', function () {
 		it('should include connectors regardless of the layout', function () {
 			var idea = {
 					id: 'root',
+					formatVersion: 3,
 					ideas: {
 						1: {
 							title: 'parent',
@@ -196,6 +201,7 @@ describe('MAPJS.calculateLayout', function () {
 		it('should not include links between collapsed nodes', function () {
 			var idea = {
 					id: 'root',
+					formatVersion: 3,
 					ideas: {
 						1: {
 							id: 1,
@@ -227,6 +233,7 @@ describe('MAPJS.calculateLayout', function () {
 		it('should include links between non-collapsed nodes', function () {
 			var idea = {
 					id: 'root',
+					formatVersion: 3,
 					ideas: {
 						1: {
 							id: 1,

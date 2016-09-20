@@ -1,5 +1,6 @@
 /*global module, require*/
-var Theme = require('./theme'),
+var contentUpgrade = require('mindmup-mapjs-model').contentUpgrade,
+	Theme = require('./theme'),
 	extractConnectors = require('./layouts/extract-connectors'),
 	layoutLinks = require('./layouts/links'),
 	MultiRootLayout = require('./multi-root-layout'),
@@ -28,18 +29,13 @@ module.exports = function calculateLayout(idea, dimensionProvider, optional) {
 	orientation = theme.attributeValue(['layout'], [], ['orientation'], 'standard');
 	calculator = layouts[orientation] || layouts.standard;
 
+	idea = contentUpgrade(idea);
 
-	if (!idea.formatVersion || idea.formatVersion < 3) {
-		multiRootLayout.appendRootNodeLayout(
-				calculator(idea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)}),
-				idea);
-	} else {
-		Object.keys(idea.ideas).forEach(function (rank) {
-			var rootIdea = idea.ideas[rank],
-				rootResult = calculator(rootIdea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
-			multiRootLayout.appendRootNodeLayout(rootResult, rootIdea);
-		});
-	}
+	Object.keys(idea.ideas).forEach(function (rank) {
+		var rootIdea = idea.ideas[rank],
+		rootResult = calculator(rootIdea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
+		multiRootLayout.appendRootNodeLayout(rootResult, rootIdea);
+	});
 
 	result = multiRootLayout.getCombinedLayout(10);
 	// result = calculator(idea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
