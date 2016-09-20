@@ -27,11 +27,19 @@ module.exports = function calculateLayout(idea, dimensionProvider, optional) {
 	margin = theme.attributeValue(['layout'], [], ['spacing'], {h: 20, v: 20});
 	orientation = theme.attributeValue(['layout'], [], ['orientation'], 'standard');
 	calculator = layouts[orientation] || layouts.standard;
-	Object.keys(idea.ideas).forEach(function (rank) {
-		var rootIdea = idea.ideas[rank],
-			rootResult = calculator(rootIdea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
-		multiRootLayout.appendRootNodeLayout(rootResult, rootIdea);
-	});
+
+
+	if (!idea.formatVersion || idea.formatVersion < 3) {
+		multiRootLayout.appendRootNodeLayout(
+				calculator(idea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)}),
+				idea);
+	} else {
+		Object.keys(idea.ideas).forEach(function (rank) {
+			var rootIdea = idea.ideas[rank],
+				rootResult = calculator(rootIdea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});
+			multiRootLayout.appendRootNodeLayout(rootResult, rootIdea);
+		});
+	}
 
 	result = multiRootLayout.getCombinedLayout(10);
 	// result = calculator(idea, dimensionProvider, {h: (margin.h || margin), v: (margin.v || margin)});

@@ -5,6 +5,7 @@ describe('MAPJS.calculateLayout', function () {
 	beforeEach(function () {
 		defaultMargin = {h: 20, v: 20};
 		idea = {
+			formatVersion: 3,
 			id: 'root',
 			ideas: {
 				1: {}
@@ -22,6 +23,18 @@ describe('MAPJS.calculateLayout', function () {
 		layouts.standard.and.returnValue({});
 		layouts['top-down'].and.returnValue({});
 
+	});
+	describe('version upgrades', function () {
+		it('lays out the entire thing when using v2', function () {
+			idea.formatVersion = 2;
+			MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			expect(layouts.standard).toHaveBeenCalledWith(idea, dimensionProvider, defaultMargin);
+		});
+		it('lays out subideas when using v3', function () {
+			idea.formatVersion = 3;
+			MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, defaultMargin);
+		});
 	});
 	describe('when the theme is not provided', function () {
 		it('should use the standard layout and margin', function () {
@@ -86,6 +99,7 @@ describe('MAPJS.calculateLayout', function () {
 			var result;
 			idea = {
 					id: 'root',
+					formatVersion: 3,
 					ideas: {
 						1: {
 							title: 'parent',
