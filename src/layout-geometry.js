@@ -245,7 +245,7 @@ var _ = require('underscore'),
 			if (polyTranslation) {
 				previousTranslation	= addVectors(previousTranslation, polyTranslation.translation);
 				polyRootCenter = addVectors(polyRootCenter, polyTranslation.translation);
-				if (depth < 3) {
+				if (depth < 100) {
 					return translatePolyToNotOverlap(polyTranslation.translatedPoly, existingRegions, polyRootCenter, vector, previousTranslation, (depth + 1));
 				}
 			} else {

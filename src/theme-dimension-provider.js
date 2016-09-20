@@ -1,5 +1,5 @@
 /*global module, require */
-var formattedNodeTitle = require('./formatted-node-title'),
+var formattedNodeTitle = require('mindmup-mapjs-model').formattedNodeTitle,
 	_ = require('underscore');
 module.exports = function ThemeDimensionProvider(textSizer) {
 	'use strict';

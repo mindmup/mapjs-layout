@@ -5,7 +5,6 @@ module.exports = {
 	colorToRGB: require('./color-to-rgb'),
 	Connectors: require('./connectors'),
 	foregroundStyle: require('./foreground-style'),
-	formattedNodeTitle: require('./formatted-node-title'),
 	LayoutModel: require('./layout-model'),
 	nodeToBox: require('./node-to-box'),
 	Theme: require('./theme'),
@@ -13,6 +12,5 @@ module.exports = {
 	ThemeDimensionProvider: require('./theme-dimension-provider'),
 	Themes: {
 		default: require('./default-theme')
-	},
-	URLHelper: require('./url-helper')
+	}
 };

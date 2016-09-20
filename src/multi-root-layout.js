@@ -67,31 +67,38 @@ module.exports = function MultiRootLayout() {
 			sortedPositionedLayouts = _.sortBy(positionedLayouts, rootDistance),
 			placedLayouts = [],
 			placedLayoutPoly = [],
+			layoutCount = positionedLayouts.length + unpositionedLayouts.length,
+			hasMultipleLayouts = layoutCount > 1,
 			positionLayout = function (storedLayout) {
 				var placedRootCenter = calcDesiredRootNodeCenter(storedLayout),
-					storedLayoutPoly = layoutGeometry.tolayoutPolygonHull(storedLayout.rootLayout, margin),
-					offset,
-					vector = layoutGeometry.unitVector([placedRootCenter.x - origin.x, placedRootCenter.y - origin.y]),
 					initialTranslation = layoutGeometry.roundVector([placedRootCenter.x, placedRootCenter.y]),
-					translationResult;
+					storedLayoutPoly = hasMultipleLayouts && layoutGeometry.translatePoly(layoutGeometry.tolayoutPolygonHull(storedLayout.rootLayout, margin), initialTranslation),
+					offset,
+					translationResult,
+					placeNewLayout = function () {
+						var vector = layoutGeometry.unitVector([placedRootCenter.x - origin.x, placedRootCenter.y - origin.y]);
+						if (vector[0] === 0 && vector[1] === 0) {
+							vector = [1, 0];
+						}
+						translationResult = layoutGeometry.translatePolyToNotOverlap(storedLayoutPoly, placedLayoutPoly, initialTranslation, vector, initialTranslation);
+						offset = {x: translationResult.translation[0], y: translationResult.translation[1]};
+						storedLayoutPoly = translationResult.translatedPoly;
+					};
 				if (!storedLayout || _.contains(placedLayouts, storedLayout)) {
 					return;
 				}
-				storedLayoutPoly = layoutGeometry.translatePoly(storedLayoutPoly, initialTranslation);
 				if (placedLayouts.length) {
-					if (vector[0] === 0 && vector[1] === 0) {
-						vector = [1, 0];
-					}
-					translationResult = layoutGeometry.translatePolyToNotOverlap(storedLayoutPoly, placedLayoutPoly, initialTranslation, vector, initialTranslation);
-					offset = {x: translationResult.translation[0], y: translationResult.translation[1]};
-					storedLayoutPoly = translationResult.translatedPoly;
+					placeNewLayout();
 				} else {
 					offset = placedRootCenter;
 				}
 
 				mergeNodes(storedLayout, offset);
 				placedLayouts.push(storedLayout);
-				placedLayoutPoly = placedLayoutPoly.concat(storedLayoutPoly);
+				if (hasMultipleLayouts) {
+					placedLayoutPoly = placedLayoutPoly.concat(storedLayoutPoly);
+				}
+
 			};
 		if (!margin) {
 			throw 'invalid-args';
