@@ -32,6 +32,31 @@ var Theme = require ('./theme'),
 			'use strict';
 			return Math.round(node.left + node.width * 0.5);
 		},
+		'center-separated': function (node, relatedNode) {
+			'use strict';
+			var inset = node.height / 5,
+				halfWidth = node.width / 2,
+				nodeMidX = node.left + halfWidth,
+				relatedNodeMidX = relatedNode.left + (relatedNode.width / 2),
+				relatedNodeRight = (relatedNode.left + relatedNode.width),
+				dy = relatedNode.top - node.top + node.height - inset,
+				calcDx = function () {
+					if (relatedNode.left > node.left + node.width) {
+						return relatedNode.left - nodeMidX;
+					} else if (relatedNodeRight < node.left) {
+						return relatedNodeRight - nodeMidX;
+					} else if (relatedNode.left < nodeMidX) {
+						return relatedNodeMidX - nodeMidX;
+					} else {
+						return relatedNodeMidX - nodeMidX;
+					}
+				},
+				dx = calcDx(),
+				offsetX = (dx / Math.abs(dy)) * inset;
+			offsetX = Math.max(offsetX, (halfWidth * -1) + 10);
+			offsetX = Math.min(offsetX, halfWidth - 10);
+			return Math.round(node.left + (node.width * 0.5) + offsetX);
+		},
 		'nearest': function (node, relatedNode) {
 			'use strict';
 			if (node.left + node.width < relatedNode.left) {
@@ -55,6 +80,10 @@ var Theme = require ('./theme'),
 		'base': function (node) {
 			'use strict';
 			return node.top + node.height + 1;
+		},
+		'base-inset': function (node, inset) {
+			'use strict';
+			return node.top + node.height + 1 - inset;
 		},
 		'top': function (node) {
 			'use strict';
@@ -147,6 +176,28 @@ var Theme = require ('./theme'),
 					'position': position
 				};
 
+		},
+		'vertical-quadratic-s-curve': function (calculatedConnector, position) {
+			'use strict';
+			var dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
+				dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y),
+				dxIncrement = dx / 2,
+				dyIncrement = dy / 2;
+
+			if (Math.abs(dx) < 20) {
+
+				return {
+					'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+						'l' + dx + ',' + dy,
+					'position': position
+				};
+			}
+			return {
+				'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+					'q0,' + Math.round(dyIncrement / 2) + ' ' + dxIncrement + ',' + dyIncrement +
+					'q' + dxIncrement + ',' + Math.round(dyIncrement / 2) + ' ' + dxIncrement + ',' +  dyIncrement,
+				'position': position
+			};
 		},
 		'vertical-s-curve': function (calculatedConnector, position) {
 			'use strict';
@@ -241,11 +292,11 @@ var Theme = require ('./theme'),
 		return {
 			from: {
 				x: nodeConnectionPointX[connectionPositionFrom.h](parent, child, fromInset),
-				y: nodeConnectionPointY[connectionPositionFrom.v](parent)
+				y: nodeConnectionPointY[connectionPositionFrom.v](parent, fromInset)
 			},
 			to: {
 				x: nodeConnectionPointX[connectionPositionTo.h](child, parent, toInset),
-				y: nodeConnectionPointY[connectionPositionTo.v](child)
+				y: nodeConnectionPointY[connectionPositionTo.v](child, toInset)
 			},
 			connectorTheme: connectorTheme,
 			nodeUnderline: nodeUnderline,
