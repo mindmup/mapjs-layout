@@ -1,6 +1,7 @@
 /*global require, module */
 var Theme = require ('./theme'),
 	_ = require('underscore'),
+	nodeConnectionPointX = require('./layouts/node-connection-point-x'),
 	appendUnderLine = function (connectorCurve, calculatedConnector, position) {
 		'use strict';
 		if (calculatedConnector.nodeUnderline) {
@@ -26,51 +27,6 @@ var Theme = require ('./theme'),
 	appendBorderLines = function (connectorCurve, calculatedConnector, position) {
 		'use strict';
 		return appendOverLine(appendUnderLine(connectorCurve, calculatedConnector, position), calculatedConnector);
-	},
-	nodeConnectionPointX = {
-		'center': function (node) {
-			'use strict';
-			return Math.round(node.left + node.width * 0.5);
-		},
-		'center-separated': function (node, relatedNode) {
-			'use strict';
-			var inset = node.height / 5,
-				halfWidth = node.width / 2,
-				nodeMidX = node.left + halfWidth,
-				relatedNodeMidX = relatedNode.left + (relatedNode.width / 2),
-				relatedNodeRight = (relatedNode.left + relatedNode.width),
-				dy = relatedNode.top - node.top + node.height - inset,
-				calcDx = function () {
-					if (relatedNode.left > node.left + node.width) {
-						return relatedNode.left - nodeMidX;
-					} else if (relatedNodeRight < node.left) {
-						return relatedNodeRight - nodeMidX;
-					} else if (relatedNode.left < nodeMidX) {
-						return relatedNodeMidX - nodeMidX;
-					} else {
-						return relatedNodeMidX - nodeMidX;
-					}
-				},
-				dx = calcDx(),
-				offsetX = (dx / Math.abs(dy)) * inset;
-			offsetX = Math.max(offsetX, (halfWidth * -1) + 10);
-			offsetX = Math.min(offsetX, halfWidth - 10);
-			return Math.round(node.left + (node.width * 0.5) + offsetX);
-		},
-		'nearest': function (node, relatedNode) {
-			'use strict';
-			if (node.left + node.width < relatedNode.left) {
-				return node.left + node.width;
-			}
-			return node.left;
-		},
-		'nearest-inset': function (node, relatedNode, inset) {
-			'use strict';
-			if (node.left + node.width < relatedNode.left) {
-				return node.left + node.width - inset;
-			}
-			return node.left + inset;
-		}
 	},
 	nodeConnectionPointY = {
 		'center': function (node) {
