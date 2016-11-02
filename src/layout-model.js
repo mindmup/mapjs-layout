@@ -189,7 +189,15 @@ module.exports = function LayoutModel(emptyLayout) {
 				width: options.clipRect.width,
 				height: options.clipRect.height
 			};
-
+		} else if (options && options.page) {
+			scale = Math.min((options.page.width - 2 * padding) / bounds.width, (options.page.height - 2 * padding) / bounds.height);
+			return {
+				x: -1 * bounds.minX + Math.floor(0.5 * (options.page.width / scale - bounds.width)), // in scaled coordinates
+				y: -1 * bounds.minY + Math.floor(0.5 * (options.page.height / scale - bounds.height)), // in scaled coordinates
+				width: options.page.width,
+				height: options.page.height,
+				scale: scale
+			};
 		} else {
 			return {
 				x: -1 *  bounds.minX + Math.floor (padding / scale), // in scaled coordinates

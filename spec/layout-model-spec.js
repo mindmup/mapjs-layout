@@ -746,6 +746,68 @@ describe('MAPJS.LayoutModel', function () {
 				height: 50
 			}})).toEqual({x: 25, y: 25, width: 50, height: 50});
 		});
-
+		describe('page scaling', function () { // map is 451 x 308, minx = -136, miny = -154
+			it('fits the map into a square page without padding', function () {
+				underTest.setLayout(layout);
+				expect(underTest.clipRectTransform(1, {
+					page: {
+						width: 200,
+						height: 200
+					}
+				})).toEqual({
+					scale: 0.4434589800443459, // 200 / 451
+					height: 200,
+					width: 200,
+					x: 136, // fit to x
+					y: 225 //  100 / (200 / 451) - 308 / 2 + 154
+				});
+			});
+			it('fits the map into a square page with padding', function () {
+				underTest.setLayout(layout);
+				expect(underTest.clipRectTransform(1, {
+					page: {
+						width: 220,
+						height: 220
+					},
+					padding: 10
+				})).toEqual({
+					scale: 0.4434589800443459, // 200 / 451
+					height: 220,
+					width: 220,
+					x: 158, // round (136 + 10 / 0.4434589800443459)
+					y: 248 // round (225 + 10 / 0.4434589800443459)
+				});
+			});
+			it('expands the map into a portrait page', function () {
+				underTest.setLayout(layout);
+				expect(underTest.clipRectTransform(1, {
+					page: {
+						width: 902,
+						height: 1000
+					}
+				})).toEqual({
+					scale: 2,
+					height: 1000,
+					width: 902,
+					x: 136, // fit to x
+					y: (500 - 308) / 2 + 154
+				});
+			});
+			it('expands the map into a landscape page', function () {
+				underTest.setLayout(layout);
+				expect(underTest.clipRectTransform(1, {
+					page: {
+						width: 1000,
+						height: 616
+					}
+				})).toEqual({
+					scale: 2,
+					height: 616,
+					width: 1000,
+					x: (500 - 452) / 2 + 136,
+					y: 154 // fit to y
+				});
+			});
+		});
 	});
 });
