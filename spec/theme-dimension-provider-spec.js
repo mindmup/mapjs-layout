@@ -160,14 +160,14 @@ describe('MAPJS.ThemeDimensionProvider', function () {
 				it('should pass a formatted title, theme max width and theme font to textsizer if idea has no preferred width', function () {
 					node.title = 'my node text www.google.com';
 					nlpFunc(node);
-					expect(textSizer).toHaveBeenCalledWith('my node text', 18, 'theme font info here');
+					expect(textSizer).toHaveBeenCalledWith('my node text', 20, 'theme font info here');
 				});
 				it('should pass the title, idea preferred width and theme font to textsizer', function () {
 					node.attr.style = {
 						width: 25
 					};
 					nlpFunc(node);
-					expect(textSizer).toHaveBeenCalledWith('node title here', 23, 'theme font info here');
+					expect(textSizer).toHaveBeenCalledWith('node title here', 25, 'theme font info here');
 				});
 			});
 			describe('when the node has no icon', function () {
