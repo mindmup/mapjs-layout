@@ -47,7 +47,7 @@ module.exports = function ThemeDimensionProvider(textSizer) {
 				offset,
 				nodeTheme = theme.nodeTheme(theme.nodeStyles(node.level, node.attr)),
 				title = formattedNodeTitle(node.title),
-				maxWidth = calcMaxWidth(node.attr, nodeTheme),
+				maxWidth = calcMaxWidth(node.attr, nodeTheme) - (2 * nodeTheme.margin),
 				textBox = textSizer(title, maxWidth, nodeTheme.font),
 				textWidth = Math.min(node.width - (2 * nodeTheme.margin), textBox.width);
 			if (image) {
