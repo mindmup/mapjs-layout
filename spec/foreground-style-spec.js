@@ -4,6 +4,7 @@ describe('MAPJS.foregroundStyle', function () {
 	'use strict';
 	[
 		['#FFFFFF', 'darkColor'],
+		['rgba(255,255,255,1)', 'darkColor'],
 		['#000000', 'lightColor'],
 		['#EEEEEE', 'color'],
 		['#22AAE0', 'color'],

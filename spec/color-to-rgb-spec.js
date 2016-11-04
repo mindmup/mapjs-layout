@@ -27,4 +27,16 @@ describe('convertToRGB', function () {
 			});
 		});
 	});
+	describe('rgba css colors', function () {
+		[
+			['rgba(0,0,0,1)', [0,0,0]],
+			['rgba(255, 255, 255, 0.8)', [255, 255, 255]],
+			['rgba(255, 254, 253, 0)', [255, 254, 253]],
+			['rgba(255,254,253,0.9)', [255, 254, 253]]
+		].forEach(function (args) {
+			it('should convert ' + args[0] + ' to rgb:' + args[1].join(','), function () {
+				expect(underTest(args[0])).toEqual(args[1]);
+			});
+		});
+	});
 });
