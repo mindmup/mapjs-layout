@@ -60,7 +60,7 @@ module.exports = function ThemeDimensionProvider(textSizer) {
 
 				switch (image.position) {
 					case 'top':
-						imageLayout.x =  Math.round(Math.min(nodeTheme.margin, (node.width - image.width) / 2));
+						imageLayout.x =  Math.round((node.width - image.width) / 2);
 						textLayout = {
 							x: Math.round((node.width - textWidth) / 2),
 							y: imageLayout.y + imageLayout.height + nodeTheme.margin,
@@ -69,7 +69,7 @@ module.exports = function ThemeDimensionProvider(textSizer) {
 						};
 						break;
 					case 'bottom':
-						imageLayout.x = Math.round(Math.min(nodeTheme.margin, (node.width - image.width) / 2));
+						imageLayout.x = Math.round((node.width - image.width) / 2);
 						imageLayout.y = node.height - image.height - nodeTheme.margin;
 						textLayout = {
 							x: Math.round((node.width - textWidth) / 2),

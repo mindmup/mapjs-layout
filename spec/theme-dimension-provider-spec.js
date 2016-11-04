@@ -217,7 +217,7 @@ describe('MAPJS.ThemeDimensionProvider', function () {
 						node.attr.icon.position = 'top';
 					});
 					it('should set the image x to margin if image is narrower than the node without margin', function () {
-						expect(nlpFunc(node).image.x).toEqual(1); //TODO: This what it currently does, not sure if correct
+						expect(nlpFunc(node).image.x).toEqual(27);
 					});
 					it('should set the image x to be centered margin if image is wider than the node without margins', function () {
 						nodeTheme.margin = 20;
@@ -248,10 +248,7 @@ describe('MAPJS.ThemeDimensionProvider', function () {
 						node.attr.icon.position = 'bottom';
 					});
 					it('should center the image horizontally', function () {
-						expect(nlpFunc(node).image.x).toEqual(1); //TODO: This what it currently does, not sure if correct
-					});
-					it('should set the image x to margin if image is narrower than the node without margin', function () {
-						expect(nlpFunc(node).image.x).toEqual(1); //TODO: This what it currently does, not sure if correct
+						expect(nlpFunc(node).image.x).toEqual(27);
 					});
 					it('should set the image x to be centered margin if image is wider than the node without margins', function () {
 						nodeTheme.margin = 20;
@@ -277,41 +274,6 @@ describe('MAPJS.ThemeDimensionProvider', function () {
 						});
 					});
 				});
-				describe('with bottom position', function () {
-					beforeEach(function () {
-						node.attr.icon.position = 'bottom';
-					});
-					it('should center the image horizontally', function () {
-						expect(nlpFunc(node).image.x).toEqual(1); //TODO: This what it currently does, not sure if correct
-					});
-					it('should set the image x to margin if image is narrower than the node without margin', function () {
-						expect(nlpFunc(node).image.x).toEqual(1);
-					});
-					it('should set the image x to be centered margin if image is wider than the node without margins', function () {
-						nodeTheme.margin = 20;
-						node.attr.icon.width = 70;
-						expect(nlpFunc(node).image.x).toEqual(7);
-					});
-					describe('should return a text Layout', function () {
-						it('with x that centers text', function () {
-							expect(nlpFunc(node).text.x).toEqual(17);
-						});
-						it('with y that preserves margin', function () {
-							expect(nlpFunc(node).text.y).toEqual(1);
-						});
-						it('with width that is the text width', function () {
-							expect(nlpFunc(node).text.width).toEqual(50);
-						});
-						it('with width that fits into the node width including theme margin', function () {
-							node.width = 50;
-							expect(nlpFunc(node).text.width).toEqual(48);
-						});
-						it('with a height that fits into the node height incuding theme margin', function () {
-							expect(nlpFunc(node).text.height).toEqual(14);
-						});
-					});
-				});
-
 				describe('with left position', function () {
 					beforeEach(function () {
 						node.attr.icon.position = 'left';
