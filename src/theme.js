@@ -1,5 +1,6 @@
 /*global module, require */
-var _ = require('underscore');
+var _ = require('underscore'),
+	colorParser = require('./color-parser');
 module.exports = function Theme(themeJson) {
 	'use strict';
 	var self = this,
@@ -58,7 +59,14 @@ module.exports = function Theme(themeJson) {
 		return result;
 	};
 	self.nodeTheme = function (styles) {
-		var rootElement = getElementForPath(themeDictionary, ['node']),
+		var getBackgroundColor = function () {
+				var colorObj = getElementForPath(merged, ['background']);
+				if (colorObj) {
+					return colorParser(colorObj);
+				}
+				return getElementForPath(merged, ['backgroundColor']);
+			},
+			rootElement = getElementForPath(themeDictionary, ['node']),
 			merged = {},
 			result = {
 				margin: 5,
@@ -88,7 +96,7 @@ module.exports = function Theme(themeJson) {
 		result.font = _.extend(result.font, getElementForPath(merged, ['text', 'font']));
 		result.text = _.extend(result.text, getElementForPath(merged, ['text']));
 		result.borderType = getElementForPath(merged, ['border', 'type']) || result.borderType;
-		result.backgroundColor = getElementForPath(merged, ['backgroundColor']) || result.backgroundColor;
+		result.backgroundColor = getBackgroundColor() || result.backgroundColor;
 		result.cornerRadius = getElementForPath(merged, ['cornerRadius']) || result.cornerRadius;
 		result.lineColor = getElementForPath(merged, ['border', 'line', 'color']) || result.lineColor;
 		return result;

@@ -1,6 +1,6 @@
 /*global module, require*/
 var _ = require('underscore'),
-	convertToRGB = require('./color-to-rgb');
+	colorParser = require('./color-parser');
 module.exports = function ThemeProcessor() {
 	'use strict';
 	var self = this,
@@ -17,16 +17,6 @@ module.exports = function ThemeProcessor() {
 			shadow: 'box-shadow',
 			'text.font': 'font',
 			'text.alignment': 'text-align'
-		},
-		colorParser = function (colorObj) {
-			if (!colorObj.color || colorObj.opacity === 0) {
-				return 'transparent';
-			}
-			if (colorObj.opacity) {
-				return 'rgba(' + convertToRGB(colorObj.color).join(',') + ',' + colorObj.opacity + ')';
-			} else {
-				return colorObj.color;
-			}
 		},
 		fontWeightParser = function (fontObj) {
 			var weightMap = {

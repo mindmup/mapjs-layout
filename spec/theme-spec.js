@@ -172,6 +172,15 @@ describe('Theme', function () {
 				}
 			});
 		});
+		it('should return background color for background theme object', function () {
+			delete theme.node[0].backgroundColor;
+			theme.node[0].background = {
+				color: '#FFFFFF',
+				opacity: 0.8
+			};
+			underTest = new MAPJS.Theme(theme);
+			expect(underTest.nodeTheme(['default']).backgroundColor).toEqual('rgba(255,255,255,0.8)');
+		});
 	});
 	describe('connectorControlPoint', function () {
 		it('should return the default horizontal connector if no style provided', function () {
