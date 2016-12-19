@@ -744,7 +744,17 @@ describe('MAPJS.LayoutModel', function () {
 			expect(underTest.clipRectTransform(1, {clipRect: {
 				width: 50,
 				height: 50
-			}})).toEqual({x: 25, y: 25, width: 50, height: 50});
+			}})).toEqual({x: 25, y: 25, width: 50, height: 50, scale: 1});
+		});
+		it('calculates the transform for nodes in the layout when scaled clipRect is passed', function () {
+			underTest.setLayout(layout);
+			expect(underTest.clipRectTransform(1, {
+				clipRect: {
+					width: 50,
+					height: 50
+				},
+				scale: 0.7
+			})).toEqual({x: 25, y: 25, width: 50, height: 50, scale: 0.7});
 		});
 		describe('page scaling', function () { // map is 451 x 308, minx = -136, miny = -154
 			it('fits the map into a square page without padding', function () {
