@@ -54,6 +54,7 @@ describe('connectorPaths', function () {
 		it('should return quadratic s curve path', function () {
 			expect(underTest['vertical-quadratic-s-curve'](calculatedConnector, position, parent, child)).toEqual({
 				d: 'M-10,10q0,20 15,40q15,20 15,40',
+				initialRadius: 10,
 				position: position
 			});
 		});
@@ -62,6 +63,7 @@ describe('connectorPaths', function () {
 				calculatedConnector.to.x = -19;
 				expect(underTest['vertical-quadratic-s-curve'](calculatedConnector, position, parent, child)).toEqual({
 					d: 'M-10,10l-19,80',
+					initialRadius: 10,
 					position: position
 				});
 			});
@@ -69,6 +71,7 @@ describe('connectorPaths', function () {
 				calculatedConnector.to.x = 19;
 				expect(underTest['vertical-quadratic-s-curve'](calculatedConnector, position, parent, child)).toEqual({
 					d: 'M-10,10l19,80',
+					initialRadius: 10,
 					position: position
 				});
 			});

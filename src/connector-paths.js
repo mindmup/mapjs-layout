@@ -98,6 +98,7 @@ module.exports = {
 			return {
 				'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
 					'l' + dx + ',' + dy,
+				initialRadius: 10,
 				'position': position
 			};
 		}
@@ -105,6 +106,7 @@ module.exports = {
 			'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
 				'q0,' + Math.round(dyIncrement / 2) + ' ' + dxIncrement + ',' + dyIncrement +
 				'q' + dxIncrement + ',' + Math.round(dyIncrement / 2) + ' ' + dxIncrement + ',' +  dyIncrement,
+			initialRadius: 10,
 			'position': position
 		};
 	},
