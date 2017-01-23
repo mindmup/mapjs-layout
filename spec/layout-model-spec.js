@@ -1,7 +1,7 @@
 /*global describe, MAPJS, beforeEach, it, expect*/
 describe('MAPJS.LayoutModel', function () {
 	'use strict';
-	var underTest, layout;
+	let underTest, layout;
 	beforeEach(function () {
 		underTest = new MAPJS.LayoutModel({bar: 'foo'});
 	});

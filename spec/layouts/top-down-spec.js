@@ -1,9 +1,9 @@
 /*global describe, it, expect, require, jasmine, beforeEach */
-var layout = require('../../src/layouts/top-down'),
+const layout = require('../../src/layouts/top-down'),
 	_ = require('underscore');
 describe('layouts/top-down', function () {
 	'use strict';
-	var dimensionProvider = function (idea /*, level */) {
+	const dimensionProvider = function (idea /*, level */) {
 			return {
 				width: idea.title.length * 20,
 				height: idea.title.length * 10
@@ -13,7 +13,7 @@ describe('layouts/top-down', function () {
 			return _.pick(node, 'x', 'y');
 		};
 	it('copies the key node attributes to layout nodes', function () {
-		var idea = {
+		const idea = {
 				title: 'parent',
 				id: 1,
 				attr: {ax: 'a-parent'},
@@ -42,7 +42,7 @@ describe('layouts/top-down', function () {
 		}));
 	});
 	it('lays out a single node map with the root at 0,0 center', function () {
-		var idea = { title: 'Hello World', id: 1, attr: {ax: 'ay'} },
+		const idea = { title: 'Hello World', id: 1, attr: {ax: 'ay'} },
 			margin = {h: 5, v: 5},
 			result = layout(idea, dimensionProvider, margin);
 
@@ -60,7 +60,7 @@ describe('layouts/top-down', function () {
 		});
 	});
 	it('positions a single child directly below the parent', function () {
-		var idea = {
+		const idea = {
 				title: 'parent',
 				id: 1,
 				ideas: {
@@ -77,7 +77,7 @@ describe('layouts/top-down', function () {
 		expect(position(result[11])).toEqual({ x: -50, y: 8});
 	});
 	it('positions two children centered below parent, in rank order', function () {
-		var idea = {
+		const idea = {
 				title: 'parent', /* 120, 60 */
 				id: 1,
 				ideas: {
@@ -100,7 +100,7 @@ describe('layouts/top-down', function () {
 		expect(position(result[12])).toEqual({ x: -67, y: -27});
 	});
 	it('aligns groups horizontally', function () {
-		var idea = {
+		const idea = {
 				title: 'parent', /* 120, 60 */
 				attr: { group: 'blue' },
 				id: 1,
@@ -124,7 +124,7 @@ describe('layouts/top-down', function () {
 		expect(position(result[12])).toEqual({ x: -67, y: -30});
 	});
 	describe('aligns grouped children within the same level', function () {
-		var idea, result;
+		let idea, result;
 		beforeEach(function () {
 			idea = {
 				title: 'parent', /* 120, 60 */
@@ -181,7 +181,7 @@ describe('layouts/top-down', function () {
 		});
 	});
 	it('does not overlap children of sublevels created after groups', function () {
-		var idea = {
+		const idea = {
 				title: 'parent', /* 120, 60 */
 				id: 1,
 				ideas: {
@@ -190,7 +190,8 @@ describe('layouts/top-down', function () {
 						attr: { group: 'blue' },
 						id: 12,
 						ideas: {
-							1: { id: 121, title: 'child' /* 100, 50 */, ideas: {
+							1: { id: 121, title: 'child' /* 100, 50 */,
+								ideas: {
 									1: {id: 121, title: 'subsubchild' /* 220 x 110*/ },
 									2: {id: 122, title: 'subsubchild' /* 220 x 110*/ },
 									3: {id: 123, title: 'subsubchild' /* 220 x 110*/ }
@@ -211,7 +212,7 @@ describe('layouts/top-down', function () {
 		expect(result[111].x + result[111].width).toBeLessThan(result[121].x);
 	});
 	it('sorts children in rank order', function () {
-		var idea = {
+		const idea = {
 				title: 'loses',
 				ideas: {
 					'1': {
@@ -225,7 +226,7 @@ describe('layouts/top-down', function () {
 						title: 'multi-line nodes',
 						id: 220,
 						ideas: {
-							'1': {'title': 'makes node text into text attachment on blank node','id': 221 }
+							'1': {'title': 'makes node text into text attachment on blank node', 'id': 221 }
 						}
 					},
 					'4': {
@@ -249,7 +250,7 @@ describe('layouts/top-down', function () {
 		})).toEqual([216, 215, 220, 223]);
 	});
 	it('ignores children below collapsed parent', function () {
-		var idea = {
+		const idea = {
 				title: 'parent', /* 120, 60 */
 				id: 1,
 				ideas: {
@@ -288,7 +289,7 @@ describe('layouts/top-down', function () {
 		expect(result[112]).toBeFalsy();
 	});
 	it('positions third level below the second level, even if uneven heights on 2nd', function () {
-		var idea = {
+		const idea = {
 				title: 'parent', /* 120, 60 */
 				id: 1,
 				ideas: {
@@ -320,7 +321,7 @@ describe('layouts/top-down', function () {
 		expect(result[113].y).toEqual(85);
 	});
 	it('ignores empty groups', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: '1',
 				ideas: {
@@ -352,41 +353,37 @@ describe('layouts/top-down', function () {
 					}
 				}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, {h: 30});
+			result = layout(contentAggregate, dimensionProvider, {h: 30});
 		expect(_.sortBy(Object.keys(result), parseFloat)).toEqual(['7', '8', '11', '16']);
 	});
 	it('includes root even if empty group', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: '1',
 				attr: { group: 'standard' },
 				ideas: {}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, {h: 30});
+			result = layout(contentAggregate, dimensionProvider, {h: 30});
 		expect(result[7]).toBeTruthy();
 	});
 	it('removes titles from group nodes', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: '1',
 				attr: { group: 'standard' },
 				ideas: {}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, {h: 30});
+			result = layout(contentAggregate, dimensionProvider, {h: 30});
 		expect(result[7].title).toBe('');
 	});
 	it('does not remove titles from non-group nodes', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: '1',
 				attr: { xgroup: 'standard' },
 				ideas: {}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, {h: 30});
+			result = layout(contentAggregate, dimensionProvider, {h: 30});
 		expect(result[7].title).toBe('1');
 	});
 });

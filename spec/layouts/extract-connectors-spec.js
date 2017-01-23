@@ -1,8 +1,8 @@
 /*global describe, it, require, expect, beforeEach*/
-var extractConnectors = require('../../src/layouts/extract-connectors');
+const extractConnectors = require('../../src/layouts/extract-connectors');
 describe('extractConnectors', function () {
 	'use strict';
-	var visibleNodes, idea;
+	let visibleNodes, idea;
 	beforeEach(function () {
 		idea = {
 			id: 'root',
@@ -35,7 +35,7 @@ describe('extractConnectors', function () {
 		};
 	});
 	it('creates an object indexed by child ID with from-to connector information', function () {
-		var result = extractConnectors(idea, visibleNodes);
+		const result = extractConnectors(idea, visibleNodes);
 		expect(result).toEqual({
 			11: Object({ from: 1, to: 11 }),
 			12: Object({ from: 1, to: 12 }),

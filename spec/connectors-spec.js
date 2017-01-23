@@ -2,14 +2,14 @@
 
 describe('MAPJS.Connectors', function () {
 	'use strict';
-	var parent, child;
+	let parent, child;
 	beforeEach(function () {
 		parent = {top: 100, left: 200, width: 100, height: 40, styles: ['default']};
 		child = {top: 220, left: 330, width: 12, height: 44, styles: ['default']};
 	});
 	describe('linkPath', function () {
 		it('draws a straight line between the borders of two nodes', function () {
-			var path = MAPJS.Connectors.linkPath(parent, child, false);
+			const path = MAPJS.Connectors.linkPath(parent, child, false);
 			expect(path).toEqual({
 				d: 'M100,20L136,120',
 				conn: {
@@ -21,7 +21,7 @@ describe('MAPJS.Connectors', function () {
 			});
 		});
 		it('draws a straight line with arrow between the borders of two nodes', function () {
-			var path = MAPJS.Connectors.linkPath(parent, child, true);
+			const path = MAPJS.Connectors.linkPath(parent, child, true);
 			expect(path).toEqual({
 				d: 'M100,20L136,120',
 				conn: {
@@ -37,7 +37,7 @@ describe('MAPJS.Connectors', function () {
 	describe('themePath', function () {
 		describe('when no theme is provided', function () {
 			it('draws a quadratic curve between the centers of two nodes', function () {
-				var path = MAPJS.Connectors.themePath(parent, child);
+				const path = MAPJS.Connectors.themePath(parent, child);
 				expect(path).toEqual({
 					d: 'M50,20Q50,190 140,142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
@@ -47,7 +47,7 @@ describe('MAPJS.Connectors', function () {
 			});
 		});
 		describe('when a theme is provided with an underlined node style', function () {
-			var theme;
+			let theme;
 			beforeEach(function () {
 				theme = new MAPJS.Theme({
 					name: 'MindMup Test',
@@ -118,7 +118,7 @@ describe('MAPJS.Connectors', function () {
 		});
 
 		describe('when a theme is provided with an overlined node style', function () {
-			var theme;
+			let theme;
 			beforeEach(function () {
 				theme = new MAPJS.Theme({
 					name: 'MindMup Test',

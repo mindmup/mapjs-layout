@@ -1,11 +1,12 @@
 /*global describe, expect, it, require, jasmine*/
-var treeUtils = require('../src/tree');
+const treeUtils = require('../src/tree');
 
 describe('tree', function () {
 	'use strict';
+	let result;
 	describe('Tree', function () {
-		var dimensionProvider = function (content) {
-			var parts = content.title.split('x');
+		const dimensionProvider = function (content) {
+			const parts = content.title.split('x');
 			return {
 				width: parseInt(parts[0], 10),
 				height: parseInt(parts[1], 10)
@@ -13,12 +14,11 @@ describe('tree', function () {
 		};
 		describe('Calculating Tree', function () {
 			it('should convert a single root node into a tree', function () {
-				var content = {
-						id: 1,
-						title: '100x200',
-						attr: { name: 'value' }
-					},
-					result;
+				const content = {
+					id: 1,
+					title: '100x200',
+					attr: { name: 'value' }
+				};
 
 				result = treeUtils.calculateTree(content, dimensionProvider);
 
@@ -31,17 +31,16 @@ describe('tree', function () {
 				}));
 			});
 			it('should convert a root node with a single child into a tree', function () {
-				var content = {
-						id: 1,
-						title: '200x100',
-						ideas: {
-							100: {
-								id: 2,
-								title: '300x80'
-							}
+				const content = {
+					id: 1,
+					title: '200x100',
+					ideas: {
+						100: {
+							id: 2,
+							title: '300x80'
 						}
-					},
-					result;
+					}
+				};
 
 				result = treeUtils.calculateTree(content, dimensionProvider, 10);
 
@@ -61,18 +60,17 @@ describe('tree', function () {
 				}));
 			});
 			it('should disregard children of collapsed nodes', function () {
-				var content = {
-						id: 1,
-						title: '200x100',
-						attr: { collapsed: true},
-						ideas: {
-							100: {
-								id: 2,
-								title: '300x80'
-							}
+				const content = {
+					id: 1,
+					title: '200x100',
+					attr: { collapsed: true},
+					ideas: {
+						100: {
+							id: 2,
+							title: '300x80'
 						}
-					},
-					result;
+					}
+				};
 
 				result = treeUtils.calculateTree(content, dimensionProvider, 10);
 
@@ -86,21 +84,20 @@ describe('tree', function () {
 				expect(result.subtrees).toBeUndefined();
 			});
 			it('should convert a root node with a two children into a tree', function () {
-				var content = {
-						id: 1,
-						title: '200x100',
-						ideas: {
-							100: {
-								id: 2,
-								title: '300x80'
-							},
-							200: {
-								id: 3,
-								title: '100x30'
-							}
+				const content = {
+					id: 1,
+					title: '200x100',
+					ideas: {
+						100: {
+							id: 2,
+							title: '300x80'
+						},
+						200: {
+							id: 3,
+							title: '100x30'
 						}
-					},
-					result;
+					}
+				};
 
 				result = treeUtils.calculateTree(content, dimensionProvider, 10);
 
@@ -128,21 +125,21 @@ describe('tree', function () {
 				}));
 			});
 			it('should only include nodes where rank and parent predicate says so', function () {
-				var content = {
-						id: 11,
-						title: '200x100',
-						ideas: {
-							100: {
-								id: 2,
-								title: '300x80'
-							},
-							200: {
-								id: 3,
-								title: '100x30'
-							}
+				const content = {
+					id: 11,
+					title: '200x100',
+					ideas: {
+						100: {
+							id: 2,
+							title: '300x80'
+						},
+						200: {
+							id: 3,
+							title: '100x30'
 						}
-					},
-					result;
+					}
+				};
+
 				result = treeUtils.calculateTree(content, dimensionProvider, 10, function (rank, parentId) {
 					return parentId !== 11 || rank !== 200;
 				});
@@ -164,18 +161,18 @@ describe('tree', function () {
 			});
 			describe('manual positioning', function () {
 				it('should use manual position on a single child if set as deltaX and deltaY', function () {
-					var content = {
-							id: 11,
-							title: '200x100',
-							ideas: {
-								100: {
-									id: 2,
-									title: '300x80',
-									attr: { position: [500, -800] }
-								}
+					const content = {
+						id: 11,
+						title: '200x100',
+						ideas: {
+							100: {
+								id: 2,
+								title: '300x80',
+								attr: { position: [500, -800] }
 							}
-						},
-						result;
+						}
+					};
+
 					result = treeUtils.calculateTree(content, dimensionProvider, 10);
 					expect(result.subtrees[0]).toEqual(jasmine.objectContaining({
 						title: '300x80',
@@ -184,23 +181,24 @@ describe('tree', function () {
 					}));
 				});
 				it('should leave second child where it belongs automatically if only first child has manual position', function () {
-					var content = {
-							id: 11,
-							title: '200x100',
-							ideas: {
-								100: {
-									id: 2,
-									title: '300x80',
-									attr: { position: [210, -800] }
-								},
-								200: {
-									id: 3,
-									title: '100x30'
-								}
+					const content = {
+						id: 11,
+						title: '200x100',
+						ideas: {
+							100: {
+								id: 2,
+								title: '300x80',
+								attr: { position: [210, -800] }
+							},
+							200: {
+								id: 3,
+								title: '100x30'
 							}
-						},
-						result;
+						}
+					};
+
 					result = treeUtils.calculateTree(content, dimensionProvider, 10);
+
 					expect(result.subtrees[0]).toEqual(jasmine.objectContaining({
 						id: 2,
 						deltaX: 210,
@@ -213,139 +211,134 @@ describe('tree', function () {
 					}));
 				});
 				it('should push second child down if first child has manual position and would overlap', function () {
-					var content = {
-							id: 11,
-							title: '200x100',
-							ideas: {
-								100: {
-									id: 2,
-									title: '300x80',
-									attr: { position: [210, 10] }
-								},
-								200: {
-									id: 3,
-									title: '100x30'
-								}
+					const content = {
+						id: 11,
+						title: '200x100',
+						ideas: {
+							100: {
+								id: 2,
+								title: '300x80',
+								attr: { position: [210, 10] }
+							},
+							200: {
+								id: 3,
+								title: '100x30'
 							}
-						},
-						result;
+						}
+					};
+
 					result = treeUtils.calculateTree(content, dimensionProvider, 10);
 					expect(result.subtrees[0].deltaY).toBe(10);
 					expect(result.subtrees[1].deltaY).toBe(100);
 				});
 				it('should push first child up if second child has manual position and would overlap', function () {
-					var content = {
-							id: 11,
-							title: '200x100',
-							ideas: {
-								100: {
-									id: 2,
-									title: '300x80'
-								},
-								200: {
-									id: 3,
-									title: '100x30',
-									attr: { position: [210, 10] }
-								}
+					const content = {
+						id: 11,
+						title: '200x100',
+						ideas: {
+							100: {
+								id: 2,
+								title: '300x80'
+							},
+							200: {
+								id: 3,
+								title: '100x30',
+								attr: { position: [210, 10] }
 							}
-						},
-						result;
+						}
+					};
 					result = treeUtils.calculateTree(content, dimensionProvider, 10);
 					expect(result.subtrees[0].deltaY).toBe(-80);
 					expect(result.subtrees[1].deltaY).toBe(10);
 				});
 				it('should use child with maximum priority (3rd element in position) to determine alignment if multiple nodes have manual position', function () {
-					var content = {
-							id: 11,
-							title: '200x100',
-							ideas: {
-								100: {
-									id: 2,
-									title: '300x80',
-									attr: { position: [210, 5, 2] }
-								},
-								200: {
-									id: 3,
-									title: '100x30',
-									attr: { position: [210, 10, 0] }
-								}
+					const content = {
+						id: 11,
+						title: '200x100',
+						ideas: {
+							100: {
+								id: 2,
+								title: '300x80',
+								attr: { position: [210, 5, 2] }
+							},
+							200: {
+								id: 3,
+								title: '100x30',
+								attr: { position: [210, 10, 0] }
 							}
-						},
-						result;
+						}
+					};
 					result = treeUtils.calculateTree(content, dimensionProvider, 10);
 					expect(result.subtrees[0].deltaY).toBe(5);
 					expect(result.subtrees[1].deltaY).toBe(95);
 				});
 				it('should take X position into consideration when stacking subtrees', function () {
-					var content = {
-							id: 11,
-							title: '10x10',
-							ideas: {
-								100: {
-									id: 2,
-									title: '50x10',
-									attr: { position: [210, -10, 0] },
-									ideas: {
-										201: {
-											id: 4,
-											title: '10x100'
-										}
+					const content = {
+						id: 11,
+						title: '10x10',
+						ideas: {
+							100: {
+								id: 2,
+								title: '50x10',
+								attr: { position: [210, -10, 0] },
+								ideas: {
+									201: {
+										id: 4,
+										title: '10x100'
 									}
-								},
-								200: {
-									id: 3,
-									title: '200x10'
 								}
+							},
+							200: {
+								id: 3,
+								title: '200x10'
 							}
-						},
-						result;
+						}
+					};
 					result = treeUtils.calculateTree(content, dimensionProvider, 10);
 					expect(result.subtrees[0].deltaY).toBe(-10);
 					expect(result.subtrees[1].deltaY).toBe(10);
 				});
 				it('should compress as much as possible by Y when stacking subtrees with manual positions', function () {
-					var content = {
-							id: 11,
-							title: '10x10',
-							ideas: {
-								100: {
-									id: 2,
-									title: '50x10'
-								},
-								200: {
-									id: 3,
-									title: '10x100',
-									attr: { position: [210, 10, 0] }
-								},
-								300: {
-									id: 4,
-									title: '80x10'
-								}
+					const content = {
+						id: 11,
+						title: '10x10',
+						ideas: {
+							100: {
+								id: 2,
+								title: '50x10'
+							},
+							200: {
+								id: 3,
+								title: '10x100',
+								attr: { position: [210, 10, 0] }
+							},
+							300: {
+								id: 4,
+								title: '80x10'
 							}
-						},
-						result;
+						}
+					};
 					result = treeUtils.calculateTree(content, dimensionProvider, 10);
 					expect(result.subtrees[0].deltaY).toBe(-20);
 					expect(result.subtrees[1].deltaY).toBe(10);
 					expect(result.subtrees[2].deltaY).toBe(75);
 				});
 				it('should ignore horisontal positions that would make it overlap with parent', function () {
-					var content = {
-							id: 11,
-							title: '10x10',
-							ideas: {
-								100: {
-									id: 2,
-									title: '50x10',
-									attr: { position: [-10, 0, 0] }
-								},
-								200: {
-									id: 3,
-									title: '200x10'
-								}
+					const content = {
+						id: 11,
+						title: '10x10',
+						ideas: {
+							100: {
+								id: 2,
+								title: '50x10',
+								attr: { position: [-10, 0, 0] }
+							},
+							200: {
+								id: 3,
+								title: '200x10'
 							}
-						},
-						result;
+						}
+					};
 					result = treeUtils.calculateTree(content, dimensionProvider, 10);
 					expect(result.subtrees[0].deltaX).toBe(20);
 				});
@@ -354,14 +347,14 @@ describe('tree', function () {
 
 		describe('conversion to layout', function () {
 			it('should calculate the layout for a single node', function () {
-				var tree = new treeUtils.Tree({
+				const tree = new treeUtils.Tree({
 					id: 1,
 					title: 'Hello world',
 					attr: { name: 'value' },
 					width: 200,
 					height: 100,
 					level: 1
-				}), result;
+				});
 
 				result = tree.toLayout();
 
@@ -382,7 +375,7 @@ describe('tree', function () {
 				});
 			});
 			it('should calculate the layout for two nodes', function () {
-				var tree = new treeUtils.Tree({
+				const tree = new treeUtils.Tree({
 					id: 1,
 					title: 'Hello world',
 					attr: { name: 'value' },
@@ -401,7 +394,7 @@ describe('tree', function () {
 							deltaY: 10
 						})
 					]
-				}), result;
+				});
 
 				result = tree.toLayout();
 
@@ -437,7 +430,7 @@ describe('tree', function () {
 				});
 			});
 			it('should calculate the layout for two left-aligned sub child nodes', function () {
-				var tree = new treeUtils.Tree({
+				const tree = new treeUtils.Tree({
 					id: 1,
 					title: 'Hello world',
 					attr: { name: 'value' },
@@ -466,7 +459,7 @@ describe('tree', function () {
 							level: 2
 						})
 					]
-				}), result;
+				});
 
 				result = tree.toLayout();
 

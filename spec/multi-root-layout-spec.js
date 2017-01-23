@@ -1,9 +1,9 @@
 /*global describe, beforeEach, it, require, expect*/
-var MultiRootLayout = require('../src/multi-root-layout');
+const MultiRootLayout = require('../src/multi-root-layout');
 
 describe('MultiRootLayout', function () {
 	'use strict';
-	var underTest,
+	let underTest,
 		rootLayouts,
 		defaultRootMargin;
 	beforeEach(function () {

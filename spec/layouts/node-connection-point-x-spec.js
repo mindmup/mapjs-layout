@@ -1,10 +1,9 @@
 /*global describe, require, beforeEach, it, expect*/
+const underTest = require('../../src/layouts/node-connection-point-x');
+
 describe('nodeConnectionPointX', function () {
 	'use strict';
-	var underTest = require('../../src/layouts/node-connection-point-x');
-	beforeEach(function () {
 
-	});
 	describe('center', function () {
 		it('should return the horizontal center of the node', function () {
 			expect(underTest.center({left: 10, width: 20})).toEqual(20);
@@ -14,7 +13,7 @@ describe('nodeConnectionPointX', function () {
 		});
 	});
 	describe('center-separated', function () {
-		var node, relatedNode, horizontalInset, verticalInsetRatio;
+		let node, relatedNode, horizontalInset, verticalInsetRatio;
 		beforeEach(function () {
 			node = {left: 0, top: 10, height: 10, width: 100};
 			relatedNode = {left: 0, top: 30, height: 10, width: 100};
@@ -74,7 +73,7 @@ describe('nodeConnectionPointX', function () {
 		});
 	});
 	describe('nearest-inset', function () {
-		var inset;
+		let inset;
 		beforeEach(function () {
 			inset = 3;
 		});

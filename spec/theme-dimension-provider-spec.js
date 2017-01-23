@@ -1,7 +1,7 @@
 /*global describe, beforeEach, jasmine, MAPJS, it, expect*/
 describe('MAPJS.ThemeDimensionProvider', function () {
 	'use strict';
-	var underTest, textSizer, theme, nodeStyles, nodeTheme, textSize;
+	let underTest, textSizer, theme, nodeStyles, nodeTheme, textSize;
 	beforeEach(function () {
 		nodeTheme = {
 			margin: 1,
@@ -18,7 +18,7 @@ describe('MAPJS.ThemeDimensionProvider', function () {
 		underTest = new  MAPJS.ThemeDimensionProvider(textSizer);
 	});
 	describe('dimensionProviderForTheme', function () {
-		var idea;
+		let idea;
 		beforeEach(function () {
 			idea = {id: 1, title: 'my node text'};
 		});
@@ -26,7 +26,7 @@ describe('MAPJS.ThemeDimensionProvider', function () {
 			expect(underTest.dimensionProviderForTheme(theme)).toEqual(jasmine.any(Function));
 		});
 		describe('when the dimensionProviderForTheme function is called', function () {
-			var dpFunc;
+			let dpFunc;
 			beforeEach(function () {
 				dpFunc = underTest.dimensionProviderForTheme(theme);
 			});
@@ -124,7 +124,7 @@ describe('MAPJS.ThemeDimensionProvider', function () {
 		});
 	});
 	describe('nodeLayoutProviderForTheme', function () {
-		var node;
+		let node;
 		beforeEach(function () {
 			node = {
 				level: 1,
@@ -144,7 +144,7 @@ describe('MAPJS.ThemeDimensionProvider', function () {
 			expect(underTest.nodeLayoutProviderForTheme(theme)).toEqual(jasmine.any(Function));
 		});
 		describe('when the nodeLayoutProviderForTheme function is called', function () {
-			var nlpFunc;
+			let nlpFunc;
 			beforeEach(function () {
 				nlpFunc = underTest.nodeLayoutProviderForTheme(theme);
 			});

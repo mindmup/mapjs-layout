@@ -16,10 +16,10 @@
   "bugs": {
     "url": "https://github.com/mindmup/mapjs-layout/issues"
   },
-  "homepage": "https://app.mindmup.com",
+  "homepage": "https://www.mindmup.com",
   "version": "1.11.0",
   "scripts": {
-    "pretest": "jshint src spec && jscs src spec",
+    "pretest": "eslint spec",
     "test": "node spec/support/jasmine-runner.js",
     "debug": "node debug spec/support/jasmine-runner.js"
   },
@@ -31,9 +31,10 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "jasmine": "^2.4.1",
-    "jasmine-spec-reporter": "^2.4.0",
-    "jscs": "^3.0.5",
-    "jshint": "^2.9.2"
+    "eslint": "^3.14.0",
+    "eslint-config-crockford": "^1.0.0",
+    "eslint-config-defaults": "^9.0.0",
+    "jasmine": "^2.5.3",
+    "jasmine-spec-reporter": "^2.7.0"
   }
 }

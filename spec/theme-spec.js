@@ -2,7 +2,7 @@
 
 describe('Theme', function () {
 	'use strict';
-	var underTest, theme;
+	let underTest, theme;
 	beforeEach(function () {
 		theme = {
 			name: 'Mike',
@@ -212,7 +212,7 @@ describe('Theme', function () {
 
 	});
 	describe('connectorTheme', function () {
-		var childPosition;
+		let childPosition;
 		beforeEach(function () {
 			spyOn(underTest, 'connectorControlPoint').and.returnValue('testControlPoint');
 			childPosition = 'above';

@@ -1,11 +1,13 @@
 /*global describe, require, expect, it*/
 
+const underTest = require('../src/color-to-rgb');
+
 describe('convertToRGB', function () {
 	'use strict';
-	var underTest = require('../src/color-to-rgb');
+
 	describe('hex colors', function () {
 		[
-			['#000000', [0,0,0]],
+			['#000000', [0, 0, 0]],
 			['#ffffff', [255, 255, 255]],
 			['#FFFFFF', [255, 255, 255]]
 		].forEach(function (args) {
@@ -17,7 +19,7 @@ describe('convertToRGB', function () {
 	});
 	describe('rgb css colors', function () {
 		[
-			['rgb(0,0,0)', [0,0,0]],
+			['rgb(0,0,0)', [0, 0, 0]],
 			['rgb(255, 255, 255)', [255, 255, 255]],
 			['rgb(255, 254, 253)', [255, 254, 253]],
 			['rgb(255,254,253)', [255, 254, 253]]
@@ -29,7 +31,7 @@ describe('convertToRGB', function () {
 	});
 	describe('rgba css colors', function () {
 		[
-			['rgba(0,0,0,1)', [0,0,0]],
+			['rgba(0,0,0,1)', [0, 0, 0]],
 			['rgba(255, 255, 255, 0.8)', [255, 255, 255]],
 			['rgba(255, 254, 253, 0)', [255, 254, 253]],
 			['rgba(255,254,253,0.9)', [255, 254, 253]]
