@@ -2,9 +2,9 @@
 module.exports = {
 	'quadratic': function (calculatedConnector, position, parent, child) {
 		'use strict';
-		var offset = calculatedConnector.connectorTheme.controlPoint.height * (calculatedConnector.from.y - calculatedConnector.to.y),
-			maxOffset = Math.min(child.height, parent.height) * 1.2;
-		offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
+		const maxOffset = Math.min(child.height, parent.height) * 1.2,
+			requestedOffset = calculatedConnector.connectorTheme.controlPoint.height * (calculatedConnector.from.y - calculatedConnector.to.y),
+			offset = Math.max(-maxOffset, Math.min(maxOffset, requestedOffset));
 
 		return {
 			'd': 'M' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.from.y - position.top) +
@@ -14,7 +14,7 @@ module.exports = {
 	},
 	's-curve': function (calculatedConnector, position) {
 		'use strict';
-		var initialRadius = 10,
+		const initialRadius = 10,
 			dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
 			dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y),
 			dxIncrement = (initialRadius < Math.abs(dx * 0.5)) ? initialRadius * Math.sign(dx) : Math.round(dx * 0.5),
@@ -30,65 +30,71 @@ module.exports = {
 	},
 	'top-down-s-curve': function (calculatedConnector, position) {
 		'use strict';
-		var dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
+		const dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
 			dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y),
 			initialRadius = 15,
 			dxIncrement = initialRadius * Math.sign(dx),
 			dyIncrement = initialRadius * Math.sign(dy),
-			verticalLine = Math.round(0.5 * dy) - dyIncrement;
-		if (initialRadius > Math.abs(dx / 2)) {
-			dyIncrement = verticalLine + Math.round(0.5 * dyIncrement);
-			return {
-				'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
-					'v' + dyIncrement +
-					'l' + dx + ',' + (dy - dyIncrement),
-				'position': position,
-				'initialRadius': 5
+			verticalLine = Math.round(0.5 * dy) - dyIncrement,
+			flatLine = function () {
+				const yIncrement = verticalLine + Math.round(0.5 * dyIncrement);
+				return {
+					'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+						'v' + yIncrement +
+						'l' + dx + ',' + (dy - yIncrement),
+					'position': position,
+					'initialRadius': 5
+				};
 			};
+		if (initialRadius > Math.abs(dx / 2)) {
+			return flatLine();
 		}
 
 		return {
-				'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
-					'v' + verticalLine +
-					'q0,' + dyIncrement + ' ' + dxIncrement + ',' + dyIncrement +
-					'h' + (dx - (2 * dxIncrement)) +
-					'q' + dxIncrement + ',0 ' + dxIncrement + ',' +  dyIncrement +
-					'v' + verticalLine,
-				'position': position,
-				'initialRadius': 5
-			};
+			'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+				'v' + verticalLine +
+				'q0,' + dyIncrement + ' ' + dxIncrement + ',' + dyIncrement +
+				'h' + (dx - (2 * dxIncrement)) +
+				'q' + dxIncrement + ',0 ' + dxIncrement + ',' +  dyIncrement +
+				'v' + verticalLine,
+			'position': position,
+			'initialRadius': 5
+		};
 
 	},
 	'compact-s-curve': function (calculatedConnector, position) {
 		'use strict';
-		var initialRadius = 10,
+		const initialRadius = 10,
 			dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
 			dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y),
 			dxIncrement = initialRadius * Math.sign(dx),
-			dyIncrement = initialRadius * Math.sign(dy);
+			dyIncrement = initialRadius * Math.sign(dy),
+			flatLine = function () {
+				const xIncrement = Math.round(dx / 2);
+				return {
+					'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+						'l' + xIncrement + ',0 ' +
+						'l' + (dx - xIncrement) + ',' + dy,
+					'position': position
+				};
+			};
 
 		if (initialRadius > Math.abs(dx * 0.5) || initialRadius > Math.abs(dy * 0.5)) {
-			dxIncrement = Math.round(dx / 2);
-			return {
-				'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
-					'l' + dxIncrement + ',0 ' +
-					'l' + (dx - dxIncrement) + ',' + dy,
-				'position': position
-			};
+			return flatLine();
 		}
 		return {
-				'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
-					'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
-					'v' + (dy - (2 * dyIncrement)) +
-					'q0,' + dyIncrement + ' ' + dxIncrement + ',' +  dyIncrement +
-					'h' + (dx - (2 * dxIncrement)),
-				'position': position
-			};
+			'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+				'q' + dxIncrement + ',0 ' + dxIncrement + ',' + dyIncrement +
+				'v' + (dy - (2 * dyIncrement)) +
+				'q0,' + dyIncrement + ' ' + dxIncrement + ',' +  dyIncrement +
+				'h' + (dx - (2 * dxIncrement)),
+			'position': position
+		};
 
 	},
 	'vertical-quadratic-s-curve': function (calculatedConnector, position) {
 		'use strict';
-		var dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
+		const dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
 			dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y),
 			dxIncrement = dx / 2,
 			dyIncrement = dy / 2;
@@ -112,14 +118,13 @@ module.exports = {
 	},
 	'vertical-s-curve': function (calculatedConnector, position) {
 		'use strict';
-		var initialRadius = 10,
+		const initialRadius = 10,
 			dx = Math.round(calculatedConnector.to.x - calculatedConnector.from.x),
 			dy = Math.round(calculatedConnector.to.y - calculatedConnector.from.y),
 			dxIncrement = initialRadius * Math.sign(dx),
 			dyIncrement = initialRadius * Math.sign(dy);
 
 		if (initialRadius > Math.abs(dx * 0.5) || initialRadius > Math.abs(dy * 0.5)) {
-			dxIncrement = Math.round(dx / 2);
 			return {
 				'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
 					'l' + dx + ',' + dy,
@@ -127,13 +132,13 @@ module.exports = {
 			};
 		}
 		return {
-				'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
-					'q0,' + dyIncrement + ' ' + dxIncrement + ',' + dyIncrement +
-					'h' + (dx - (2 * dxIncrement)) +
-					'q' + dxIncrement + ',0 ' + dxIncrement + ',' +  dyIncrement +
-					'v' + (dy - (2 * dyIncrement)),
-				'position': position
-			};
+			'd': 'M' + (calculatedConnector.from.x - position.left) + ',' + (calculatedConnector.from.y - position.top) +
+				'q0,' + dyIncrement + ' ' + dxIncrement + ',' + dyIncrement +
+				'h' + (dx - (2 * dxIncrement)) +
+				'q' + dxIncrement + ',0 ' + dxIncrement + ',' +  dyIncrement +
+				'v' + (dy - (2 * dyIncrement)),
+			'position': position
+		};
 
 	},
 	'straight': function (calculatedConnector, position) {

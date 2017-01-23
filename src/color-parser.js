@@ -1,5 +1,5 @@
 /*global module, require*/
-var convertToRGB = require('./color-to-rgb');
+const convertToRGB = require('./color-to-rgb');
 module.exports = function colorParser(colorObj) {
 	'use strict';
 	if (!colorObj.color || colorObj.opacity === 0) {

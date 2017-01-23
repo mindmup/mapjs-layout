@@ -1,5 +1,5 @@
 /*global require, module */
-var Theme = require ('./theme'),
+const Theme = require ('./theme'),
 	_ = require('underscore'),
 	nodeConnectionPointX = require('./layouts/node-connection-point-x'),
 	appendUnderLine = function (connectorCurve, calculatedConnector, position) {
@@ -11,11 +11,10 @@ var Theme = require ('./theme'),
 	},
 	appendOverLine = function (connectorCurve, calculatedConnector) {
 		'use strict';
-		var halfWidth,
-			initialRadius = connectorCurve.initialRadius || 0;
+		const initialRadius = connectorCurve.initialRadius || 0,
+			halfWidth = calculatedConnector.nodeOverline && (Math.floor(0.5 * Math.abs(calculatedConnector.nodeOverline.to.x - calculatedConnector.nodeOverline.from.x)) - 1);
 
 		if (calculatedConnector.nodeOverline) {
-			halfWidth = Math.floor(0.5 * Math.abs(calculatedConnector.nodeOverline.to.x - calculatedConnector.nodeOverline.from.x)) - 1;
 			connectorCurve.d += 'm' + (-1 * halfWidth) + ',' + initialRadius +
 				'q0,' + (-1 * initialRadius) + ' ' + initialRadius + ',' +  (-1 * initialRadius) +
 				' h' + (2 * (halfWidth - initialRadius)) +
@@ -49,8 +48,8 @@ var Theme = require ('./theme'),
 	connectorPaths = require('./connector-paths'),
 	calculateConnector = function (parent, child, theme) {
 		'use strict';
-		var calcChildPosition = function () {
-				var tolerance = 10,
+		const calcChildPosition = function () {
+				const tolerance = 10,
 					childMid = child.top + child.height * 0.5,
 					parentMid = parent.top + parent.height * 0.5;
 				if (Math.abs(parentMid - childMid) + tolerance < Math.max(child.height, parent.height * 0.75)) {
@@ -68,8 +67,8 @@ var Theme = require ('./theme'),
 			connectorTheme = theme.connectorTheme(childPosition, toStyles, fromStyles),
 			fromInset = theme.attributeValue(['node'], fromStyles, ['cornerRadius'], 10),
 			toInset = theme.attributeValue(['node'], toStyles, ['cornerRadius'], 10),
-			borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], ''),
-			nodeUnderline = false, nodeOverline = false;
+			borderType = theme.attributeValue(['node'], toStyles, ['border', 'type'], '');
+		let nodeUnderline = false, nodeOverline = false;
 		if (borderType === 'underline' || borderType === 'under-overline') {
 			nodeUnderline = {
 				from: {
@@ -109,120 +108,126 @@ var Theme = require ('./theme'),
 			nodeOverline: nodeOverline
 		};
 	},
-	themePath = function (parent, child, theme) {
+	themePath = function (parent, child, themeArg) {
 		'use strict';
-		var position = {
-				left: Math.min(parent.left, child.left),
-				top: Math.min(parent.top, child.top)
+		const left = Math.min(parent.left, child.left),
+			top = Math.min(parent.top, child.top),
+			position = {
+				left: left,
+				top: top,
+				width: Math.max(parent.left + parent.width, child.left + child.width, left + 1) - left,
+				height: Math.max(parent.top + parent.height, child.top + child.height, top + 1) - top + 2
 			},
-			calculatedConnector,
-			result;
-		theme = theme || new Theme({});
-		position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left + 1) - position.left;
-		position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top + 1) - position.top + 2;
-		calculatedConnector = calculateConnector(parent, child, theme);
-		result = appendBorderLines(connectorPaths[calculatedConnector.connectorTheme.type](calculatedConnector, position, parent, child), calculatedConnector, position);
+			theme = themeArg || new Theme({}),
+			calculatedConnector = calculateConnector(parent, child, theme),
+			result = appendBorderLines(connectorPaths[calculatedConnector.connectorTheme.type](calculatedConnector, position, parent, child), calculatedConnector, position);
 		result.color = calculatedConnector.connectorTheme.line.color;
 		result.width = calculatedConnector.connectorTheme.line.width;
 		return result;
 	},
 	linkPath = function (parent, child, arrow) {
 		'use strict';
-		var calculateConnector = function (parent, child) {
-			var parentPoints = [
-				{
-					x: parent.left + Math.round(0.5 * parent.width),
-					y: parent.top
-				},
-				{
-					x: parent.left + parent.width,
-					y: parent.top + Math.round(0.5 * parent.height)
-				},
-				{
-					x: parent.left + Math.round(0.5 * parent.width),
-					y: parent.top + parent.height
-				},
-				{
-					x: parent.left,
-					y: parent.top + Math.round(0.5 * parent.height)
-				}
-			], childPoints = [
-				{
-					x: child.left + Math.round(0.5 * child.width),
-					y: child.top
-				},
-				{
-					x: child.left + child.width,
-					y: child.top + Math.round(0.5 * child.height)
-				},
-				{
-					x: child.left + Math.round(0.5 * child.width),
-					y: child.top + child.height
-				},
-				{
-					x: child.left,
-					y: child.top + Math.round(0.5 * child.height)
-				}
-			], i, j, min = Infinity, bestParent, bestChild, dx, dy, current;
-			for (i = 0; i < parentPoints.length; i += 1) {
-				for (j = 0; j < childPoints.length; j += 1) {
-					dx = parentPoints[i].x - childPoints[j].x;
-					dy = parentPoints[i].y - childPoints[j].y;
-					current = dx * dx + dy * dy;
-					if (current < min) {
-						bestParent = i;
-						bestChild = j;
-						min = current;
+		const calculateConnector = function (parent, child) {
+				const parentPoints =
+					[
+						{
+							x: parent.left + Math.round(0.5 * parent.width),
+							y: parent.top
+						},
+						{
+							x: parent.left + parent.width,
+							y: parent.top + Math.round(0.5 * parent.height)
+						},
+						{
+							x: parent.left + Math.round(0.5 * parent.width),
+							y: parent.top + parent.height
+						},
+						{
+							x: parent.left,
+							y: parent.top + Math.round(0.5 * parent.height)
+						}
+					],
+					childPoints =
+					[
+						{
+							x: child.left + Math.round(0.5 * child.width),
+							y: child.top
+						},
+						{
+							x: child.left + child.width,
+							y: child.top + Math.round(0.5 * child.height)
+						},
+						{
+							x: child.left + Math.round(0.5 * child.width),
+							y: child.top + child.height
+						},
+						{
+							x: child.left,
+							y: child.top + Math.round(0.5 * child.height)
+						}
+					];
+				let i, j, min = Infinity, bestParent, bestChild, dx, dy, current;
+				for (i = 0; i < parentPoints.length; i += 1) {
+					for (j = 0; j < childPoints.length; j += 1) {
+						dx = parentPoints[i].x - childPoints[j].x;
+						dy = parentPoints[i].y - childPoints[j].y;
+						current = dx * dx + dy * dy;
+						if (current < min) {
+							bestParent = i;
+							bestChild = j;
+							min = current;
+						}
 					}
 				}
-			}
-			return {
-				from: parentPoints[bestParent],
-				to: childPoints[bestChild]
-			};
-		},
-		arrowPath = function () {
-			var len = 14, dx, dy, iy, a1x, a2x, a1y, a2y, n, m;
-			if (!arrow) {
-				return false;
-			}
-			n = Math.tan(Math.PI / 9);
-			dx = conn.to.x - conn.from.x;
-			dy = conn.to.y - conn.from.y;
-			if (dx === 0) {
-				iy = dy < 0 ? -1 : 1;
-				a1x = conn.to.x + len * Math.sin(n) * iy;
-				a2x = conn.to.x - len * Math.sin(n) * iy;
-				a1y = conn.to.y - len * Math.cos(n) * iy;
-				a2y = conn.to.y - len * Math.cos(n) * iy;
-			} else {
-				m = dy / dx;
-				if (conn.from.x < conn.to.x) {
-					len = -len;
+				return {
+					from: parentPoints[bestParent],
+					to: childPoints[bestChild]
+				};
+			},
+			conn = calculateConnector(parent, child),
+			left = Math.min(parent.left, child.left),
+			top = Math.min(parent.top, child.top),
+			position = {
+				left: left,
+				top: top,
+				width: Math.max(parent.left + parent.width, child.left + child.width, left) - left,
+				height: Math.max(parent.top + parent.height, child.top + child.height, top) - top
+			},
+			arrowPath = function () {
+				const n = Math.tan(Math.PI / 9),
+					dx = conn.to.x - conn.from.x,
+					dy = conn.to.y - conn.from.y;
+
+				let len = 14, iy, a1x, a2x, a1y, a2y, m;
+
+				if (dx === 0) {
+					iy = dy < 0 ? -1 : 1;
+					a1x = conn.to.x + len * Math.sin(n) * iy;
+					a2x = conn.to.x - len * Math.sin(n) * iy;
+					a1y = conn.to.y - len * Math.cos(n) * iy;
+					a2y = conn.to.y - len * Math.cos(n) * iy;
+				} else {
+					m = dy / dx;
+					if (conn.from.x < conn.to.x) {
+						len = -len;
+					}
+					a1x = conn.to.x + (1 - m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+					a1y = conn.to.y + (m + n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+					a2x = conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
+					a2y = conn.to.y + (m - n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
 				}
-				a1x = conn.to.x + (1 - m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-				a1y = conn.to.y + (m + n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-				a2x = conn.to.x + (1 + m * n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-				a2y = conn.to.y + (m - n) * len / Math.sqrt((1 + m * m) * (1 + n * n));
-			}
-			return 'M' + Math.round(a1x - position.left) + ',' + Math.round(a1y - position.top) +
-				'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top) +
-				'L' + Math.round(a2x - position.left) + ',' + Math.round(a2y - position.top) +
-				'Z';
-		},
-		position = {
-			left: Math.min(parent.left, child.left),
-			top: Math.min(parent.top, child.top)
-		},
-		conn = calculateConnector(parent, child);
-		position.width = Math.max(parent.left + parent.width, child.left + child.width, position.left) - position.left;
-		position.height = Math.max(parent.top + parent.height, child.top + child.height, position.top) - position.top;
+				return 'M' + Math.round(a1x - position.left) + ',' + Math.round(a1y - position.top) +
+					'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top) +
+					'L' + Math.round(a2x - position.left) + ',' + Math.round(a2y - position.top) +
+					'Z';
+			};
+
 
 		return {
 			'd': 'M' + Math.round(conn.from.x - position.left) + ',' + Math.round(conn.from.y - position.top) + 'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top),
 			'conn': conn,
 			'position': position,
-			arrow: arrowPath()
+			arrow: arrow && arrowPath()
 		};
 	};
 
