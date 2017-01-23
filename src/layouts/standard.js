@@ -1,19 +1,18 @@
 /*global module, require */
-var _ = require('underscore'),
+const _ = require('underscore'),
 	treeUtils = require('../tree');
 module.exports  = function standardLayout(idea, dimensionProvider, margin) {
 	'use strict';
-	var positiveTree, negativeTree, layout, negativeLayout,
-		positive = function (rank, parentId) {
+	const positive = function (rank, parentId) {
 			return parentId !== idea.id || rank > 0;
 		},
 		negative = function (rank, parentId) {
 			return parentId !== idea.id || rank < 0;
-		};
-	positiveTree = treeUtils.calculateTree(idea, dimensionProvider, margin.h, positive);
-	negativeTree = treeUtils.calculateTree(idea, dimensionProvider, margin.h, negative);
-	layout = positiveTree.toLayout();
-	negativeLayout = negativeTree.toLayout();
+		},
+		positiveTree = treeUtils.calculateTree(idea, dimensionProvider, margin.h, positive),
+		negativeTree = treeUtils.calculateTree(idea, dimensionProvider, margin.h, negative),
+		layout = positiveTree.toLayout(),
+		negativeLayout = negativeTree.toLayout();
 	_.each(negativeLayout.nodes, function (n) {
 		n.x = -1 * n.x - n.width;
 	});

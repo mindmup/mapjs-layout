@@ -1,8 +1,8 @@
 /*global module, require */
-var _ = require('underscore');
+const _ = require('underscore');
 module.exports = function alignGroup(result, rootIdea) {
 	'use strict';
-	var nodes = result.nodes,
+	const nodes = result.nodes,
 		childIds = _.values(rootIdea.ideas).map(function (idea) {
 			return idea.id;
 		}),

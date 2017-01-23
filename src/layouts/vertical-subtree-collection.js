@@ -1,18 +1,19 @@
 /*global module, require */
-var _ = require('underscore');
-module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
+const _ = require('underscore');
+module.exports = function VerticalSubtreeCollection(subtreeMap, marginArg) {
 	'use strict';
-	var self = this,
+	const self = this,
 		sortedRanks = function () {
 			if (!subtreeMap) {
 				return [];
 			}
 			return _.sortBy(Object.keys(subtreeMap), parseFloat);
 		},
+		margin = marginArg || 0,
 		calculateExpectedTranslations = function () {
-			var ranks = sortedRanks(),
+			const ranks = sortedRanks(),
 				translations = {},
-				currentWidthByLevel,
+
 				sortByRank = function () {
 					/* todo: cache */
 					if (_.isEmpty(subtreeMap)) {
@@ -22,9 +23,10 @@ module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
 						return subtreeMap[key];
 					});
 				};
+			let currentWidthByLevel;
 
 			sortByRank().forEach(function (childLayout, rankIndex) {
-				var currentRank = ranks[rankIndex];
+				const currentRank = ranks[rankIndex];
 				if (currentWidthByLevel === undefined) {
 					translations[currentRank] = 0 - childLayout.levels[0].xOffset;
 					currentWidthByLevel = childLayout.levels.map(function (level) {
@@ -32,7 +34,7 @@ module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
 					});
 				} else {
 					childLayout.levels.forEach(function (level, levelIndex) {
-						var currentLevelWidth = currentWidthByLevel[levelIndex];
+						const currentLevelWidth = currentWidthByLevel[levelIndex];
 						if (currentLevelWidth !== undefined) {
 							if (translations[currentRank] === undefined) {
 								translations[currentRank] = currentLevelWidth + margin - level.xOffset;
@@ -49,14 +51,10 @@ module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
 			});
 			return translations;
 		},
-		translationsByRank;
-
-
-	margin = margin || 0;
-	translationsByRank =  calculateExpectedTranslations();
+		translationsByRank = calculateExpectedTranslations();
 
 	self.getLevelWidth = function (level) {
-		var candidateRanks = sortedRanks().filter(function (rank) {
+		const candidateRanks = sortedRanks().filter(function (rank) {
 				return self.existsOnLevel(rank, level);
 			}),
 			referenceLeft = candidateRanks[0], /* won't work if the first child layout does not exist on the widest level */
@@ -69,12 +67,11 @@ module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
 	};
 	self.getLevelWidths = function () {
 		/* todo: cache */
-		var result = [],
-			levelIdx,
+		const result = [],
 			maxLevel = _.max(_.map(subtreeMap, function (childLayout) {
 				return childLayout.levels.length;
 			}));
-		for (levelIdx = 0; levelIdx < maxLevel; levelIdx++) {
+		for (let levelIdx = 0; levelIdx < maxLevel; levelIdx++) {
 			result.push(self.getLevelWidth(levelIdx));
 		}
 		return result;
@@ -90,9 +87,9 @@ module.exports = function VerticalSubtreeCollection(subtreeMap, margin) {
 		return subtreeMap[rank].levels.length > level;
 	};
 	self.getMergedLevels = function () {
-		var targetCombinedLeftOffset = Math.round(self.getLevelWidth(0) * -0.5);
+		const targetCombinedLeftOffset = Math.round(self.getLevelWidth(0) * -0.5);
 		return self.getLevelWidths().map(function (levelWidth, index) {
-			var candidateRanks = sortedRanks().filter(function (rank) {
+			const candidateRanks = sortedRanks().filter(function (rank) {
 					return self.existsOnLevel(rank, index);
 				}),
 				referenceLeft = candidateRanks[0], /* won't work if the first child layout does not exist on the widest level */
