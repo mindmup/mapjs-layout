@@ -1,12 +1,12 @@
 /*global module, require */
-var _ = require('underscore'),
+const _ = require('underscore'),
 	colorParser = require('./color-parser');
 module.exports = function Theme(themeJson) {
 	'use strict';
-	var self = this,
+	const self = this,
 		themeDictionary = _.extend({}, themeJson),
 		getElementForPath = function (object, pathArray) {
-			var remaining = pathArray.slice(0),
+			let remaining = pathArray.slice(0),
 				current = object;
 
 			while (remaining.length > 0) {
@@ -17,9 +17,17 @@ module.exports = function Theme(themeJson) {
 				remaining = remaining.slice(1);
 			}
 			return current;
+		},
+		extractElement = function (merged, postfixes, fallback) {
+			const result = getElementForPath(merged, postfixes);
+			if (result === undefined) {
+				return fallback;
+			}
+			return result;
 		};
+
 	self.getFontForStyles = function (themeStyles) {
-		var weight = self.attributeValue(['node'], themeStyles, ['text', 'font', 'weight'], 'semibold'),
+		const weight = self.attributeValue(['node'], themeStyles, ['text', 'font', 'weight'], 'semibold'),
 			size = self.attributeValue(['node'], themeStyles, ['text', 'font', 'size'], 12),
 			lineSpacing = self.attributeValue(['node'], themeStyles, ['text', 'font', 'lineSpacing'], 3.5);
 		return {size: size, weight: weight, lineGap: lineSpacing};
@@ -29,9 +37,8 @@ module.exports = function Theme(themeJson) {
 	};
 	self.name = themeJson && themeJson.name;
 	self.attributeValue = function (prefixes, styles, postfixes, fallback) {
-		var rootElement = getElementForPath(themeDictionary, prefixes),
-			merged = {},
-			result;
+		const rootElement = getElementForPath(themeDictionary, prefixes);
+		let merged = {};
 		if (!rootElement) {
 			return fallback;
 		}
@@ -42,14 +49,10 @@ module.exports = function Theme(themeJson) {
 		} else {
 			merged = _.extend({}, rootElement);
 		}
-		result = getElementForPath(merged, postfixes);
-		if (result === undefined) {
-			return fallback;
-		}
-		return result;
+		return extractElement(merged, postfixes, fallback);
 	};
 	self.nodeStyles = function (nodeLevel, nodeAttr) {
-		var result = ['level_' + nodeLevel, 'default'];
+		const result = ['level_' + nodeLevel, 'default'];
 		if (nodeAttr && nodeAttr.group) {
 			result.unshift('attr_group');
 			if (typeof nodeAttr.group === 'string' || typeof nodeAttr.group === 'number') {
@@ -59,15 +62,16 @@ module.exports = function Theme(themeJson) {
 		return result;
 	};
 	self.nodeTheme = function (styles) {
-		var getBackgroundColor = function () {
-				var colorObj = getElementForPath(merged, ['background']);
+		let merged = {};
+		const getBackgroundColor = function () {
+				const colorObj = getElementForPath(merged, ['background']);
 				if (colorObj) {
 					return colorParser(colorObj);
 				}
 				return getElementForPath(merged, ['backgroundColor']);
 			},
 			rootElement = getElementForPath(themeDictionary, ['node']),
-			merged = {},
+
 			result = {
 				margin: 5,
 				font: {
@@ -103,14 +107,14 @@ module.exports = function Theme(themeJson) {
 	};
 
 	self.connectorControlPoint = function (childPosition, connectorStyle) {
-		var controlPointOffset = childPosition === 'horizontal' ? 1 : 1.75,
+		const controlPointOffset = childPosition === 'horizontal' ? 1 : 1.75,
 			defaultControlPoint = {'width': 0, 'height': controlPointOffset},
 			configuredControlPoint = connectorStyle && getElementForPath(themeDictionary, ['connector', connectorStyle, 'controlPoint', childPosition]);
 
 		return (configuredControlPoint && _.extend({}, configuredControlPoint)) || defaultControlPoint;
 	};
 	self.connectorTheme = function (childPosition, childStyles, parentStyles) {
-		var position = childPosition || 'horizontal',
+		const position = childPosition || 'horizontal',
 			childConnectorStyle = self.attributeValue(['node'], childStyles, ['connections', 'style'], 'default'),
 			parentConnectorStyle = parentStyles && self.attributeValue(['node'], parentStyles, ['connections', 'childstyle'], false),
 			childConnector = getElementForPath(themeDictionary, ['connector', childConnectorStyle]),
@@ -126,8 +130,7 @@ module.exports = function Theme(themeJson) {
 					width: 1.0
 				}
 			},
-			returnedConnector =  combinedConnector || parentConnector || childConnector || connectorDefaults;
-		returnedConnector = _.extend({}, returnedConnector);
+			returnedConnector =  _.extend({}, combinedConnector || parentConnector || childConnector || connectorDefaults);
 		returnedConnector.controlPoint = controlPoint;
 		returnedConnector.line = returnedConnector.line || connectorDefaults.line;
 		return returnedConnector;

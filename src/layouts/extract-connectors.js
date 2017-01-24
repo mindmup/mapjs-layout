@@ -1,7 +1,7 @@
 /*global module */
 module.exports = function extractConnectors(aggregate, visibleNodes) {
 	'use strict';
-	var result = {},
+	const result = {},
 		traverse = function (idea, parentId, isChildNode) {
 			if (isChildNode) {
 				if (!visibleNodes[idea.id]) {

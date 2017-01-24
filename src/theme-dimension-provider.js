@@ -1,16 +1,16 @@
 /*global module, require */
-var formattedNodeTitle = require('mindmup-mapjs-model').formattedNodeTitle,
+const formattedNodeTitle = require('mindmup-mapjs-model').formattedNodeTitle,
 	_ = require('underscore');
 module.exports = function ThemeDimensionProvider(textSizer) {
 	'use strict';
-	var self = this,
+	const self = this,
 		calcMaxWidth = function (attr, nodeTheme) {
 			return (attr && attr.style && attr.style.width) || nodeTheme.maxWidth;
 		};
 
 	self.dimensionProviderForTheme = function (theme) {
 		return function (idea, level) {
-			var icon = idea.attr && idea.attr.icon,
+			const icon = idea.attr && idea.attr.icon,
 				nodeTheme = theme.nodeTheme(theme.nodeStyles(level, idea.attr)),
 				title = formattedNodeTitle(idea.title),
 				maxWidth = calcMaxWidth(idea.attr, nodeTheme),
@@ -42,14 +42,16 @@ module.exports = function ThemeDimensionProvider(textSizer) {
 	};
 	self.nodeLayoutProviderForTheme = function (theme) {
 		return function (node) {
-			var image = node.attr && node.attr.icon,
-				textLayout, imageLayout,
-				offset,
+			const image = node.attr && node.attr.icon,
 				nodeTheme = theme.nodeTheme(theme.nodeStyles(node.level, node.attr)),
 				title = formattedNodeTitle(node.title),
 				maxWidth = calcMaxWidth(node.attr, nodeTheme),
-				textBox = textSizer(title, maxWidth, nodeTheme.font),
-				textWidth = Math.min(node.width - (2 * nodeTheme.margin), textBox.width);
+				textBox = textSizer(title, maxWidth, nodeTheme.font);
+			let textWidth = Math.min(node.width - (2 * nodeTheme.margin), textBox.width),
+				textLayout,
+				imageLayout,
+				offset;
+
 			if (image) {
 				imageLayout = {
 					x: nodeTheme.margin,

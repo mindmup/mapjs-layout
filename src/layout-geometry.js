@@ -1,5 +1,5 @@
 /*global module, require, isNaN, console*/
-var _ = require('underscore'),
+const _ = require('underscore'),
 	PolyBool = require('polybooljs'),
 	convexHull = require('monotone-convex-hull-2d'),
 	dotProduct = function (p1, p2) {
@@ -8,9 +8,9 @@ var _ = require('underscore'),
 	},
 	unitVector = function (vector) {
 		'use strict';
-		var magnitude = Math.sqrt(Math.pow(vector[0], 2) +  Math.pow(vector[1], 2));
+		const magnitude = Math.sqrt(Math.pow(vector[0], 2) +  Math.pow(vector[1], 2));
 		if (magnitude === 0) {
-			return [0,0];
+			return [0, 0];
 		}
 		return [vector[0] / magnitude, vector[1] / magnitude];
 	},
@@ -23,7 +23,7 @@ var _ = require('underscore'),
 	},
 	arePointsEqual = function (p1, p2) {
 		'use strict';
-		return p1 && p2 && p1.length == 2 && p2.length == 2 && p1[0] === p2[0] && p1[1] === p2[1];
+		return p1 && p2 && p1.length === 2 && p2.length === 2 && p1[0] === p2[0] && p1[1] === p2[1];
 	},
 	areShapesEqual = function (shape1, shape2) {
 		'use strict';
@@ -38,26 +38,28 @@ var _ = require('underscore'),
 	},
 	polygonsAreEqual = function (poly1, poly2) {
 		'use strict';
-		var matchingShapes;
+		const matchingShapes = function () {
+			return  _.filter(poly1, function (shape1) {
+				return _.filter(poly2, function (shape2) {
+					return areShapesEqual(shape1, shape2);
+				}).length;
+			});
+		};
 		if (poly1.length > poly2.length) {
 			return false;
 		}
-		matchingShapes =  _.filter(poly1, function (shape1) {
-			return _.filter(poly2, function (shape2) {
-				return areShapesEqual(shape1, shape2);
-			}).length;
-		});
+
 		// if (true || matchingShapes.length) {
 		// 	console.log('matchingShapes.length === poly1.length', matchingShapes.length === poly1.length, 'matchingShapes', matchingShapes, 'poly1', poly1, 'poly2', poly2);
 
 		// }
-		return matchingShapes.length === poly1.length;
+		return matchingShapes().length === poly1.length;
 	},
 	shapeContainingIntersection = function (poly, intersection) {
 		'use strict';
-		var pbIntersection = toPolyBoolPoly(intersection),
+		const pbIntersection = toPolyBoolPoly(intersection),
 			containingShape = _.find(poly, function (shape) {
-				var pbShape = toPolyBoolPoly([shape]),
+				const pbShape = toPolyBoolPoly([shape]),
 					shapeIntersection =  PolyBool.intersect(pbIntersection, pbShape);
 				return (polygonsAreEqual(intersection, shapeIntersection.regions));
 			});
@@ -65,7 +67,7 @@ var _ = require('underscore'),
 	},
 	polygonIntersectionPoints = function (poly1, poly2) {
 		'use strict';
-		var pbPoly1 = toPolyBoolPoly(poly1),
+		const pbPoly1 = toPolyBoolPoly(poly1),
 			pbPoly2 = toPolyBoolPoly(poly2),
 			intersection =  PolyBool.intersect(pbPoly1, pbPoly2),
 			isSameAsPoly1 = polygonsAreEqual(poly1, intersection.regions),
@@ -79,7 +81,7 @@ var _ = require('underscore'),
 	},
 	projectPointOnLineVector = function (point, vectorOrigin, vector) {
 		'use strict';
-		var pointVector = [point[0] - vectorOrigin[0], point[1] - vectorOrigin[1]],
+		const pointVector = [point[0] - vectorOrigin[0], point[1] - vectorOrigin[1]],
 			valDp = dotProduct(vector, pointVector),
 			len2 = dotProduct(vector, vector),
 			resultVector = [
@@ -94,8 +96,8 @@ var _ = require('underscore'),
 
 	orderPointsOnVector = function (points, vectorOrigin, vector, pointsBeforeOriginOnly) {
 		'use strict';
-		var pointScale = function (point) {
-				var dx = point[0] - vectorOrigin[0],
+		const pointScale = function (point) {
+				const dx = point[0] - vectorOrigin[0],
 					dy = point[1] - vectorOrigin[1],
 					val = (function () {
 						if (dx === 0) {
@@ -124,11 +126,11 @@ var _ = require('underscore'),
 
 		return _.sortBy(filteredPoints, pointScale);
 	},
-	tolayoutPolygonHull = function (layout, margin) {
+	buildPoints = function (layout, margin) {
 		'use strict';
-		var points = [], hullIndices, hull;
+		const points = [];
 		_.each(layout, function (node) {
-			var x1 = Math.round(node.x - margin),
+			const x1 = Math.round(node.x - margin),
 				x2 = Math.round(node.x + node.width + margin),
 				y1 = Math.round(node.y - margin),
 				y2 = Math.round(node.y + node.height + margin);
@@ -138,20 +140,27 @@ var _ = require('underscore'),
 			points.push([x2, y2]);
 			points.push([x2, y1]);
 		});
-		hullIndices = convexHull(points);
-
-		hull =  _.map(hullIndices, function (hullIndex) {
-			return points[hullIndex];
-		});
+		return points;
+	},
+	tolayoutPolygonHull = function (layout, margin) {
+		'use strict';
+		const points = buildPoints(layout, margin),
+			hullIndices = convexHull(points),
+			hull =  _.map(hullIndices, function (hullIndex) {
+				return points[hullIndex];
+			});
 		return [hull];
+	},
+	roundVector = function (vector) {
+		'use strict';
+		return [Math.round(vector[0]), Math.round(vector[1])];
 	},
 	tolayoutPolygonRect = function (layout, margin) {
 		'use strict';
-		var minX =  0,
+		let minX = 0,
 			maxX = 0,
 			minY = 0,
-			maxY = 0,
-			layoutPoly;
+			maxY = 0;
 		_.each(layout, function (node) {
 			minX = Math.min(minX, node.x);
 			maxX = Math.max(maxX, node.x + node.width);
@@ -162,16 +171,15 @@ var _ = require('underscore'),
 		maxX = maxX + margin;
 		minY = minY - margin;
 		maxY = maxY + margin;
-		layoutPoly = [
+		return  [
 			[
 				roundVector([minX, minY]), roundVector([maxX, minY]), roundVector([maxX, maxY]), roundVector([minX, maxY])
 			]
 		];
-		return layoutPoly;
 	},
 	addVectors = function (vector1, vector2) {
 		'use strict';
-		var x = vector1[0] + vector2[0],
+		const x = vector1[0] + vector2[0],
 			y = vector1[1] + vector2[1];
 		if (isNaN(x) || isNaN(y)) {
 			console.log('addVectors invalid-args x', x, 'y', y, 'vector1', vector1, 'vector2', vector2);
@@ -179,13 +187,9 @@ var _ = require('underscore'),
 		}
 		return [x, y];
 	},
-	roundVector = function (vector) {
-		'use strict';
-		return [Math.round(vector[0]), Math.round(vector[1])];
-	},
 	subtractVectors = function (vector1, vector2) {
 		'use strict';
-		var x = vector1[0] - vector2[0],
+		const x = vector1[0] - vector2[0],
 			y = vector1[1] - vector2[1];
 		if (isNaN(x) || isNaN(y)) {
 			console.log('subtractVectors invalid-args vector1', vector1, 'vector2', vector2);
@@ -203,7 +207,7 @@ var _ = require('underscore'),
 	},
 	firstProjectedPolyPointOnVector = function (poly, vectorOrigin, vector) {
 		'use strict';
-		var polyPoints = _.flatten(poly, true),
+		const polyPoints = _.flatten(poly, true),
 			intersectionsOnLine = polyPoints.map(function (intersection) {
 				return projectPointOnLineVector(intersection, vectorOrigin, vector);
 			}),
@@ -212,7 +216,7 @@ var _ = require('underscore'),
 	},
 	furthestIntersectionPoint = function (poly1, poly2, vectorOrigin, vector) {
 		'use strict';
-		var intersections = polygonIntersectionPoints(poly1, poly2),
+		const intersections = polygonIntersectionPoints(poly1, poly2),
 			intersectionsOnLine = intersections.map(function (intersection) {
 				return projectPointOnLineVector(intersection, vectorOrigin, vector);
 			}),
@@ -221,7 +225,7 @@ var _ = require('underscore'),
 	},
 	translatePolyToIntersecton = function (polyToTranslate, intersectionPoint, vector) {
 		'use strict';
-		var firstPolyPoint = firstProjectedPolyPointOnVector(polyToTranslate, intersectionPoint, vector),
+		const firstPolyPoint = firstProjectedPolyPointOnVector(polyToTranslate, intersectionPoint, vector),
 			translation =  firstPolyPoint && roundVector(subtractVectors(intersectionPoint, firstPolyPoint));
 
 		if (!firstPolyPoint) {
@@ -235,11 +239,11 @@ var _ = require('underscore'),
 	translatePolyToNotOverlap = function (polyToFit, existingRegions, polyRootCenter, vector, previousTranslation, depth) {
 		'use strict';
 
-		var firstPolyPoint = firstProjectedPolyPointOnVector(polyToFit, polyRootCenter, vector) || polyRootCenter,
-			intersectionPoint = furthestIntersectionPoint(polyToFit, existingRegions, firstPolyPoint, vector),
-			polyTranslation;
+		const firstPolyPoint = firstProjectedPolyPointOnVector(polyToFit, polyRootCenter, vector) || polyRootCenter,
+			intersectionPoint = furthestIntersectionPoint(polyToFit, existingRegions, firstPolyPoint, vector);
+		let polyTranslation;
 		depth = depth || 0;
-		previousTranslation = previousTranslation || [0,0];
+		previousTranslation = previousTranslation || [0, 0];
 		if (intersectionPoint) {
 			polyTranslation = translatePolyToIntersecton(polyToFit, intersectionPoint, vector);
 			if (polyTranslation) {

@@ -1,7 +1,7 @@
 /*global describe, expect, it, MAPJS, jasmine, beforeEach*/
 describe('MAPJS.calculateLayout', function () {
 	'use strict';
-	var idea, dimensionProvider, layouts, optional, defaultMargin;
+	let idea, dimensionProvider, layouts, optional, defaultMargin;
 	beforeEach(function () {
 		defaultMargin = {h: 20, v: 20};
 		idea = {
@@ -69,18 +69,18 @@ describe('MAPJS.calculateLayout', function () {
 		});
 	});
 	describe('common layout info', function () {
+		let result;
 		it('should include the orientation from the theme', function () {
-			var idea = {
-					id: 'root',
-					formatVersion: 3,
-					ideas: {
-						1: {
-							title: 'parent',
-							id: 1
-						}
+			const idea = {
+				id: 'root',
+				formatVersion: 3,
+				ideas: {
+					1: {
+						title: 'parent',
+						id: 1
 					}
-				},
-				result;
+				}
+			};
 			layouts.standard.and.returnValue({
 				1: {x: 0, y: 0, height: 10, width: 10}
 			});
@@ -89,7 +89,6 @@ describe('MAPJS.calculateLayout', function () {
 			expect(result.orientation).toEqual('not-top-down');
 		});
 		it('should attach node styles', function () {
-			var result;
 			layouts.standard.and.returnValue({
 				1: {level: 3, attr: { group: 'blue'}, x: 0, y: 0, height: 10, width: 10 },
 				4: {level: 6, x: 0, y: 0, height: 10, width: 10}
@@ -99,21 +98,20 @@ describe('MAPJS.calculateLayout', function () {
 			expect(result.nodes[4].styles).toEqual(['level_6', 'default']);
 		});
 		it('should attach root node IDs', function () {
-			var result;
-			idea = {
-					id: 'root',
-					formatVersion: 3,
-					ideas: {
-						1: {
-							title: 'parent',
-							id: 1
-						},
-						2: {
-							title: 'parent2',
-							id: 2
-						}
+			const idea = {
+				id: 'root',
+				formatVersion: 3,
+				ideas: {
+					1: {
+						title: 'parent',
+						id: 1
+					},
+					2: {
+						title: 'parent2',
+						id: 2
 					}
-				};
+				}
+			};
 			layouts.standard.and.callFake(function (idea) {
 				if (idea.id === 1) {
 					return {
@@ -138,18 +136,17 @@ describe('MAPJS.calculateLayout', function () {
 			expect(result.nodes[211].rootId).toEqual(2);
 		});
 		it('should include the theme id from the idea', function () {
-			var idea = {
-					id: 'root',
-					formatVersion: 3,
-					attr: { theme: 'blue' },
-					ideas: {
-						1: {
-							title: 'parent',
-							id: 1
-						}
+			const idea = {
+				id: 'root',
+				formatVersion: 3,
+				attr: { theme: 'blue' },
+				ideas: {
+					1: {
+						title: 'parent',
+						id: 1
 					}
-				},
-				result;
+				}
+			};
 			layouts.standard.and.returnValue({
 				1: {x: 0, y: 0, height: 10, width: 10}
 			});
@@ -158,29 +155,28 @@ describe('MAPJS.calculateLayout', function () {
 			expect(result.theme).toEqual('blue');
 		});
 		it('should include connectors regardless of the layout', function () {
-			var idea = {
-					id: 'root',
-					formatVersion: 3,
-					ideas: {
-						1: {
-							title: 'parent',
-							id: 1,
-							ideas: {
-								5: {
-									title: 'second child',
-									id: 12,
-									ideas: { 1: { id: 112, title: 'XYZ' } }
-								},
-								4: {
-									title: 'child',
-									id: 11,
-									ideas: { 1: { id: 111, title: 'XYZ' } }
-								}
+			const idea = {
+				id: 'root',
+				formatVersion: 3,
+				ideas: {
+					1: {
+						title: 'parent',
+						id: 1,
+						ideas: {
+							5: {
+								title: 'second child',
+								id: 12,
+								ideas: { 1: { id: 112, title: 'XYZ' } }
+							},
+							4: {
+								title: 'child',
+								id: 11,
+								ideas: { 1: { id: 111, title: 'XYZ' } }
 							}
 						}
 					}
-				},
-				result;
+				}
+			};
 			layouts.standard.and.returnValue({
 				1: {x: 0, y: 0, height: 10, width: 10},
 				11: {x: 0, y: 0, height: 10, width: 10},
@@ -199,64 +195,62 @@ describe('MAPJS.calculateLayout', function () {
 			});
 		});
 		it('should not include links between collapsed nodes', function () {
-			var idea = {
-					id: 'root',
-					formatVersion: 3,
-					ideas: {
-						1: {
-							id: 1,
-							title: 'first',
-							attr: { collapsed: true },
-							ideas: {
-								100: {
-									id: 2,
-									title: 'second'
-								},
-								200: {
-									id: 3,
-									title: 'third'
-								}
+			const idea = {
+				id: 'root',
+				formatVersion: 3,
+				ideas: {
+					1: {
+						id: 1,
+						title: 'first',
+						attr: { collapsed: true },
+						ideas: {
+							100: {
+								id: 2,
+								title: 'second'
+							},
+							200: {
+								id: 3,
+								title: 'third'
 							}
 						}
-					},
-					links: [{
-						ideaIdFrom: 2,
-						ideaIdTo: 3
-					}]
+					}
 				},
-				result;
+				links: [{
+					ideaIdFrom: 2,
+					ideaIdTo: 3
+				}]
+			};
 
 			layouts.standard.and.returnValue({ 1: {id: 1, x: 0, y: 0, height: 10, width: 10}});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
 			expect(result.links).toEqual({});
 		});
 		it('should include links between non-collapsed nodes', function () {
-			var idea = {
-					id: 'root',
-					formatVersion: 3,
-					ideas: {
-						1: {
-							id: 1,
-							title: 'first',
-							ideas: {
-								100: {
-									id: 2,
-									title: 'second'
-								},
-								200: {
-									id: 3,
-									title: 'third'
-								}
+			const idea = {
+				id: 'root',
+				formatVersion: 3,
+				ideas: {
+					1: {
+						id: 1,
+						title: 'first',
+						ideas: {
+							100: {
+								id: 2,
+								title: 'second'
+							},
+							200: {
+								id: 3,
+								title: 'third'
 							}
 						}
-					},
-					links: [{
-						ideaIdFrom: 2,
-						ideaIdTo: 3,
-						attr: { name: 'val' }
-					}]
+					}
 				},
-				result;
+				links: [{
+					ideaIdFrom: 2,
+					ideaIdTo: 3,
+					attr: { name: 'val' }
+				}]
+			};
 
 			layouts.standard.and.returnValue({
 				1: {id: 1, x: 0, y: 0, height: 10, width: 10},
@@ -264,7 +258,7 @@ describe('MAPJS.calculateLayout', function () {
 				3: {id: 3, x: 0, y: 0, height: 10, width: 10}
 			});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(result.links).toEqual({ '2_3' : { ideaIdFrom : 2, ideaIdTo : 3, attr : { name: 'val' } } });
+			expect(result.links).toEqual({ '2_3': { ideaIdFrom: 2, ideaIdTo: 3, attr: { name: 'val' } } });
 		});
 	});
 

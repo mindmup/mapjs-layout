@@ -1,5 +1,5 @@
 /*global describe, it, expect, require*/
-var isEmptyGroup = require('../src/is-empty-group');
+const isEmptyGroup = require('../src/is-empty-group');
 describe('isEmptyGroup', function () {
 	'use strict';
 	it('returns true only if group attr present and no subideas', function () {

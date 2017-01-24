@@ -1,9 +1,9 @@
 /*global describe, expect, it, beforeEach, require*/
-var layoutLinks = require('../../src/layouts/links');
+const layoutLinks = require('../../src/layouts/links');
 
 describe('layouts/links', function () {
 	'use strict';
-	var contentAggregate, visibleNodes;
+	let contentAggregate, visibleNodes;
 	beforeEach(function () {
 		contentAggregate = {
 			links: [
@@ -41,7 +41,7 @@ describe('layouts/links', function () {
 		});
 	});
 	it('should clone the attribute', function () {
-		var result = layoutLinks(contentAggregate, visibleNodes);
+		const result = layoutLinks(contentAggregate, visibleNodes);
 		result['2_4'].attr.color = 'red';
 		expect(contentAggregate.links[1].attr.color).toEqual('blue');
 	});

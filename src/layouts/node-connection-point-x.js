@@ -1,11 +1,11 @@
 /*global module*/
-var nearestInset = function (node, relatedNode, inset) {
-		'use strict';
-		if (node.left + node.width < relatedNode.left) {
-			return node.left + node.width - inset;
-		}
-		return node.left + inset;
-	};
+const nearestInset = function (node, relatedNode, inset) {
+	'use strict';
+	if (node.left + node.width < relatedNode.left) {
+		return node.left + node.width - inset;
+	}
+	return node.left + inset;
+};
 
 module.exports = {
 	'center': function (node) {
@@ -14,7 +14,7 @@ module.exports = {
 	},
 	'center-separated': function (node, relatedNode, horizontalInset, verticalInsetRatio) {
 		'use strict';
-		var insetY = node.height * (verticalInsetRatio || 0.2),
+		const insetY = node.height * (verticalInsetRatio || 0.2),
 			insetX = horizontalInset || 10,
 			halfWidth = node.width / 2,
 			nodeMidX = node.left + halfWidth,
@@ -33,9 +33,9 @@ module.exports = {
 				}
 			},
 			dx = calcDx(),
-			offsetX = (dx / Math.abs(dy)) * insetY;
-		offsetX = Math.max(offsetX, (halfWidth * -1) + insetX);
-		offsetX = Math.min(offsetX, halfWidth - insetX);
+			requestedOffset = (dx / Math.abs(dy)) * insetY,
+			cappedOffset = Math.max(requestedOffset, (halfWidth * -1) + insetX),
+			offsetX = Math.min(cappedOffset, halfWidth - insetX);
 		return Math.round(node.left + (node.width * 0.5) + offsetX);
 	},
 	'nearest': function (node, relatedNode) {

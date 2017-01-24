@@ -1,16 +1,16 @@
 /*global describe, expect, it, jasmine, require, beforeEach*/
-var layout = require('../../src/layouts/standard'),
+const layout = require('../../src/layouts/standard'),
 	_ = require('underscore');
 describe('layouts/standard', function () {
 	'use strict';
 
-	var margin,
+	let margin,
 		dimensionProvider;
 
 	beforeEach(function () {
 		margin = {h: 20, v: 20};
 		dimensionProvider = function (idea) {
-			var length = (idea.title || '').length + 1;
+			const length = (idea.title || '').length + 1;
 			return {
 				width: length * 20,
 				height: length * 10
@@ -18,12 +18,12 @@ describe('layouts/standard', function () {
 		};
 	});
 	it('should assign root node level 1', function () {
-		var contentAggregate = { id: 7 },
+		const contentAggregate = { id: 7 },
 			result = layout(contentAggregate, dimensionProvider, margin);
 		expect(result[7].level).toEqual(1);
 	});
 	it('should assign child node levels recursively', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				ideas: {
 					1: {
@@ -46,12 +46,11 @@ describe('layouts/standard', function () {
 		expect(result[3].level).toEqual(2);
 	});
 	it('should place a root node on (margin, margin)', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: 'Hello'
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, margin);
+			result = layout(contentAggregate, dimensionProvider, margin);
 		expect(result[7]).toEqual(jasmine.objectContaining({
 			id: 7,
 			x: -60,
@@ -63,7 +62,7 @@ describe('layouts/standard', function () {
 		}));
 	});
 	it('should place root node left of its only right child', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: '1',
 				ideas: {
@@ -73,8 +72,7 @@ describe('layouts/standard', function () {
 					}
 				}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, margin);
+			result = layout(contentAggregate, dimensionProvider, margin);
 		expect(result[7]).toEqual(jasmine.objectContaining({
 			x: -20,
 			y: -10
@@ -85,7 +83,7 @@ describe('layouts/standard', function () {
 		}));
 	});
 	it('should place root node right of its only left child', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: '1',
 				ideas: {
@@ -99,15 +97,14 @@ describe('layouts/standard', function () {
 					}
 				}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, margin);
+			result = layout(contentAggregate, dimensionProvider, margin);
 		expect(result[9]).toEqual(jasmine.objectContaining({
 			x: -120,
 			y: -20
 		}));
 	});
 	it('should work recursively', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: '1',
 				ideas: {
@@ -127,12 +124,11 @@ describe('layouts/standard', function () {
 					}
 				}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, margin);
+			result = layout(contentAggregate, dimensionProvider, margin);
 		expect(result[10].x).toBe(-240);
 	});
 	it('should place child nodes below each other', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: '1',
 				ideas: {
@@ -146,13 +142,12 @@ describe('layouts/standard', function () {
 					}
 				}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, margin);
+			result = layout(contentAggregate, dimensionProvider, margin);
 		expect(result[9].y).toBe(-45);
 		expect(result[8].y).toBe(15);
 	});
 	it('should center children vertically', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 10,
 				title: '123',
 				ideas: {
@@ -162,23 +157,22 @@ describe('layouts/standard', function () {
 					}
 				}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, margin);
+			result = layout(contentAggregate, dimensionProvider, margin);
 		expect(result[11].y).toBe(-5);
 	});
 	it('should copy style to nodes', function () {
-		var contentAggregate = {
-			id: 1,
-			title: '123',
-			attr: { collapsed: true, style: { background: '#FFFFFF'}}
-		},
+		const contentAggregate = {
+				id: 1,
+				title: '123',
+				attr: { collapsed: true, style: { background: '#FFFFFF'}}
+			},
 			result = layout(contentAggregate, dimensionProvider, margin);
 		expect(result[1]).toEqual(jasmine.objectContaining({
 			attr: {collapsed: true, style: { background: '#FFFFFF'}}
 		}));
 	});
 	it('takes node spacing from the margin', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: '1', /*width 40, height: 20 */
 				ideas: {
@@ -188,8 +182,7 @@ describe('layouts/standard', function () {
 					}
 				}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, {h: 30});
+			result = layout(contentAggregate, dimensionProvider, {h: 30});
 		expect(result[7]).toEqual(jasmine.objectContaining({
 			x: -20,
 			y: -10
@@ -200,7 +193,7 @@ describe('layouts/standard', function () {
 		}));
 	});
 	it('ignores empty groups', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: '1',
 				ideas: {
@@ -232,19 +225,17 @@ describe('layouts/standard', function () {
 					}
 				}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, {h: 30});
+			result = layout(contentAggregate, dimensionProvider, {h: 30});
 		expect(_.sortBy(Object.keys(result), parseFloat)).toEqual(['7', '8', '11', '16']);
 	});
 	it('includes root even if empty group', function () {
-		var contentAggregate = {
+		const contentAggregate = {
 				id: 7,
 				title: '1',
 				attr: { group: 'standard' },
 				ideas: {}
 			},
-			result;
-		result = layout(contentAggregate, dimensionProvider, {h: 30});
+			result = layout(contentAggregate, dimensionProvider, {h: 30});
 		expect(result[7]).toBeTruthy();
 	});
 

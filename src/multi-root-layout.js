@@ -1,10 +1,10 @@
 /*global module, require*/
-var _ = require('underscore'),
+const _ = require('underscore'),
 	layoutGeometry = require('./layout-geometry');
 
 module.exports = function MultiRootLayout() {
 	'use strict';
-	var self = this,
+	const self = this,
 		mergeNodes = function (storedLayout, offset) {
 			_.each(storedLayout.rootLayout, function (node) {
 				node.x = node.x + offset.x;
@@ -13,7 +13,7 @@ module.exports = function MultiRootLayout() {
 			});
 		},
 		globalIdeaTopLeftPosition = function (idea) {
-			var positionArray = (idea && idea.attr && idea.attr.position) || [0, 0, 0];
+			const positionArray = (idea && idea.attr && idea.attr.position) || [0, 0, 0];
 			return {
 				x: positionArray[0],
 				y: positionArray[1],
@@ -21,7 +21,7 @@ module.exports = function MultiRootLayout() {
 			};
 		},
 		toStoredLayout = function (rootLayout, rootIdea) {
-			var storedLayout = {
+			const storedLayout = {
 				rootIdea: rootIdea,
 				rootNode: rootLayout[rootIdea.id],
 				rootLayout: rootLayout
@@ -32,7 +32,7 @@ module.exports = function MultiRootLayout() {
 			return globalIdeaTopLeftPosition(rootIdea).priority;
 		},
 		calcDesiredRootNodeCenter = function (storedLayout) {
-			var rootPosition = globalIdeaTopLeftPosition(storedLayout.rootIdea);
+			const rootPosition = globalIdeaTopLeftPosition(storedLayout.rootIdea);
 			if (!rootPosition || !rootPosition.priority || !storedLayout.rootNode) {
 				return {x: 0, y: 0};
 			}
@@ -45,7 +45,7 @@ module.exports = function MultiRootLayout() {
 		unpositionedLayouts = [];
 
 	self.appendRootNodeLayout = function (rootLayout, rootIdea) {
-		var storedLayout = toStoredLayout(rootLayout, rootIdea);
+		const storedLayout = toStoredLayout(rootLayout, rootIdea);
 		if (isPositioned(rootIdea)) {
 			positionedLayouts.push(storedLayout);
 		} else {
@@ -53,30 +53,33 @@ module.exports = function MultiRootLayout() {
 		}
 	};
 	self.getCombinedLayout = function (margin) {
-		var result = {},
-			mostRecentlyPositioned = positionedLayouts.length && _.max(positionedLayouts, function (layout) {
+		let placedLayoutPoly = [],
+			result = {};
+
+		const mostRecentlyPositioned = positionedLayouts.length && _.max(positionedLayouts, function (layout) {
 				return globalIdeaTopLeftPosition(layout.rootIdea).priority;
 			}),
-			origin = {x: 0,y: 0}, //mostRecentlyPositioned && calcDesiredRootNodeCenter(mostRecentlyPositioned),
+			origin = {x: 0, y: 0}, //mostRecentlyPositioned && calcDesiredRootNodeCenter(mostRecentlyPositioned),
 			rootDistance = function (storedLayout) {
 				// return globalIdeaTopLeftPosition(storedLayout.rootIdea).priority * -1;
 				// return storedLayout.rootIdea.id;
-				var rootCenter = calcDesiredRootNodeCenter(storedLayout);
+				const rootCenter = calcDesiredRootNodeCenter(storedLayout);
 				return Math.pow(rootCenter.x - origin.x, 2) + Math.pow(rootCenter.y - origin.y, 2);
 			},
 			sortedPositionedLayouts = _.sortBy(positionedLayouts, rootDistance),
 			placedLayouts = [],
-			placedLayoutPoly = [],
+
 			layoutCount = positionedLayouts.length + unpositionedLayouts.length,
 			hasMultipleLayouts = layoutCount > 1,
 			positionLayout = function (storedLayout) {
-				var placedRootCenter = calcDesiredRootNodeCenter(storedLayout),
-					initialTranslation = layoutGeometry.roundVector([placedRootCenter.x, placedRootCenter.y]),
-					storedLayoutPoly = hasMultipleLayouts && layoutGeometry.translatePoly(layoutGeometry.tolayoutPolygonHull(storedLayout.rootLayout, margin), initialTranslation),
-					offset,
+				let offset,
 					translationResult,
+					storedLayoutPoly;
+
+				const placedRootCenter = calcDesiredRootNodeCenter(storedLayout),
+					initialTranslation = layoutGeometry.roundVector([placedRootCenter.x, placedRootCenter.y]),
 					placeNewLayout = function () {
-						var vector = layoutGeometry.unitVector([placedRootCenter.x - origin.x, placedRootCenter.y - origin.y]);
+						let vector = layoutGeometry.unitVector([placedRootCenter.x - origin.x, placedRootCenter.y - origin.y]);
 						if (vector[0] === 0 && vector[1] === 0) {
 							vector = [1, 0];
 						}
@@ -84,6 +87,12 @@ module.exports = function MultiRootLayout() {
 						offset = {x: translationResult.translation[0], y: translationResult.translation[1]};
 						storedLayoutPoly = translationResult.translatedPoly;
 					};
+
+
+
+
+				storedLayoutPoly = hasMultipleLayouts && layoutGeometry.translatePoly(layoutGeometry.tolayoutPolygonHull(storedLayout.rootLayout, margin), initialTranslation);
+
 				if (!storedLayout || _.contains(placedLayouts, storedLayout)) {
 					return;
 				}

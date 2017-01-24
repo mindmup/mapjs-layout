@@ -1,20 +1,21 @@
 /*global module, require*/
-var _ = require('underscore'),
+const _ = require('underscore'),
 	isEmptyGroup = require('./is-empty-group'),
 	outlineUtils = require('./outline'),
 	Tree = function (options) {
 		'use strict';
 		_.extend(this, options);
 		this.toLayout = function (x, y, parentId) {
-			var result = {
-				nodes: {},
-				connectors: {}
-			}, self;
+			const result = {
+					nodes: {},
+					connectors: {}
+				},
+				self = _.pick(this, 'id', 'title', 'attr', 'width', 'height', 'level');
 
 			x = x || 0;
 			y = y || 0;
 
-			self = _.pick(this, 'id', 'title', 'attr', 'width', 'height', 'level');
+
 			if (self.level === 1) {
 				self.x = Math.round(-0.5 * this.width);
 				self.y = Math.round(-0.5 * this.height);
@@ -31,7 +32,7 @@ var _ = require('underscore'),
 			}
 			if (this.subtrees) {
 				this.subtrees.forEach(function (t) {
-					var subLayout = t.toLayout(self.x, self.y, self.id);
+					const subLayout = t.toLayout(self.x, self.y, self.id);
 					_.extend(result.nodes, subLayout.nodes);
 					_.extend(result.connectors, subLayout.connectors);
 				});
@@ -41,25 +42,25 @@ var _ = require('underscore'),
 	},
 	calculateTree = function (content, dimensionProvider, margin, rankAndParentPredicate, level) {
 		'use strict';
-		var options = {
-			id: content.id,
-			title: content.title,
-			attr: content.attr,
-			deltaY: 0,
-			deltaX: 0,
-			level: level || 1
-		},
-			setVerticalSpacing = function (treeArray,  dy) {
-				var i,
-					tree,
-					oldSpacing,
-					newSpacing,
-					oldPositions = _.map(treeArray, function (t) {
-						return _.pick(t, 'deltaX', 'deltaY');
-					}),
-					referenceTree,
-					alignment;
-				for (i = 0; i < treeArray.length; i += 1) {
+		const options = {
+				id: content.id,
+				title: content.title,
+				attr: content.attr,
+				deltaY: 0,
+				deltaX: 0,
+				level: level || 1
+			},
+			buildReferenceTree = function (treeArray, dy, oldPositions) {
+				let referenceTree, tree;
+				const adjustSpacing = function (i) {
+					const oldSpacing = oldPositions[i].deltaY - oldPositions[i - 1].deltaY,
+						newSpacing = treeArray[i].deltaY - treeArray[i - 1].deltaY;
+					if (newSpacing < oldSpacing) {
+						tree.deltaY += oldSpacing - newSpacing;
+					}
+				};
+
+				for (let i = 0; i < treeArray.length; i += 1) {
 					tree = treeArray[i];
 					if (tree.attr && tree.attr.position) {
 						tree.deltaY = tree.attr.position[1];
@@ -70,16 +71,19 @@ var _ = require('underscore'),
 						tree.deltaY += dy;
 					}
 					if (i > 0) {
-						oldSpacing = oldPositions[i].deltaY - oldPositions[i - 1].deltaY;
-						newSpacing = treeArray[i].deltaY - treeArray[i - 1].deltaY;
-						if (newSpacing < oldSpacing) {
-							tree.deltaY += oldSpacing - newSpacing;
-						}
+						adjustSpacing(i);
 					}
 				}
-				alignment =  referenceTree && (treeArray[referenceTree].attr.position[1] - treeArray[referenceTree].deltaY);
+				return referenceTree;
+			},
+			setVerticalSpacing = function (treeArray,  dy) {
+				const oldPositions = _.map(treeArray, function (t) {
+						return _.pick(t, 'deltaX', 'deltaY');
+					}),
+					referenceTree = buildReferenceTree (treeArray, dy, oldPositions),
+					alignment = referenceTree && (treeArray[referenceTree].attr.position[1] - treeArray[referenceTree].deltaY);
 				if (alignment) {
-					for (i = 0; i < treeArray.length; i += 1) {
+					for (let i = 0; i < treeArray.length; i += 1) {
 						treeArray[i].deltaY += alignment;
 					}
 				}
@@ -88,7 +92,7 @@ var _ = require('underscore'),
 				return !(_.isEmpty(content.ideas) || (content.attr && content.attr.collapsed));
 			},
 			includedSubIdeaKeys = function () {
-				var allRanks = _.map(_.keys(content.ideas), parseFloat),
+				const allRanks = _.map(_.keys(content.ideas), parseFloat),
 					candidateRanks = rankAndParentPredicate ? _.filter(allRanks, function (rank) {
 						return rankAndParentPredicate(rank, content.id);
 					}) : allRanks,
@@ -98,7 +102,7 @@ var _ = require('underscore'),
 				return _.sortBy(includedRanks, Math.abs);
 			},
 			includedSubIdeas = function () {
-				var result = [];
+				const result = [];
 				_.each(includedSubIdeaKeys(), function (key) {
 					result.push(content.ideas[key]);
 				});
@@ -106,7 +110,7 @@ var _ = require('underscore'),
 			},
 			nodeDimensions = dimensionProvider(content, options.level),
 			appendSubtrees = function (subtrees) {
-				var suboutline, deltaHeight, subtreePosition, horizontal, treeOutline;
+				let suboutline, deltaHeight, subtreePosition, horizontal, treeOutline;
 				_.each(subtrees, function (subtree) {
 					subtree.deltaX = nodeDimensions.width + margin;
 					subtreePosition = subtree.attr && subtree.attr.position && subtree.attr.position[0];
@@ -135,7 +139,7 @@ var _ = require('underscore'),
 				options.outline = suboutline.insertAtStart(nodeDimensions, margin);
 			};
 		_.extend(options, nodeDimensions);
-		options.outline = new outlineUtils.outlineFromDimensions(nodeDimensions);
+		options.outline = outlineUtils.outlineFromDimensions(nodeDimensions);
 		if (shouldIncludeSubIdeas()) {
 			options.subtrees = _.map(includedSubIdeas(), function (i) {
 				return calculateTree(i, dimensionProvider, margin, rankAndParentPredicate, options.level + 1);

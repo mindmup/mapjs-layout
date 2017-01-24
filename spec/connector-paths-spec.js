@@ -1,8 +1,9 @@
 /*global describe, beforeEach, it, expect, require*/
+const underTest = require('../src/connector-paths');
 describe('connectorPaths', function () {
 	'use strict';
-	var underTest = require('../src/connector-paths'),
-		calculatedConnector, position, parent, child;
+
+	let calculatedConnector, position, parent, child;
 	beforeEach(function () {
 		calculatedConnector = {
 			from: {

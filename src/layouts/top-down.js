@@ -1,25 +1,25 @@
 /*global module, require*/
-var _ = require('underscore'),
+const _ = require('underscore'),
 	isEmptyGroup = require('../is-empty-group'),
 	alignGroup = require('./align-group'),
 	combineVerticalSubtrees = require('./combine-vertical-subtrees');
 module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 	'use strict';
-	var isGroup = function (node) {
+	const isGroup = function (node) {
 			return node.attr && node.attr.group;
 		},
 		toNode = function (idea, level) {
-			var dimensions = dimensionProvider(idea, level);
+			const dimensions = dimensionProvider(idea, level);
 			return _.extend({level: level, verticalOffset: 0, title: isGroup(idea) ? '' : idea.title}, dimensions, _.pick(idea, ['id', 'attr']));
 		},
 		traverse = function (idea, predicate, level) {
-			var childResults = {},
+			const childResults = {},
 				shouldIncludeSubIdeas = !(_.isEmpty(idea.ideas) || (idea.attr && idea.attr.collapsed));
 
 			level = level || 1;
 			if (shouldIncludeSubIdeas) {
 				Object.keys(idea.ideas).forEach(function (subNodeRank) {
-					var newLevel = isGroup(idea) ? level : level + 1,
+					const newLevel = isGroup(idea) ? level : level + 1,
 						result = traverse(idea.ideas[subNodeRank], predicate, newLevel);
 					if (result) {
 						childResults[subNodeRank] = result;
@@ -29,7 +29,9 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			return predicate(idea, childResults, level);
 		},
 		traversalLayout = function (idea, childLayouts, level) {
-			var node = toNode(idea, level), result;
+			const node = toNode(idea, level);
+			let result;
+
 			if (isGroup(node) && !_.isEmpty(idea.ideas)) {
 				result = combineVerticalSubtrees(node, childLayouts, margin.h, true);
 				alignGroup(result, idea);
@@ -48,9 +50,9 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			});
 		},
 		getLevelHeights = function (nodes) {
-			var maxHeights = [],
-				level,
-				heights = [],
+			const maxHeights = [],
+				heights = [];
+			let level,
 				totalHeight = 0;
 
 			_.each(nodes, function (node) {
@@ -67,9 +69,8 @@ module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
 			}
 			return heights;
 		},
-		tree;
+		tree = traverse(aggregate, traversalLayoutWithoutEmptyGroups);
 
-	tree = traverse(aggregate, traversalLayoutWithoutEmptyGroups);
 	setLevelHeights(tree.nodes, getLevelHeights(tree.nodes));
 
 	return tree.nodes;

@@ -1,9 +1,9 @@
 /*global module, require*/
-var _ = require('underscore'),
+const _ = require('underscore'),
 	colorParser = require('./color-parser');
 module.exports = function ThemeProcessor() {
 	'use strict';
-	var self = this,
+	const self = this,
 		addPx = function (val) {
 			return val + 'px';
 		},
@@ -19,7 +19,7 @@ module.exports = function ThemeProcessor() {
 			'text.alignment': 'text-align'
 		},
 		fontWeightParser = function (fontObj) {
-			var weightMap = {
+			const weightMap = {
 				'light': '200',
 				'semi-bold': '600'
 			};
@@ -29,7 +29,7 @@ module.exports = function ThemeProcessor() {
 			return weightMap[fontObj.weight] || fontObj.weight;
 		},
 		fontSizeParser = function (fontObj) {
-			var fontSize = (fontObj && fontObj.size) || 12,
+			const fontSize = (fontObj && fontObj.size) || 12,
 				lineSpacing = (fontObj && fontObj.lineSpacing) || 3;
 
 			return fontSize + 'pt/' + (lineSpacing + fontSize) + 'pt';
@@ -45,7 +45,7 @@ module.exports = function ThemeProcessor() {
 				return borderOb.line.width + 'px ' + (borderOb.line.style || 'solid') + ' '  + borderOb.line.color + ';margin:' + (-1 * borderOb.line.width) + 'px';
 			},
 			shadow: function (shadowArray) {
-				var boxshadows = [];
+				const boxshadows = [];
 				if (shadowArray.length === 1 && shadowArray[0].color === 'transparent') {
 					return 'none';
 				}
@@ -59,10 +59,11 @@ module.exports = function ThemeProcessor() {
 			}
 		},
 		processNodeStyles = function (nodeStyleArray) {
-			var result = [], parser, cssVal,
+			let parser, cssVal;
+			const result = [],
 				pushProperties = function (styleObject, keyPrefix) {
 					_.each(styleObject, function (val, propKey) {
-						var key = (keyPrefix || '') + propKey;
+						const key = (keyPrefix || '') + propKey;
 						if (cssProp[key]) {
 							parser = parsers[key] || _.identity;
 							cssVal = parser(val);
@@ -102,7 +103,7 @@ module.exports = function ThemeProcessor() {
 
 				},
 				appendDecorationStyles = function (styleSelector, nodeStyle) {
-					var style = nodeStyle.decorations,
+					const style = nodeStyle.decorations,
 						margin = nodeStyle.text && nodeStyle.text.margin || 0;
 					if (!style) {
 						return;
@@ -137,7 +138,7 @@ module.exports = function ThemeProcessor() {
 					result.push('}');
 				};
 			nodeStyleArray.forEach(function (nodeStyle) {
-				var styleSelector = '.mapjs-node';
+				let styleSelector = '.mapjs-node';
 				if (nodeStyle.name !== 'default') {
 					styleSelector = styleSelector + '.' + nodeStyle.name.replace(/\s/g, '_');
 				}
@@ -152,7 +153,7 @@ module.exports = function ThemeProcessor() {
 			return result.join('');
 		};
 	self.process = function (theme) {
-		var nodeStyles = '';
+		let nodeStyles = '';
 		if (theme.node) {
 			nodeStyles = processNodeStyles(theme.node);
 		}

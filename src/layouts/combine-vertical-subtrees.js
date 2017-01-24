@@ -1,9 +1,9 @@
 /*global module, require */
-var _ = require('underscore'),
+const _ = require('underscore'),
 	VerticalSubtreeCollection = require('./vertical-subtree-collection');
 module.exports = function combineVerticalSubtrees(node, childLayouts, margin, sameLevel) {
 	'use strict';
-	var result = {
+	const result = {
 			nodes: { }
 		},
 		shift = function (nodes, xOffset) {
@@ -12,8 +12,9 @@ module.exports = function combineVerticalSubtrees(node, childLayouts, margin, sa
 			});
 			return nodes;
 		},
-		treeOffset,
 		verticalSubtreeCollection = new VerticalSubtreeCollection(childLayouts, margin);
+	let treeOffset;
+
 	if (Array.isArray(childLayouts)) {
 		throw 'child layouts are an array!';
 	}

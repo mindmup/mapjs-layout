@@ -1,5 +1,5 @@
 /*global require, module*/
-var _ = require('underscore'),
+const _ = require('underscore'),
 	borderLength = function (border) {
 		'use strict';
 		return _.reduce(border, function (seed, el) {
@@ -8,7 +8,7 @@ var _ = require('underscore'),
 	},
 	borderSegmentIndexAt = function (border, length) {
 		'use strict';
-		var l = 0, i = -1;
+		let l = 0, i = -1;
 		while (l <= length) {
 			i += 1;
 			if (i >= border.length) {
@@ -20,10 +20,10 @@ var _ = require('underscore'),
 	},
 	extendBorder = function (originalBorder, extension) {
 		'use strict';
-		var result = originalBorder.slice(),
-			origLength = borderLength(originalBorder),
-			i = borderSegmentIndexAt(extension, origLength),
-			lengthToCut;
+		let lengthToCut,
+			result = originalBorder.slice();
+		const origLength = borderLength(originalBorder),
+			i = borderSegmentIndexAt(extension, origLength);
 		if (i >= 0) {
 			lengthToCut = borderLength(extension.slice(0, i + 1));
 			result.push({h: extension[i].h, l: lengthToCut - origLength});
@@ -33,14 +33,14 @@ var _ = require('underscore'),
 	},
 	Outline = function (topBorder, bottomBorder) {
 		'use strict';
-		var shiftBorder = function (border, deltaH) {
-				return _.map(border, function (segment) {
-					return {
-						l: segment.l,
-						h: segment.h + deltaH
-					};
-				});
-			};
+		const shiftBorder = function (border, deltaH) {
+			return _.map(border, function (segment) {
+				return {
+					l: segment.l,
+					h: segment.h + deltaH
+				};
+			});
+		};
 		this.initialHeight = function () {
 			return this.bottom[0].h - this.top[0].h;
 		};
@@ -48,7 +48,7 @@ var _ = require('underscore'),
 			return _.pick(this, 'top', 'bottom');
 		};
 		this.spacingAbove = function (outline) {
-			var i = 0, j = 0, result = 0, li = 0, lj = 0;
+			let i = 0, j = 0, result = 0, li = 0, lj = 0;
 			while (i < this.bottom.length && j < outline.top.length) {
 				result = Math.max(result, this.bottom[i].h - outline.top[j].h);
 				if (li + this.bottom[i].l < lj + outline.top[j].l) {
@@ -67,19 +67,20 @@ var _ = require('underscore'),
 			return result;
 		};
 		this.indent = function (horizontalIndent, margin) {
-			var top, bottom, vertCenter;
+			const top = this.top.slice(),
+				bottom = this.bottom.slice(),
+				vertCenter = Math.round((bottom[0].h + top[0].h) / 2);
+
 			if (!horizontalIndent) {
 				return this;
-			}
-			top = this.top.slice();
-			bottom = this.bottom.slice();
-			vertCenter = Math.round((bottom[0].h + top[0].h) / 2);
+			};
+
 			top.unshift({h: Math.round(vertCenter - margin / 2), l: horizontalIndent});
 			bottom.unshift({h: Math.round(vertCenter + margin / 2), l: horizontalIndent});
 			return new Outline(top, bottom);
 		};
 		this.stackBelow = function (outline, margin) {
-			var spacing = outline.spacingAbove(this),
+			const spacing = outline.spacingAbove(this),
 				top = extendBorder(outline.top, shiftBorder(this.top, spacing + margin)),
 				bottom = extendBorder(shiftBorder(this.bottom, spacing + margin), outline.bottom);
 			return new Outline(
@@ -88,7 +89,7 @@ var _ = require('underscore'),
 			);
 		};
 		this.expand = function (initialTopHeight, initialBottomHeight) {
-			var topAlignment = initialTopHeight - this.top[0].h,
+			const topAlignment = initialTopHeight - this.top[0].h,
 				bottomAlignment = initialBottomHeight - this.bottom[0].h,
 				top = shiftBorder(this.top, topAlignment),
 				bottom = shiftBorder(this.bottom, bottomAlignment);
@@ -98,7 +99,7 @@ var _ = require('underscore'),
 			);
 		};
 		this.insertAtStart = function (dimensions, margin) {
-			var alignment = 0, //-1 * this.top[0].h - suboutlineHeight * 0.5,
+			const alignment = 0, //-1 * this.top[0].h - suboutlineHeight * 0.5,
 				topBorder = shiftBorder(this.top, alignment),
 				bottomBorder = shiftBorder(this.bottom, alignment),
 				easeIn = function (border) {
