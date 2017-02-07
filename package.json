@@ -25,7 +25,7 @@
   },
   "main": "src/mapjs-layout.js",
   "dependencies": {
-    "mindmup-mapjs-model": "^1.1.0",
+    "mindmup-mapjs-model": "^2.0.0",
     "monotone-convex-hull-2d": "^1.0.1",
     "polybooljs": "^1.1.1",
     "underscore": "^1.8.3"
