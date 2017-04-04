@@ -1,7 +1,7 @@
 /*global describe, beforeEach, jasmine, MAPJS, it, expect*/
 describe('MAPJS.ThemeDimensionProvider', function () {
 	'use strict';
-	let underTest, textSizer, theme, nodeStyles, nodeTheme, textSize;
+	let underTest, textSizer, theme, nodeStyles, nodeTheme, textSize, options;
 	beforeEach(function () {
 		nodeTheme = {
 			margin: 1,
@@ -9,13 +9,14 @@ describe('MAPJS.ThemeDimensionProvider', function () {
 			cornerRadius: 10,
 			font: 'theme font info here'
 		};
+		options = {};
 		theme = jasmine.createSpyObj('theme', ['nodeStyles', 'nodeTheme']);
 		theme.nodeStyles.and.returnValue(nodeStyles);
 		theme.nodeTheme.and.returnValue(nodeTheme);
 		textSizer = jasmine.createSpy('textSizer');
 		textSize = {width: 50, height: 40};
 		textSizer.and.returnValue(textSize);
-		underTest = new  MAPJS.ThemeDimensionProvider(textSizer);
+		underTest = new  MAPJS.ThemeDimensionProvider(textSizer, options);
 	});
 	describe('dimensionProviderForTheme', function () {
 		let idea;
@@ -161,6 +162,13 @@ describe('MAPJS.ThemeDimensionProvider', function () {
 					node.title = 'my node text www.google.com';
 					nlpFunc(node);
 					expect(textSizer).toHaveBeenCalledWith('my node text', 20, 'theme font info here');
+				});
+				it('should remove margin from max width if option set', function () {
+					options.substractMarginFromMaxWidth = true;
+					node.title = 'my node text www.google.com';
+					nlpFunc(node);
+					expect(textSizer).toHaveBeenCalledWith('my node text', 18, 'theme font info here');
+
 				});
 				it('should pass the title, idea preferred width and theme font to textsizer', function () {
 					node.attr.style = {

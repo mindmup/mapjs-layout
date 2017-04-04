@@ -1,11 +1,16 @@
 /*global module, require */
 const formattedNodeTitle = require('mindmup-mapjs-model').formattedNodeTitle,
 	_ = require('underscore');
-module.exports = function ThemeDimensionProvider(textSizer) {
+module.exports = function ThemeDimensionProvider(textSizer, options) {
 	'use strict';
 	const self = this,
 		calcMaxWidth = function (attr, nodeTheme) {
-			return (attr && attr.style && attr.style.width) || nodeTheme.maxWidth;
+			const maxWidth = (attr && attr.style && attr.style.width) || nodeTheme.maxWidth,
+				margin = (nodeTheme && nodeTheme.margin) || (nodeTheme && nodeTheme.text && nodeTheme.text.margin) || 0;
+			if (options && options.substractMarginFromMaxWidth && margin) {
+				return  maxWidth - (2 * margin);
+			}
+			return maxWidth;
 		};
 
 	self.dimensionProviderForTheme = function (theme) {
