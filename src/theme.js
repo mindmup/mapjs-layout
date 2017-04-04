@@ -77,7 +77,7 @@ module.exports = function Theme(themeJson) {
 				font: {
 					size: 12,
 					weight: 'semibold',
-					linespacing: 3.5
+					lineSpacing: 3.5
 				},
 				maxWidth: 146,
 				backgroundColor: '#E0E0E0',
