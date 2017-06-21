@@ -87,6 +87,17 @@ describe('Theme', function () {
 	it('should set the theme name', function () {
 		expect(underTest.name).toEqual('Mike');
 	});
+	describe('blockParentConnectorOverride', function () {
+		it('should be falsy if blockParentConnectorOverride flag is ommitted', function () {
+			expect(underTest.blockParentConnectorOverride).toBeFalsy();
+		});
+		it('should be truthy when blockParentConnectorOverride flag is set', function () {
+			theme.blockParentConnectorOverride = true;
+			underTest = new MAPJS.Theme(theme);
+			expect(underTest.blockParentConnectorOverride).toBeTruthy();
+		});
+
+	});
 	describe('attributeValue', function () {
 		it('should return default value for empty theme', function () {
 			underTest = new MAPJS.Theme({});
