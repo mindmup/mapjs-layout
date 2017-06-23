@@ -108,6 +108,7 @@ const Theme = require ('./theme'),
 			nodeOverline: nodeOverline
 		};
 	},
+	// deprecated, use connectorPath below!
 	themePath = function (parent, child, themeArg) {
 		'use strict';
 		const left = Math.min(parent.left, child.left),
@@ -124,6 +125,23 @@ const Theme = require ('./theme'),
 		result.color = calculatedConnector.connectorTheme.line.color;
 		result.width = calculatedConnector.connectorTheme.line.width;
 		return result;
+	},
+	connectorPath = function (layoutModel, connector, theme) {
+		'use strict';
+		const pathInfo = themePath(layoutModel.getNodeBox(connector.from), layoutModel.getNodeBox(connector.to), theme),
+			allowParentConnectorOverride = !(theme && theme.blockParentConnectorOverride),
+			toNode = allowParentConnectorOverride && connector.to && layoutModel.getNode(connector.to),
+			parentConnector = toNode && toNode.attr && toNode.attr.parentConnector;
+
+		if (parentConnector) {
+			if (parentConnector.color) {
+				pathInfo.color = parentConnector.color;
+			}
+			if (parentConnector.lineStyle) {
+				pathInfo.lineStyle = parentConnector && parentConnector.lineStyle;
+			}
+		}
+		return pathInfo;
 	},
 	linkPath = function (parent, child, arrow) {
 		'use strict';
@@ -237,5 +255,6 @@ Math.sign = Math.sign || function (val) {
 };
 module.exports = {
 	themePath: themePath,
-	linkPath: linkPath
+	linkPath: linkPath,
+	connectorPath: connectorPath
 };
