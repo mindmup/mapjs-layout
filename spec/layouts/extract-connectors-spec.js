@@ -50,4 +50,38 @@ describe('extractConnectors', function () {
 			11: Object({ from: 1, to: 11 })
 		});
 	});
+	describe('parentConnector handling', function () {
+		beforeEach(function () {
+			idea.ideas[1].ideas[5].attr = {parentConnector: {great: true}};
+		});
+
+		it('adds parentConnector attribute properties to the connector attributes if the theme is not set', function () {
+			const result = extractConnectors(idea, visibleNodes);
+			expect(result[12]).toEqual({
+				from: 1,
+				to: 12,
+				attr: {great: true}
+			});
+		});
+		it('adds parentConnector if the theme is set and does not block parent connector overrides', function () {
+			const result = extractConnectors(idea, visibleNodes, {blockParentConnectorOverride: false});
+			expect(result[12]).toEqual({
+				from: 1,
+				to: 12,
+				attr: {great: true}
+			});
+		});
+		it('ignores parentConnector properties when the theme blocks overrides', function () {
+			const result = extractConnectors(idea, visibleNodes, {blockParentConnectorOverride: true});
+			expect(result[12]).toEqual({
+				from: 1,
+				to: 12
+			});
+		});
+		it('clones the parent connnector so changes to node can be detected', function () {
+			const result = extractConnectors(idea, visibleNodes);
+			idea.ideas[1].ideas[5].attr.parentConnector.great = false;
+			expect(result[12].attr.great).toEqual(true);
+		});
+	});
 });

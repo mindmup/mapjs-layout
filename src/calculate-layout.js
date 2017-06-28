@@ -21,7 +21,7 @@ const contentUpgrade = require('mindmup-mapjs-model').contentUpgrade,
 		return {
 			orientation: orientation,
 			nodes: attachStyles(result, theme),
-			connectors: extractConnectors(idea, result),
+			connectors: extractConnectors(idea, result, theme),
 			links: layoutLinks(idea, result),
 			theme: idea.attr && idea.attr.theme
 		};

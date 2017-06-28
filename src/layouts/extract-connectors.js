@@ -1,14 +1,22 @@
-/*global module */
-module.exports = function extractConnectors(aggregate, visibleNodes) {
+/*global module, require */
+const _ = require('underscore');
+module.exports = function extractConnectors(aggregate, visibleNodes, theme) {
 	'use strict';
 	const result = {},
+		allowParentConnectorOverride = !(theme && theme.blockParentConnectorOverride),
 		traverse = function (idea, parentId, isChildNode) {
 			if (isChildNode) {
 				if (!visibleNodes[idea.id]) {
 					return;
 				}
 				if (parentId !== aggregate.id) {
-					result[idea.id] = {from: parentId, to: idea.id};
+					result[idea.id] = {
+						from: parentId,
+						to: idea.id
+					};
+					if (allowParentConnectorOverride && idea.attr && idea.attr.parentConnector) {
+						result[idea.id].attr = _.clone(idea.attr.parentConnector);
+					}
 				}
 			}
 			if (idea.ideas) {

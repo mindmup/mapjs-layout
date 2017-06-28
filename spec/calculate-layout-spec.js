@@ -154,46 +154,56 @@ describe('MAPJS.calculateLayout', function () {
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
 			expect(result.theme).toEqual('blue');
 		});
-		it('should include connectors regardless of the layout', function () {
-			const idea = {
-				id: 'root',
-				formatVersion: 3,
-				ideas: {
-					1: {
-						title: 'parent',
-						id: 1,
-						ideas: {
-							5: {
-								title: 'second child',
-								id: 12,
-								ideas: { 1: { id: 112, title: 'XYZ' } }
-							},
-							4: {
-								title: 'child',
-								id: 11,
-								ideas: { 1: { id: 111, title: 'XYZ' } }
+		describe('connector handling', function () {
+			beforeEach(function () {
+				idea = {
+					id: 'root',
+					formatVersion: 3,
+					ideas: {
+						1: {
+							title: 'parent',
+							id: 1,
+							ideas: {
+								5: {
+									title: 'second child',
+									id: 12,
+									ideas: { 1: { id: 112, title: 'XYZ' } },
+									attr: { parentConnector: {color: 'green'} }
+								},
+								4: {
+									title: 'child',
+									id: 11,
+									ideas: { 1: { id: 111, title: 'XYZ' } }
+								}
 							}
 						}
 					}
-				}
-			};
-			layouts.standard.and.returnValue({
-				1: {x: 0, y: 0, height: 10, width: 10},
-				11: {x: 0, y: 0, height: 10, width: 10},
-				12: {x: 0, y: 0, height: 10, width: 10},
-				112: {x: 0, y: 0, height: 10, width: 10},
-				111: {x: 0, y: 0, height: 10, width: 10}
+				};
+				layouts.standard.and.returnValue({
+					1: {x: 0, y: 0, height: 10, width: 10},
+					11: {x: 0, y: 0, height: 10, width: 10},
+					12: {x: 0, y: 0, height: 10, width: 10},
+					112: {x: 0, y: 0, height: 10, width: 10},
+					111: {x: 0, y: 0, height: 10, width: 10}
+				});
 			});
+			it('should include connectors regardless of the layout', function () {
+				result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
 
-			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
-
-			expect(result.connectors).toEqual({
-				11: Object({ from: 1, to: 11 }),
-				12: Object({ from: 1, to: 12 }),
-				112: Object({ from: 12, to: 112 }),
-				111: Object({ from: 11, to: 111 })
+				expect(result.connectors).toEqual({
+					11: Object({ from: 1, to: 11 }),
+					12: Object({ from: 1, to: 12, attr: {color: 'green'} }),
+					112: Object({ from: 12, to: 112 }),
+					111: Object({ from: 11, to: 111 })
+				});
+			});
+			it('should allow the theme to block connector overrides', function () {
+				optional.theme = new MAPJS.Theme({blockParentConnectorOverride: true});
+				result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+				expect(result.connectors[12].attr).toBeFalsy();
 			});
 		});
+
 		it('should not include links between collapsed nodes', function () {
 			const idea = {
 				id: 'root',
