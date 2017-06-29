@@ -1,6 +1,7 @@
 /*global module, require */
 const _ = require('underscore'),
-	colorParser = require('./color-parser');
+	colorParser = require('./color-parser'),
+	defaultConnectorLabelTheme = require('./default-connector-label-theme');
 module.exports = function Theme(themeJson) {
 	'use strict';
 	const self = this,
@@ -126,21 +127,7 @@ module.exports = function Theme(themeJson) {
 			controlPoint = self.connectorControlPoint(position, connectorStyle),
 			connectorDefaults = {
 				type: 'quadratic',
-				label: {
-					position: {
-						ratio: 0.5
-					},
-					backgroundColor: 'transparent',
-					borderColor: 'transparent',
-					text: {
-						color: '#4F4F4F',
-						font: {
-							size: 9,
-							sizePx: 12,
-							weight: 'normal'
-						}
-					}
-				},
+				label: defaultConnectorLabelTheme,
 				line: {
 					color: '#707070',
 					width: 1.0
