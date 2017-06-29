@@ -188,6 +188,21 @@ module.exports = {
 	'connector': {
 		'default': {
 			'type': 'quadratic',
+			'label': {
+				'position': {
+					'ratio': 0.5
+				},
+				'backgroundColor': 'transparent',
+				'borderColor': 'transparent',
+				'text': {
+					'color': '#4F4F4F',
+					'font': {
+						'size': 9,
+						'sizePx': 12,
+						'weight': 'normal'
+					}
+				}
+			},
 			'controlPoint': {
 				'above': {'width': 0, 'height': 1.75},
 				'below': {'width': 0, 'height': 1.75},
