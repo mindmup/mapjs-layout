@@ -126,12 +126,30 @@ module.exports = function Theme(themeJson) {
 			controlPoint = self.connectorControlPoint(position, connectorStyle),
 			connectorDefaults = {
 				type: 'quadratic',
+				label: {
+					position: {
+						ratio: 0.5
+					},
+					backgroundColor: 'transparent',
+					borderColor: 'transparent',
+					text: {
+						color: '#4F4F4F',
+						font: {
+							size: 9,
+							sizePx: 12,
+							weight: 'normal'
+						}
+					}
+				},
 				line: {
 					color: '#707070',
 					width: 1.0
 				}
 			},
 			returnedConnector =  _.extend({}, combinedConnector || parentConnector || childConnector || connectorDefaults);
+		if (!returnedConnector.label) {
+			returnedConnector.label = connectorDefaults.label;
+		}
 		returnedConnector.controlPoint = controlPoint;
 		returnedConnector.line = returnedConnector.line || connectorDefaults.line;
 		return returnedConnector;

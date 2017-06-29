@@ -42,7 +42,8 @@ describe('MAPJS.Connectors', function () {
 					d: 'M50,20Q50,190 140,142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					color: '#707070',
-					width: 1
+					width: 1,
+					theme: new MAPJS.Theme().connectorTheme('above', child.styles, parent.styles)
 				});
 			});
 		});
@@ -102,7 +103,8 @@ describe('MAPJS.Connectors', function () {
 					d: 'M100,41L130,142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					color: '#4F4F4F',
-					width: 1
+					width: 1,
+					theme: theme.connectorTheme('above', child.styles, parent.styles)
 				});
 			});
 			it('should use the defaults when the child level is not in the theme', function () {
@@ -111,7 +113,8 @@ describe('MAPJS.Connectors', function () {
 					d: 'M100,41q10,0 10,10v104q0,10 10,10h10M130,165 H142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					color: '#707070',
-					width: 1
+					width: 1,
+					theme: theme.connectorTheme('above', child.styles, parent.styles)
 				});
 
 			});
@@ -173,7 +176,8 @@ describe('MAPJS.Connectors', function () {
 					d: 'M100,41L130,142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					color: '#4F4F4F',
-					width: 2
+					width: 2,
+					theme: theme.connectorTheme('above', child.styles, parent.styles)
 				});
 			});
 			it('should use the defaults when the child level is not in the theme', function () {
@@ -183,7 +187,8 @@ describe('MAPJS.Connectors', function () {
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					initialRadius: 5,
 					color: '#707070',
-					width: 1
+					width: 1,
+					theme: theme.connectorTheme('above', child.styles, parent.styles)
 				});
 
 			});

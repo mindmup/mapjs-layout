@@ -223,8 +223,24 @@ describe('Theme', function () {
 
 	});
 	describe('connectorTheme', function () {
-		let childPosition;
+		let childPosition, defaultLabel;
 		beforeEach(function () {
+			defaultLabel = {
+				position: {
+					ratio: 0.5
+				},
+				backgroundColor: 'transparent',
+				borderColor: 'transparent',
+				text: {
+					color: '#4F4F4F',
+					font: {
+						size: 9,
+						sizePx: 12,
+						weight: 'normal'
+					}
+				}
+			};
+
 			spyOn(underTest, 'connectorControlPoint').and.returnValue('testControlPoint');
 			childPosition = 'above';
 		});
@@ -232,6 +248,19 @@ describe('Theme', function () {
 			expect(underTest.connectorTheme(childPosition, ['no-line'])).toEqual({
 				type: 'no-line-curve',
 				controlPoint: 'testControlPoint',
+				label: defaultLabel,
+				line: {
+					color: '#707070',
+					width: 1.0
+				}
+			});
+		});
+		it('should return configured label', function () {
+			theme.connector['no-line-curve'].label = 'configuredLabelHere';
+			expect(underTest.connectorTheme(childPosition, ['no-line'])).toEqual({
+				type: 'no-line-curve',
+				controlPoint: 'testControlPoint',
+				label: 'configuredLabelHere',
 				line: {
 					color: '#707070',
 					width: 1.0
@@ -247,6 +276,7 @@ describe('Theme', function () {
 				expect(underTest.connectorTheme()).toEqual({
 					type: 'top-down-s-curve',
 					controlPoint: 'testControlPoint',
+					label: defaultLabel,
 					line: {
 						color: '#070707',
 						width: 2.0
@@ -258,6 +288,7 @@ describe('Theme', function () {
 				expect(underTest.connectorTheme(childPosition, [])).toEqual({
 					type: 'top-down-s-curve',
 					controlPoint: 'testControlPoint',
+					label: defaultLabel,
 					line: {
 						color: '#070707',
 						width: 2.0
@@ -269,6 +300,7 @@ describe('Theme', function () {
 				expect(underTest.connectorTheme()).toEqual({
 					type: 'quadratic',
 					controlPoint: 'testControlPoint',
+					label: defaultLabel,
 					line: {
 						color: '#707070',
 						width: 1.0
@@ -287,6 +319,7 @@ describe('Theme', function () {
 					expect(underTest.connectorTheme(childPosition, ['sharp'], args[1])).toEqual({
 						type: 'top-down-s-curve',
 						controlPoint: 'testControlPoint',
+						label: defaultLabel,
 						line: {
 							color: '#070707',
 							width: 2.0
@@ -299,6 +332,7 @@ describe('Theme', function () {
 					expect(underTest.connectorTheme(childPosition, ['sharp'], args[1])).toEqual({
 						type: 'quadratic',
 						controlPoint: 'testControlPoint',
+						label: defaultLabel,
 						line: {
 							color: '#707070',
 							width: 1.0
@@ -309,6 +343,7 @@ describe('Theme', function () {
 					expect(underTest.connectorTheme(childPosition, ['special'], args[1])).toEqual({
 						type: 'green-curve',
 						controlPoint: 'testControlPoint',
+						label: defaultLabel,
 						line: {
 							color: '#00FF00',
 							width: 3.0
@@ -331,6 +366,7 @@ describe('Theme', function () {
 				expect(underTest.connectorTheme(childPosition, ['special'], ['special'])).toEqual({
 					type: 'no-connector-green',
 					controlPoint: 'testControlPoint',
+					label: defaultLabel,
 					line: {
 						color: '#FFFF00',
 						width: 4.0
@@ -342,6 +378,7 @@ describe('Theme', function () {
 				expect(underTest.connectorTheme(childPosition, ['sharp'], ['special'])).toEqual({
 					type: 'no-connector',
 					controlPoint: 'testControlPoint',
+					label: defaultLabel,
 					line: {
 						color: '#707070',
 						width: 0

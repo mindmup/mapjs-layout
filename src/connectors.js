@@ -124,6 +124,7 @@ const Theme = require ('./theme'),
 			result = appendBorderLines(connectorPaths[calculatedConnector.connectorTheme.type](calculatedConnector, position, parent, child), calculatedConnector, position);
 		result.color = calculatedConnector.connectorTheme.line.color;
 		result.width = calculatedConnector.connectorTheme.line.width;
+		result.theme = calculatedConnector.connectorTheme;
 		return result;
 	},
 	linkPath = function (parent, child, arrow) {
