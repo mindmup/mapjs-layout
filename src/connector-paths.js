@@ -1,4 +1,13 @@
 /*global module*/
+
+const straight = function (calculatedConnector, position) {
+	'use strict';
+	return {
+		'd': 'M' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.from.y - position.top) + 'L' + Math.round(calculatedConnector.to.x - position.left) + ',' + Math.round(calculatedConnector.to.y - position.top),
+		'position': position
+	};
+};
+
 module.exports = {
 	'quadratic': function (calculatedConnector, position, parent, child) {
 		'use strict';
@@ -6,6 +15,9 @@ module.exports = {
 			requestedOffset = calculatedConnector.connectorTheme.controlPoint.height * (calculatedConnector.from.y - calculatedConnector.to.y),
 			offset = Math.max(-maxOffset, Math.min(maxOffset, requestedOffset));
 
+		if (Math.round(calculatedConnector.from.y) === Math.round(calculatedConnector.to.y - offset)) {
+			return straight(calculatedConnector, position);
+		}
 		return {
 			'd': 'M' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.from.y - position.top) +
 				'Q' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.to.y - offset - position.top) + ' ' + Math.round(calculatedConnector.to.x - position.left) + ',' + Math.round(calculatedConnector.to.y - position.top),
@@ -141,13 +153,7 @@ module.exports = {
 		};
 
 	},
-	'straight': function (calculatedConnector, position) {
-		'use strict';
-		return {
-			'd': 'M' + Math.round(calculatedConnector.from.x - position.left) + ',' + Math.round(calculatedConnector.from.y - position.top) + 'L' + Math.round(calculatedConnector.to.x - position.left) + ',' + Math.round(calculatedConnector.to.y - position.top),
-			'position': position
-		};
-	},
+	'straight': straight,
 	'no-connector': function (calculatedConnector, position) {
 		'use strict';
 		return {
