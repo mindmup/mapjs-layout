@@ -1,6 +1,7 @@
 /*global require, module */
 const Theme = require ('./theme'),
 	_ = require('underscore'),
+	lineStrokes = require('./line-strokes'),
 	nodeConnectionPointX = require('./layouts/node-connection-point-x'),
 	appendUnderLine = function (connectorCurve, calculatedConnector, position) {
 		'use strict';
@@ -108,7 +109,6 @@ const Theme = require ('./theme'),
 			nodeOverline: nodeOverline
 		};
 	},
-	// deprecated, use connectorPath below!
 	themePath = function (parent, child, themeArg) {
 		'use strict';
 		const left = Math.min(parent.left, child.left),
@@ -127,7 +127,7 @@ const Theme = require ('./theme'),
 		result.theme = calculatedConnector.connectorTheme;
 		return result;
 	},
-	linkPath = function (parent, child, arrow) {
+	linkPath = function (parent, child, linkAttrArg, themeArg) {
 		'use strict';
 		const calculateConnector = function (parent, child) {
 				const parentPoints =
@@ -187,6 +187,8 @@ const Theme = require ('./theme'),
 				};
 			},
 			conn = calculateConnector(parent, child),
+			theme = themeArg || new Theme({}),
+			linkAttr = linkAttrArg || {},
 			left = Math.min(parent.left, child.left),
 			top = Math.min(parent.top, child.top),
 			position = {
@@ -222,14 +224,21 @@ const Theme = require ('./theme'),
 					'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top) +
 					'L' + Math.round(a2x - position.left) + ',' + Math.round(a2y - position.top) +
 					'Z';
+			},
+			linkTheme = theme.linkTheme(linkAttr.type),
+			lineProps = {
+				color: linkAttr.color || linkTheme.line.color,
+				strokes: lineStrokes[linkAttr.lineStyle || linkTheme.line.lineStyle],
+				width: linkAttr.width || linkTheme.line.width
 			};
 
 
 		return {
-			'd': 'M' + Math.round(conn.from.x - position.left) + ',' + Math.round(conn.from.y - position.top) + 'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top),
-			'conn': conn,
-			'position': position,
-			arrow: arrow && arrowPath()
+			d: 'M' + Math.round(conn.from.x - position.left) + ',' + Math.round(conn.from.y - position.top) + 'L' + Math.round(conn.to.x - position.left) + ',' + Math.round(conn.to.y - position.top),
+			position: position,
+			arrow: linkAttr.arrow && arrowPath(),
+			theme: linkTheme,
+			lineProps: lineProps
 		};
 	};
 

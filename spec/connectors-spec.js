@@ -1,5 +1,5 @@
-/*global describe, expect, it, MAPJS, beforeEach*/
-
+/*global describe, expect, it, MAPJS, beforeEach, require*/
+const defaultTheme = require('../src/default-theme');
 describe('MAPJS.Connectors', function () {
 	'use strict';
 	let parent, child;
@@ -9,30 +9,79 @@ describe('MAPJS.Connectors', function () {
 	});
 	describe('linkPath', function () {
 		it('draws a straight line between the borders of two nodes', function () {
-			const path = MAPJS.Connectors.linkPath(parent, child, false);
-			expect(path).toEqual({
-				d: 'M100,20L136,120',
-				conn: {
-					from: { x: 300, y: 120 },
-					to: { x: 336, y: 220 }
-				},
-				position: { left: 200, top: 100, width: 142, height: 164 },
-				arrow: false
-			});
-		});
-		it('draws a straight line with arrow between the borders of two nodes', function () {
-			const path = MAPJS.Connectors.linkPath(parent, child, true);
-			expect(path).toEqual({
-				d: 'M100,20L136,120',
-				conn: {
-					from: { x: 300, y: 120 },
-					to: { x: 336, y: 220 }
-				},
-				position: { left: 200, top: 100, width: 142, height: 164 },
-				arrow: 'M136,106L136,120L127,109Z'
-			});
-		});
+			const path = MAPJS.Connectors.linkPath(parent, child);
+			expect(path.d).toEqual('M100,20L136,120');
+			expect(path.position).toEqual({ left: 200, top: 100, width: 142, height: 164 });
 
+		});
+		it('calculates the arrow if link attributes require it', function () {
+			const path = MAPJS.Connectors.linkPath(parent, child, {arrow: true});
+			expect(path.arrow).toEqual('M136,106L136,120L127,109Z');
+		});
+		it('returns the default link theme if no theme is provided', function () {
+			const path = MAPJS.Connectors.linkPath(parent, child);
+			expect(path.theme).toEqual(defaultTheme.link.default);
+		});
+		it('returns the link theme from the provided theme object', function () {
+			const path = MAPJS.Connectors.linkPath(parent, child, {}, new MAPJS.Theme({
+				link: {
+					default: {
+						line: 'lll',
+						label: 'xxx'
+					}
+				}
+			}));
+			expect(path.theme).toEqual({label: 'xxx', line: 'lll'});
+		});
+		it('requests the theme from link attributes', function () {
+			const path = MAPJS.Connectors.linkPath(parent, child, {type: 'curly'}, new MAPJS.Theme({
+				link: {
+					curly: {
+						line: 'clll',
+						label: 'cxxx'
+					},
+					default: {
+						line: 'lll',
+						label: 'xxx'
+					}
+				}
+			}));
+			expect(path.theme).toEqual({label: 'cxxx', line: 'clll'});
+
+		});
+		it('merges link attributes with the theme to create line properties', function () {
+			const theme = new MAPJS.Theme({
+				link: {
+					default: {
+						line: {
+							lineStyle: 'dashed',
+							width: 5,
+							color: 'green'
+						}
+					}
+				}
+			});
+			expect(MAPJS.Connectors.linkPath(parent, child, {}, theme).lineProps).toEqual({
+				strokes: '8, 8',
+				width: 5,
+				color: 'green'
+			});
+			expect(MAPJS.Connectors.linkPath(parent, child, {color: 'blue'}, theme).lineProps).toEqual({
+				strokes: '8, 8',
+				width: 5,
+				color: 'blue'
+			});
+			expect(MAPJS.Connectors.linkPath(parent, child, {lineStyle: 'solid'}, theme).lineProps).toEqual({
+				strokes: '',
+				width: 5,
+				color: 'green'
+			});
+			expect(MAPJS.Connectors.linkPath(parent, child, {width: 9}, theme).lineProps).toEqual({
+				strokes: '8, 8',
+				width: 9,
+				color: 'green'
+			});
+		});
 	});
 	describe('themePath', function () {
 		describe('when no theme is provided', function () {

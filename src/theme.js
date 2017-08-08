@@ -141,7 +141,11 @@ module.exports = function Theme(themeJson) {
 		returnedConnector.line = returnedConnector.line || connectorDefaults.line;
 		return returnedConnector;
 	};
-
+	self.linkTheme = function (linkStyle) {
+		const fromCurrentTheme = getElementForPath(themeDictionary, ['link', linkStyle || 'default']),
+			fromDefaultTheme = defaultTheme.link.default;
+		return _.extend({}, fromDefaultTheme, fromCurrentTheme);
+	};
 	if (themeDictionary && themeDictionary.node && themeDictionary.node.forEach) {
 		themeDictionary.nodeArray = themeDictionary.node;
 		themeDictionary.node = {};

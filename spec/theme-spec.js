@@ -1,4 +1,6 @@
-/*global MAPJS, describe, beforeEach, it, expect, spyOn*/
+/*global MAPJS, describe, beforeEach, it, expect, spyOn, require*/
+const defaultTheme = require('../src/default-theme');
+
 
 describe('Theme', function () {
 	'use strict';
@@ -219,6 +221,50 @@ describe('Theme', function () {
 		});
 		it('should return the default non-horizontal connector if unconfigured childPosition supplied', function () {
 			expect(underTest.connectorControlPoint('outside', 'controlPointCurve')).toEqual({'width': 0, 'height': 1.75});
+		});
+
+	});
+	describe('linkTheme', function () {
+
+		it('returns the default link theme if no theme is provided', function () {
+			expect(underTest.linkTheme()).toEqual(defaultTheme.link.default);
+		});
+		it('returns the link theme from the current theme object if it exists', function () {
+			underTest = new MAPJS.Theme({
+				link: {
+					default: {
+						line: 'lll',
+						label: 'xxx'
+					}
+				}
+			});
+			expect(underTest.linkTheme()).toEqual({label: 'xxx', line: 'lll'});
+		});
+		it('returns a particular link style if required', function () {
+			underTest = new MAPJS.Theme({
+				link: {
+					default: {
+						line: 'lll',
+						label: 'xxx'
+					},
+					hipster: {
+						line: 'hipl',
+						label: 'hipt'
+					}
+				}
+			});
+			expect(underTest.linkTheme('hipster')).toEqual({line: 'hipl', label: 'hipt'});
+
+		});
+		it('merges with the default theme if the provided theme is only partial', function () {
+			underTest = new MAPJS.Theme({
+				link: {
+					default: {
+						line: 'yyy'
+					}
+				}
+			});
+			expect(underTest.linkTheme()).toEqual({line: 'yyy', label: defaultTheme.link.default.label });
 		});
 
 	});
