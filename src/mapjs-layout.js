@@ -12,5 +12,6 @@ module.exports = {
 	ThemeDimensionProvider: require('./theme-dimension-provider'),
 	Themes: {
 		default: require('./default-theme')
-	}
+	},
+	lineStrokes: require('./line-strokes')
 };
