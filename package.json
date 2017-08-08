@@ -17,7 +17,7 @@
     "url": "https://github.com/mindmup/mapjs-layout/issues"
   },
   "homepage": "https://www.mindmup.com",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "scripts": {
     "pretest": "eslint src spec",
     "test": "node spec/support/jasmine-runner.js",
