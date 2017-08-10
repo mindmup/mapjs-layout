@@ -1,7 +1,7 @@
 /*global require, module */
 const Theme = require ('./theme'),
 	_ = require('underscore'),
-	lineStrokes = require('./line-strokes'),
+	lineStyles = require('./line-styles'),
 	nodeConnectionPointX = require('./layouts/node-connection-point-x'),
 	appendUnderLine = function (connectorCurve, calculatedConnector, position) {
 		'use strict';
@@ -226,10 +226,13 @@ const Theme = require ('./theme'),
 					'Z';
 			},
 			linkTheme = theme.linkTheme(linkAttr.type),
+			width = linkAttr.width || linkTheme.line.width,
+			lineStyle = linkAttr.lineStyle || linkTheme.line.lineStyle,
 			lineProps = {
 				color: linkAttr.color || linkTheme.line.color,
-				strokes: lineStrokes[linkAttr.lineStyle || linkTheme.line.lineStyle],
-				width: linkAttr.width || linkTheme.line.width
+				strokes: lineStyles.strokes(lineStyle, width),
+				linecap: lineStyles.linecap(lineStyle, width),
+				width: width
 			};
 
 

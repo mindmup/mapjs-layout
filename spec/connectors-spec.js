@@ -62,22 +62,33 @@ describe('MAPJS.Connectors', function () {
 				}
 			});
 			expect(MAPJS.Connectors.linkPath(parent, child, {}, theme).lineProps).toEqual({
-				strokes: '8, 8',
+				strokes: '20, 20',
+				linecap: '',
 				width: 5,
 				color: 'green'
 			});
 			expect(MAPJS.Connectors.linkPath(parent, child, {color: 'blue'}, theme).lineProps).toEqual({
-				strokes: '8, 8',
+				strokes: '20, 20',
+				linecap: '',
 				width: 5,
 				color: 'blue'
 			});
+			expect(MAPJS.Connectors.linkPath(parent, child, {lineStyle: 'dotted'}, theme).lineProps).toEqual({
+				strokes: '1, 20',
+				linecap: 'round',
+				width: 5,
+				color: 'green'
+			});
+
 			expect(MAPJS.Connectors.linkPath(parent, child, {lineStyle: 'solid'}, theme).lineProps).toEqual({
 				strokes: '',
+				linecap: '',
 				width: 5,
 				color: 'green'
 			});
 			expect(MAPJS.Connectors.linkPath(parent, child, {width: 9}, theme).lineProps).toEqual({
-				strokes: '8, 8',
+				strokes: '36, 36',
+				linecap: '',
 				width: 9,
 				color: 'green'
 			});
