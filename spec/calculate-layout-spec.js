@@ -1,6 +1,8 @@
-/*global describe, expect, it, MAPJS, jasmine, beforeEach*/
+/*global describe, expect, it, MAPJS, jasmine, beforeEach, require*/
+const _ = require('underscore');
 describe('MAPJS.calculateLayout', function () {
 	'use strict';
+	const makeConnector = (obj) => _.extend({type: 'connector'}, obj);
 	let idea, dimensionProvider, layouts, optional, defaultMargin;
 	beforeEach(function () {
 		defaultMargin = {h: 20, v: 20};
@@ -191,10 +193,10 @@ describe('MAPJS.calculateLayout', function () {
 				result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
 
 				expect(result.connectors).toEqual({
-					11: Object({ from: 1, to: 11 }),
-					12: Object({ from: 1, to: 12, attr: {color: 'green'} }),
-					112: Object({ from: 12, to: 112 }),
-					111: Object({ from: 11, to: 111 })
+					11: makeConnector({ from: 1, to: 11 }),
+					12: makeConnector({ from: 1, to: 12, attr: {color: 'green'} }),
+					112: makeConnector({ from: 12, to: 112 }),
+					111: makeConnector({ from: 11, to: 111 })
 				});
 			});
 			it('should allow the theme to block connector overrides', function () {
@@ -268,7 +270,16 @@ describe('MAPJS.calculateLayout', function () {
 				3: {id: 3, x: 0, y: 0, height: 10, width: 10}
 			});
 			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
-			expect(result.links).toEqual({ '2_3': { ideaIdFrom: 2, ideaIdTo: 3, attr: { name: 'val' } } });
+			expect(result.links).toEqual({
+				'2_3': {
+					type: 'link',
+					ideaIdFrom: 2,
+					ideaIdTo: 3,
+					attr: {
+						name: 'val'
+					}
+				}
+			});
 		});
 	});
 

@@ -29,11 +29,13 @@ describe('layouts/links', function () {
 	it('should not include links when from and to nodes are visible', function () {
 		expect(layoutLinks(contentAggregate, visibleNodes)).toEqual({
 			'2_3': {
+				type: 'link',
 				ideaIdFrom: 2,
 				ideaIdTo: 3,
 				attr: undefined
 			},
 			'2_4': {
+				type: 'link',
 				ideaIdFrom: 2,
 				ideaIdTo: 4,
 				attr: {color: 'blue'}

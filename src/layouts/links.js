@@ -6,6 +6,7 @@ module.exports = function (idea, visibleNodes) {
 	_.each(idea.links, function (link) {
 		if (visibleNodes[link.ideaIdFrom] && visibleNodes[link.ideaIdTo]) {
 			result[link.ideaIdFrom + '_' + link.ideaIdTo] = {
+				type: 'link',
 				ideaIdFrom: link.ideaIdFrom,
 				ideaIdTo: link.ideaIdTo,
 				attr: _.clone(link.attr)

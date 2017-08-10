@@ -11,6 +11,7 @@ module.exports = function extractConnectors(aggregate, visibleNodes, theme) {
 				}
 				if (parentId !== aggregate.id) {
 					result[idea.id] = {
+						type: 'connector',
 						from: parentId,
 						to: idea.id
 					};

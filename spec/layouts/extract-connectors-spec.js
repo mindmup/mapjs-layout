@@ -1,7 +1,9 @@
 /*global describe, it, require, expect, beforeEach*/
-const extractConnectors = require('../../src/layouts/extract-connectors');
+const extractConnectors = require('../../src/layouts/extract-connectors'),
+	_ = require('underscore');
 describe('extractConnectors', function () {
 	'use strict';
+	const makeConnector = (obj) => _.extend({type: 'connector'}, obj);
 	let visibleNodes, idea;
 	beforeEach(function () {
 		idea = {
@@ -37,17 +39,17 @@ describe('extractConnectors', function () {
 	it('creates an object indexed by child ID with from-to connector information', function () {
 		const result = extractConnectors(idea, visibleNodes);
 		expect(result).toEqual({
-			11: Object({ from: 1, to: 11 }),
-			12: Object({ from: 1, to: 12 }),
-			112: Object({ from: 12, to: 112 }),
-			111: Object({ from: 11, to: 111 })
+			11: makeConnector({ from: 1, to: 11 }),
+			12: makeConnector({ from: 1, to: 12 }),
+			112: makeConnector({ from: 12, to: 112 }),
+			111: makeConnector({ from: 11, to: 111 })
 		});
 	});
 	it('should not include connector when child node is not visible', function () {
 		delete visibleNodes[12];
 		delete visibleNodes[111];
 		expect(extractConnectors(idea, visibleNodes)).toEqual({
-			11: Object({ from: 1, to: 11 })
+			11: makeConnector({ from: 1, to: 11 })
 		});
 	});
 	describe('parentConnector handling', function () {
@@ -57,26 +59,26 @@ describe('extractConnectors', function () {
 
 		it('adds parentConnector attribute properties to the connector attributes if the theme is not set', function () {
 			const result = extractConnectors(idea, visibleNodes);
-			expect(result[12]).toEqual({
+			expect(result[12]).toEqual(makeConnector({
 				from: 1,
 				to: 12,
 				attr: {great: true}
-			});
+			}));
 		});
 		it('adds parentConnector if the theme is set and does not block parent connector overrides', function () {
 			const result = extractConnectors(idea, visibleNodes, {blockParentConnectorOverride: false});
-			expect(result[12]).toEqual({
+			expect(result[12]).toEqual(makeConnector({
 				from: 1,
 				to: 12,
 				attr: {great: true}
-			});
+			}));
 		});
 		it('ignores parentConnector properties when the theme blocks overrides', function () {
 			const result = extractConnectors(idea, visibleNodes, {blockParentConnectorOverride: true});
-			expect(result[12]).toEqual({
+			expect(result[12]).toEqual(makeConnector({
 				from: 1,
 				to: 12
-			});
+			}));
 		});
 		it('clones the parent connnector so changes to node can be detected', function () {
 			const result = extractConnectors(idea, visibleNodes);
