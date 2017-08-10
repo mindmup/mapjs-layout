@@ -15,6 +15,9 @@ module.exports = {
 	},
 	linecap: (name) => {
 		'use strict';
+		if (!name || name === 'solid') {
+			return 'square';
+		}
 		if (name === 'dotted') {
 			return 'round';
 		}

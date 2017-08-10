@@ -23,4 +23,10 @@ describe('lineStyles', () => {
 			expect(lineStyles.strokes('dotted', 10)).toEqual('1, 40');
 		});
 	});
+	describe('linecap', () => {
+		it('should return a square cap for undefined style', () => expect(lineStyles.linecap()).toEqual('square'));
+		it('should return a square cap for solid', () => expect(lineStyles.linecap('solid')).toEqual('square'));
+		it('should return a round cap for dotted', () => expect(lineStyles.linecap('dotted')).toEqual('round'));
+		it('should return an empty cap as default', () => expect(lineStyles.linecap('idunno')).toEqual(''));
+	});
 });

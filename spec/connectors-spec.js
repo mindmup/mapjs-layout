@@ -82,7 +82,7 @@ describe('MAPJS.Connectors', function () {
 
 			expect(MAPJS.Connectors.linkPath(parent, child, {lineStyle: 'solid'}, theme).lineProps).toEqual({
 				strokes: '',
-				linecap: '',
+				linecap: 'square',
 				width: 5,
 				color: 'green'
 			});
