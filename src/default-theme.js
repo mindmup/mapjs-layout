@@ -225,8 +225,8 @@ module.exports = {
 				position: {
 					ratio: 0.5
 				},
-				backgroundColor: 'transparent',
-				borderColor: 'transparent',
+				backgroundColor: '#FFFFFF',
+				borderColor: '#FFFFFF',
 				text: {
 					color: '#4F4F4F',
 					font: {
