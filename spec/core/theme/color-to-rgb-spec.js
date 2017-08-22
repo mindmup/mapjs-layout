@@ -1,6 +1,6 @@
 /*global describe, require, expect, it*/
 
-const underTest = require('../src/color-to-rgb');
+const underTest = require('../../../src/core/theme/color-to-rgb');
 
 describe('convertToRGB', function () {
 	'use strict';
