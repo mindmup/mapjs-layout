@@ -1,5 +1,5 @@
 /*global describe, beforeEach, it, require, expect*/
-const MultiRootLayout = require('../src/multi-root-layout');
+const MultiRootLayout = require('../../../src/core/layout/multi-root-layout');
 
 describe('MultiRootLayout', function () {
 	'use strict';

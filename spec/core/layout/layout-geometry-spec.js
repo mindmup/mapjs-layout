@@ -1,5 +1,5 @@
 /*global describe, it, expect, require, beforeEach*/
-const layoutGeometry = require('../src/layout-geometry');
+const layoutGeometry = require('../../../src/core/layout/layout-geometry');
 describe('layoutGeometry', function () {
 	'use strict';
 	describe('unitVector', function () {

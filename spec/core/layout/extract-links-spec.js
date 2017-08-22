@@ -1,7 +1,7 @@
 /*global describe, expect, it, beforeEach, require*/
-const layoutLinks = require('../../src/layouts/links');
+const extractLinks = require('../../../src/core/layout/extract-links');
 
-describe('layouts/links', function () {
+describe('extractLinks', function () {
 	'use strict';
 	let contentAggregate, visibleNodes;
 	beforeEach(function () {
@@ -20,14 +20,14 @@ describe('layouts/links', function () {
 	it('should not include links when node from is not visible', function () {
 		delete visibleNodes[3];
 		delete visibleNodes[4];
-		expect(layoutLinks(contentAggregate, visibleNodes)).toEqual({});
+		expect(extractLinks(contentAggregate, visibleNodes)).toEqual({});
 	});
 	it('should not include links when node to is not visible', function () {
 		delete visibleNodes[2];
-		expect(layoutLinks(contentAggregate, visibleNodes)).toEqual({});
+		expect(extractLinks(contentAggregate, visibleNodes)).toEqual({});
 	});
 	it('should not include links when from and to nodes are visible', function () {
-		expect(layoutLinks(contentAggregate, visibleNodes)).toEqual({
+		expect(extractLinks(contentAggregate, visibleNodes)).toEqual({
 			'2_3': {
 				type: 'link',
 				ideaIdFrom: 2,
@@ -43,7 +43,7 @@ describe('layouts/links', function () {
 		});
 	});
 	it('should clone the attribute', function () {
-		const result = layoutLinks(contentAggregate, visibleNodes);
+		const result = extractLinks(contentAggregate, visibleNodes);
 		result['2_4'].attr.color = 'red';
 		expect(contentAggregate.links[1].attr.color).toEqual('blue');
 	});

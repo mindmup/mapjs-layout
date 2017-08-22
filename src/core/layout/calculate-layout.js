@@ -1,12 +1,12 @@
 /*global module, require*/
 const contentUpgrade = require('mindmup-mapjs-model').contentUpgrade,
-	Theme = require('./core/theme/theme'),
-	extractConnectors = require('./layouts/extract-connectors'),
-	layoutLinks = require('./layouts/links'),
+	Theme = require('../theme/theme'),
+	extractConnectors = require('./extract-connectors'),
+	extractLinks = require('./extract-links'),
 	MultiRootLayout = require('./multi-root-layout'),
 	defaultLayouts = {
-		'standard': require('./core/layout/standard/calculate-standard-layout'),
-		'top-down': require('./core/layout/top-down/calculate-top-down-layout')
+		'standard': require('./standard/calculate-standard-layout'),
+		'top-down': require('./top-down/calculate-top-down-layout')
 	},
 	attachStyles = function (nodes, theme) {
 		'use strict';
@@ -22,7 +22,7 @@ const contentUpgrade = require('mindmup-mapjs-model').contentUpgrade,
 			orientation: orientation,
 			nodes: attachStyles(result, theme),
 			connectors: extractConnectors(idea, result, theme),
-			links: layoutLinks(idea, result),
+			links: extractLinks(idea, result),
 			theme: idea.attr && idea.attr.theme
 		};
 	};

@@ -23,7 +23,6 @@
     "test": "node spec/support/jasmine-runner.js",
     "debug": "node debug spec/support/jasmine-runner.js"
   },
-  "main": "src/mapjs-layout.js",
   "dependencies": {
     "mindmup-mapjs-model": "^2.0.2",
     "monotone-convex-hull-2d": "^1.0.1",

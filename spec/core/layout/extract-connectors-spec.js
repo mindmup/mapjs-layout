@@ -1,6 +1,6 @@
 /*global describe, it, require, expect, beforeEach*/
-const extractConnectors = require('../../src/layouts/extract-connectors'),
-	_ = require('underscore');
+const _ = require('underscore'),
+	extractConnectors = require('../../../src/core/layout/extract-connectors');
 describe('extractConnectors', function () {
 	'use strict';
 	const makeConnector = (obj) => _.extend({type: 'connector'}, obj);
