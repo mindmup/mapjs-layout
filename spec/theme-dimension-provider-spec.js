@@ -59,6 +59,28 @@ describe('ThemeDimensionProvider', function () {
 					expect(textSizer).toHaveBeenCalledWith('my node text', 25, 'theme font info here');
 				});
 			});
+			it('should use the preferrred width if greater than the wrapped text width', () => {
+				idea.attr = {
+					style: {
+						width: 225
+					}
+				};
+				expect(dpFunc(idea, 1).width).toEqual(225);
+
+			});
+			it('should use the wrapped text width if greater than preferrred width', () => {
+				idea.attr = {
+					style: {
+						width: 50
+					}
+				};
+				expect(dpFunc(idea, 1).width).toEqual(52);
+			});
+			it('should use the wrapped text width if preferrred width not specified', () => {
+				idea.attr = {
+				};
+				expect(dpFunc(idea, 1).width).toEqual(52);
+			});
 			describe('for an ideas with no icon', function () {
 				it('should return the text sizer dimensions as textSize property', function () {
 					expect(dpFunc(idea, 1).textSize).toEqual(textSize);

@@ -19,6 +19,7 @@ module.exports = function ThemeDimensionProvider(textSizer, options) {
 				nodeTheme = theme.nodeTheme(theme.nodeStyles(level, idea.attr)),
 				title = formattedNodeTitle(idea.title),
 				maxWidth = calcMaxWidth(idea.attr, nodeTheme),
+				requestedWidth = (idea.attr && idea.attr.style && idea.attr.style.width) || 0,
 				textBox = _.extend({}, textSizer(title, maxWidth, nodeTheme.font));
 
 			textBox.textSize = {width: textBox.width, height: textBox.height};
@@ -41,6 +42,7 @@ module.exports = function ThemeDimensionProvider(textSizer, options) {
 
 			}
 			textBox.width = Math.max(textBox.width + 2 * nodeTheme.margin, nodeTheme.cornerRadius * 2);
+			textBox.width = Math.max(requestedWidth, textBox.width);
 			textBox.height = Math.max(textBox.height + 2 * nodeTheme.margin, nodeTheme.cornerRadius * 2);
 			return textBox;
 		};
