@@ -1,5 +1,5 @@
 /*global describe, it, expect, beforeEach, require*/
-const ThemeProcessor = require('../src/theme-processor'),
+const ThemeProcessor = require('../../../src/core/theme/theme-processor'),
 	underTest = new ThemeProcessor();
 describe('MAPJS.ThemeProcessor', function () {
 	'use strict';

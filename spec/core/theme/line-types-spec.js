@@ -1,6 +1,6 @@
 /*global describe, beforeEach, it, expect, require*/
-const underTest = require('../src/connector-paths');
-describe('connectorPaths', function () {
+const underTest = require('../../../src/core/theme/line-types');
+describe('lineTypes', function () {
 	'use strict';
 
 	let calculatedConnector, position, parent, child;

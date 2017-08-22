@@ -1,5 +1,5 @@
 /*global describe, expect, it, require*/
-const foregroundStyle = require('../src/foreground-style');
+const foregroundStyle = require('../../../src/core/theme/foreground-style');
 describe('foregroundStyle', function () {
 	'use strict';
 	[

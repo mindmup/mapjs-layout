@@ -1,7 +1,7 @@
 /*global describe, expect, it,  jasmine, beforeEach, require*/
 const _ = require('underscore'),
 	calculateLayout = require('../src/calculate-layout'),
-	Theme = require('../src/theme');
+	Theme = require('../src/core/theme/theme');
 describe('calculateLayout', function () {
 	'use strict';
 	const makeConnector = (obj) => _.extend({type: 'connector'}, obj);

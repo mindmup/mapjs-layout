@@ -1,5 +1,5 @@
 /*global describe, require, beforeEach, it, expect*/
-const underTest = require('../../src/layouts/node-connection-point-x');
+const underTest = require('../../../src/core/theme/node-connection-point-x');
 
 describe('nodeConnectionPointX', function () {
 	'use strict';

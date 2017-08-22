@@ -1,6 +1,6 @@
 /*global describe, beforeEach, it, expect, spyOn, require*/
-const defaultTheme = require('../src/default-theme'),
-	Theme = require('../src/theme');
+const defaultTheme = require('../../../src/core/theme/default-theme'),
+	Theme = require('../../../src/core/theme/theme');
 
 
 describe('Theme', function () {

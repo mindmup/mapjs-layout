@@ -1,5 +1,5 @@
 /*global require, describe, it, expect*/
-const lineStyles = require('../src/line-styles');
+const lineStyles = require('../../../src/core/theme/line-styles');
 
 describe('lineStyles', () => {
 	'use strict';
