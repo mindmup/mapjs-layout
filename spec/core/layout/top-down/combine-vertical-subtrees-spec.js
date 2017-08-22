@@ -1,5 +1,5 @@
 /*global describe, it, expect, require */
-const combineVerticalSubtrees = require('../../src/layouts/combine-vertical-subtrees');
+const combineVerticalSubtrees = require('../../../../src/core/layout/top-down/combine-vertical-subtrees');
 describe('Combine Vertical Subtrees', function () {
 	'use strict';
 	it('should set the width properties of the root node', function () {

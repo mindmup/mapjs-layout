@@ -1,5 +1,5 @@
 /* global describe, it, expect, require */
-const VerticalSubtreeCollection = require('../../src/layouts/vertical-subtree-collection');
+const VerticalSubtreeCollection = require('../../../../src/core/layout/top-down/vertical-subtree-collection');
 describe('Vertical Subtree Collection', function () {
 	'use strict';
 	describe('getLevelWidth', function () {

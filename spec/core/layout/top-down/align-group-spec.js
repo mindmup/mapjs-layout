@@ -1,5 +1,5 @@
 /*global describe, it, expect, require*/
-const alignGroup = require('../../src/layouts/align-group');
+const alignGroup = require('../../../../src/core/layout/top-down/align-group');
 describe('alignGroup', function () {
 	'use strict';
 	it('expands the root node to cover its direct children', function () {

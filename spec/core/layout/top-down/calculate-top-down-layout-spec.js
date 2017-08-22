@@ -1,7 +1,7 @@
 /*global describe, it, expect, require, jasmine, beforeEach */
-const layout = require('../../src/layouts/top-down'),
+const layout = require('../../../../src/core/layout/top-down/calculate-top-down-layout'),
 	_ = require('underscore');
-describe('layouts/top-down', function () {
+describe('calculateTopDownLayout', function () {
 	'use strict';
 	const dimensionProvider = function (idea /*, level */) {
 			return {

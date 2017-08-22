@@ -1,9 +1,9 @@
 /*global module, require*/
 const _ = require('underscore'),
-	isEmptyGroup = require('../core/content/is-empty-group'),
+	isEmptyGroup = require('../../content/is-empty-group'),
 	alignGroup = require('./align-group'),
 	combineVerticalSubtrees = require('./combine-vertical-subtrees');
-module.exports  = function topdownLayout(aggregate, dimensionProvider, margin) {
+module.exports  = function calculateTopDownLayout(aggregate, dimensionProvider, margin) {
 	'use strict';
 	const isGroup = function (node) {
 			return node.attr && node.attr.group;
