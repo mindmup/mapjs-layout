@@ -1,5 +1,5 @@
 /*global describe, require, beforeEach, it, expect*/
-const LayoutModel = require('../src/layout-model');
+const LayoutModel = require('../../../src/core/layout/layout-model');
 describe('LayoutModel', function () {
 	'use strict';
 	let underTest, layout;

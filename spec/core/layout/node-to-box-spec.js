@@ -1,5 +1,5 @@
 /*global describe, it, expect, require*/
-const nodeToBox = require('../src/node-to-box');
+const nodeToBox = require('../../../src/core/layout/node-to-box');
 describe('nodeToBox', function () {
 	'use strict';
 	it('should convert node to a box', function () {
