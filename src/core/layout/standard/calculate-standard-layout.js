@@ -1,7 +1,7 @@
 /*global module, require */
 const _ = require('underscore'),
-	treeUtils = require('../tree');
-module.exports  = function standardLayout(idea, dimensionProvider, margin) {
+	treeUtils = require('./tree');
+module.exports  = function calculateStandardLayout(idea, dimensionProvider, margin) {
 	'use strict';
 	const positive = function (rank, parentId) {
 			return parentId !== idea.id || rank > 0;

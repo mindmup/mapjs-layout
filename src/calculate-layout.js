@@ -5,7 +5,7 @@ const contentUpgrade = require('mindmup-mapjs-model').contentUpgrade,
 	layoutLinks = require('./layouts/links'),
 	MultiRootLayout = require('./multi-root-layout'),
 	defaultLayouts = {
-		'standard': require('./layouts/standard'),
+		'standard': require('./core/layout/standard/calculate-standard-layout'),
 		'top-down': require('./layouts/top-down')
 	},
 	attachStyles = function (nodes, theme) {

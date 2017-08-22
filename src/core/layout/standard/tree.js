@@ -1,6 +1,6 @@
 /*global module, require*/
 const _ = require('underscore'),
-	isEmptyGroup = require('./is-empty-group'),
+	isEmptyGroup = require('../../content/is-empty-group'),
 	outlineUtils = require('./outline'),
 	Tree = function (options) {
 		'use strict';

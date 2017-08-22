@@ -1,5 +1,5 @@
 /*global describe, expect, it, require, beforeEach*/
-const outlineUtils = require('../src/outline');
+const outlineUtils = require('../../../../src/core/layout/standard/outline');
 
 describe('outlineUtils', function () {
 	'use strict';

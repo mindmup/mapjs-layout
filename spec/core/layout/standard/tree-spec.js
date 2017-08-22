@@ -1,5 +1,5 @@
 /*global describe, expect, it, require, jasmine*/
-const treeUtils = require('../src/tree');
+const treeUtils = require('../../../../src/core/layout/standard/tree');
 
 describe('tree', function () {
 	'use strict';

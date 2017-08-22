@@ -1,9 +1,9 @@
 /*global describe, expect, it, jasmine, require, beforeEach*/
-const layout = require('../../src/layouts/standard'),
-	_ = require('underscore');
-describe('layouts/standard', function () {
-	'use strict';
+const _ = require('underscore'),
+	layout = require('../../../../src/core/layout/standard/calculate-standard-layout');
 
+describe('calculateStandardLayout', function () {
+	'use strict';
 	let margin,
 		dimensionProvider;
 

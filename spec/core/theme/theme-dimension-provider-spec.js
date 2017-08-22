@@ -1,5 +1,5 @@
 /*global describe, beforeEach, jasmine, it, expect, require*/
-const ThemeDimensionProvider = require('../src/theme-dimension-provider');
+const ThemeDimensionProvider = require('../../../src/core/theme/theme-dimension-provider');
 describe('ThemeDimensionProvider', function () {
 	'use strict';
 	let underTest, textSizer, theme, nodeStyles, nodeTheme, textSize, options;
