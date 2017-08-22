@@ -1,9 +1,10 @@
-/*global describe, MAPJS, beforeEach, it, expect*/
-describe('MAPJS.LayoutModel', function () {
+/*global describe, require, beforeEach, it, expect*/
+const LayoutModel = require('../src/layout-model');
+describe('LayoutModel', function () {
 	'use strict';
 	let underTest, layout;
 	beforeEach(function () {
-		underTest = new MAPJS.LayoutModel({bar: 'foo'});
+		underTest = new LayoutModel({bar: 'foo'});
 	});
 	describe('getLayout', function () {
 		it('should return empty Layout if none set', function () {
@@ -80,7 +81,7 @@ describe('MAPJS.LayoutModel', function () {
 			expect(underTest.getNodeBox()).toBeFalsy();
 		});
 		it('should return falsy undefined layout', function () {
-			underTest = new MAPJS.LayoutModel();
+			underTest = new LayoutModel();
 			expect(underTest.getNodeBox(4)).toBeFalsy();
 		});
 
@@ -134,7 +135,7 @@ describe('MAPJS.LayoutModel', function () {
 			expect(underTest.getNode()).toBeFalsy();
 		});
 		it('should return falsy undefined layout', function () {
-			underTest = new MAPJS.LayoutModel();
+			underTest = new LayoutModel();
 			expect(underTest.getNode(4)).toBeFalsy();
 		});
 	});

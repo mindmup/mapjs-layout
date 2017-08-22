@@ -1,5 +1,6 @@
-/*global MAPJS, describe, beforeEach, it, expect, spyOn, require*/
-const defaultTheme = require('../src/default-theme');
+/*global describe, beforeEach, it, expect, spyOn, require*/
+const defaultTheme = require('../src/default-theme'),
+	Theme = require('../src/theme');
 
 
 describe('Theme', function () {
@@ -84,7 +85,7 @@ describe('Theme', function () {
 				spacing: 30
 			}
 		};
-		underTest = new MAPJS.Theme(theme);
+		underTest = new Theme(theme);
 	});
 	it('should set the theme name', function () {
 		expect(underTest.name).toEqual('Mike');
@@ -95,14 +96,14 @@ describe('Theme', function () {
 		});
 		it('should be truthy when blockParentConnectorOverride flag is set', function () {
 			theme.blockParentConnectorOverride = true;
-			underTest = new MAPJS.Theme(theme);
+			underTest = new Theme(theme);
 			expect(underTest.blockParentConnectorOverride).toBeTruthy();
 		});
 
 	});
 	describe('attributeValue', function () {
 		it('should return default value for empty theme', function () {
-			underTest = new MAPJS.Theme({});
+			underTest = new Theme({});
 			expect(underTest.attributeValue(['node'], ['special', 'default'], ['cornerRadius'], 100)).toEqual(100);
 		});
 		it('should return first value found', function () {
@@ -145,7 +146,7 @@ describe('Theme', function () {
 	});
 	describe('nodeTheme', function () {
 		it('should return default values for empty theme', function () {
-			underTest = new MAPJS.Theme({});
+			underTest = new Theme({});
 			expect(underTest.nodeTheme([])).toEqual({
 				margin: 5,
 				font: {
@@ -191,7 +192,7 @@ describe('Theme', function () {
 				color: '#FFFFFF',
 				opacity: 0.8
 			};
-			underTest = new MAPJS.Theme(theme);
+			underTest = new Theme(theme);
 			expect(underTest.nodeTheme(['default']).backgroundColor).toEqual('rgba(255,255,255,0.8)');
 		});
 	});
@@ -230,7 +231,7 @@ describe('Theme', function () {
 			expect(underTest.linkTheme()).toEqual(defaultTheme.link.default);
 		});
 		it('returns the link theme from the current theme object if it exists', function () {
-			underTest = new MAPJS.Theme({
+			underTest = new Theme({
 				link: {
 					default: {
 						line: 'lll',
@@ -241,7 +242,7 @@ describe('Theme', function () {
 			expect(underTest.linkTheme()).toEqual({label: 'xxx', line: 'lll'});
 		});
 		it('returns a particular link style if required', function () {
-			underTest = new MAPJS.Theme({
+			underTest = new Theme({
 				link: {
 					default: {
 						line: 'lll',
@@ -257,7 +258,7 @@ describe('Theme', function () {
 
 		});
 		it('merges with the default theme if the provided theme is only partial', function () {
-			underTest = new MAPJS.Theme({
+			underTest = new Theme({
 				link: {
 					default: {
 						line: 'yyy'

@@ -1,5 +1,6 @@
-/*global MAPJS, describe, it, expect, beforeEach*/
-const underTest = new MAPJS.ThemeProcessor();
+/*global describe, it, expect, beforeEach, require*/
+const ThemeProcessor = require('../src/theme-processor'),
+	underTest = new ThemeProcessor();
 describe('MAPJS.ThemeProcessor', function () {
 	'use strict';
 	it('converts a trivial single-item theme file to css', function () {

@@ -1,5 +1,6 @@
-/*global describe, beforeEach, jasmine, MAPJS, it, expect*/
-describe('MAPJS.ThemeDimensionProvider', function () {
+/*global describe, beforeEach, jasmine, it, expect, require*/
+const ThemeDimensionProvider = require('../src/theme-dimension-provider');
+describe('ThemeDimensionProvider', function () {
 	'use strict';
 	let underTest, textSizer, theme, nodeStyles, nodeTheme, textSize, options;
 	beforeEach(function () {
@@ -16,7 +17,7 @@ describe('MAPJS.ThemeDimensionProvider', function () {
 		textSizer = jasmine.createSpy('textSizer');
 		textSize = {width: 50, height: 40};
 		textSizer.and.returnValue(textSize);
-		underTest = new  MAPJS.ThemeDimensionProvider(textSizer, options);
+		underTest = new  ThemeDimensionProvider(textSizer, options);
 	});
 	describe('dimensionProviderForTheme', function () {
 		let idea;

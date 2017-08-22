@@ -1,6 +1,6 @@
-/*global describe, expect, it, MAPJS*/
-
-describe('MAPJS.foregroundStyle', function () {
+/*global describe, expect, it, require*/
+const foregroundStyle = require('../src/foreground-style');
+describe('foregroundStyle', function () {
 	'use strict';
 	[
 		['#FFFFFF', 'darkColor'],
@@ -13,7 +13,7 @@ describe('MAPJS.foregroundStyle', function () {
 		['#E0E0E0', 'color']
 	].forEach(function (args) {
 		it('calculates the text class of nodes with background color ' + args[0] + ' to ' + args[1], function () {
-			expect(MAPJS.foregroundStyle(args[0])).toEqual(args[1]);
+			expect(foregroundStyle(args[0])).toEqual(args[1]);
 		});
 	});
 });

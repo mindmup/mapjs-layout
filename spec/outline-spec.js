@@ -11,21 +11,25 @@ describe('outlineUtils', function () {
 			expect(result).toBe(300);
 		});
 	});
-	describe('borderSegmentIndexAt',
+	describe('borderSegmentIndexAt', function () {
 		[
 			['returns element at length if exists', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 70, 1],
 			['returns -1 if too short', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 151, -1],
 			['returns right segment if on spot', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 50, 1],
 			['returns initial segment if length 0', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 0, 0],
 			['returns -1 on right border', [{ l: 50, h: -10 }, { l: 100, h: -30 }], 150, -1]
-		],
-		function (border, length, expected) {
-			result = outlineUtils.borderSegmentIndexAt(border, length);
+		].forEach(function (testCase) {
+			const border = testCase[1],
+				length = testCase[2],
+				expected = testCase[3];
+			it(testCase[0], function () {
+				const result = outlineUtils.borderSegmentIndexAt(border, length);
+				expect(result).toBe(expected);
+			});
+		});
+	});
 
-			expect(result).toBe(expected);
-		}
-	);
-	describe('extending borders',
+	describe('extending borders', function () {
 		[
 			['should preserve first border if second is shorter', [{h: -10, l: 3}], [{h: -20, l: 1}], [{h: -10, l: 3}]],
 			['should preserve total length when first border is shorter', [{h: -30, l: 12}], [{h: -10, l: 6}, {h: -20, l: 8}], [{h: -30, l: 12}, {h: -20, l: 2}]],
@@ -33,12 +37,17 @@ describe('outlineUtils', function () {
 			['should skip second border elements before end of first border', [{h: -10, l: 3}], [{h: -20, l: 1}, {h: -30, l: 4}], [{h: -10, l: 3}, {h: -30, l: 2}]],
 			['should skip second border elements aligned with the end of first border', [{h: -10, l: 3}], [{h: -20, l: 3}, {h: -30, l: 4}], [{h: -10, l: 3}, {h: -30, l: 4}]],
 			['should skip second border elements aligned with the end of first border', [{h: -10, l: 1}, {h: -20, l: 2}, {h: -30, l: 3}], [{h: -20, l: 4}, {h: -30, l: 3}, {h: -50, l: 5 }], [{h: -10, l: 1}, {h: -20, l: 2}, {h: -30, l: 3}, {h: -30, l: 1 }, {h: -50, l: 5 }]]
-		],
-		function (firstBorder, secondBorder, expected) {
-			result = outlineUtils.extendBorder(firstBorder, secondBorder);
-			expect(result).toEqual(expected);
-		}
-	);
+		].forEach(function (testCase) {
+			const firstBorder = testCase[1],
+				secondBorder = testCase[2],
+				expected = testCase[3];
+			it(testCase[0], function () {
+				result = outlineUtils.extendBorder(firstBorder, secondBorder);
+				expect(result).toEqual(expected);
+			});
+		});
+
+	});
 	describe('Outline', function () {
 		let dimensionProvider;
 		beforeEach(function () {

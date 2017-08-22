@@ -1,6 +1,8 @@
-/*global describe, expect, it, MAPJS, jasmine, beforeEach, require*/
-const _ = require('underscore');
-describe('MAPJS.calculateLayout', function () {
+/*global describe, expect, it,  jasmine, beforeEach, require*/
+const _ = require('underscore'),
+	calculateLayout = require('../src/calculate-layout'),
+	Theme = require('../src/theme');
+describe('calculateLayout', function () {
 	'use strict';
 	const makeConnector = (obj) => _.extend({type: 'connector'}, obj);
 	let idea, dimensionProvider, layouts, optional, defaultMargin;
@@ -29,43 +31,43 @@ describe('MAPJS.calculateLayout', function () {
 	describe('version upgrades', function () {
 		it('upgrades the content before layout', function () {
 			idea.formatVersion = 2;
-			MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			calculateLayout(idea, dimensionProvider, optional);
 			expect(idea.formatVersion).toEqual(3);
 			expect(idea.ideas[1].id).toEqual('root');
 			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, defaultMargin);
 		});
 		it('lays out subideas when using v3', function () {
 			idea.formatVersion = 3;
-			MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			calculateLayout(idea, dimensionProvider, optional);
 			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, defaultMargin);
 		});
 	});
 	describe('when the theme is not provided', function () {
 		it('should use the standard layout and margin', function () {
-			MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			calculateLayout(idea, dimensionProvider, optional);
 			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, defaultMargin);
 		});
 	});
 	describe('when the theme is provided', function () {
 		it('should use the orientation to calculate the layout', function () {
-			optional.theme = new MAPJS.Theme({layout: {orientation: 'top-down'}});
-			MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			optional.theme = new Theme({layout: {orientation: 'top-down'}});
+			calculateLayout(idea, dimensionProvider, optional);
 			expect(layouts['top-down']).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, defaultMargin);
 		});
 		it('should use the spacing as a margin', function () {
-			optional.theme = new MAPJS.Theme({layout: {spacing: 30}});
-			MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			optional.theme = new Theme({layout: {spacing: 30}});
+			calculateLayout(idea, dimensionProvider, optional);
 			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, {h: 30, v: 30});
 		});
 		it('should pass margin when it is an object with h and v attributes', function () {
-			optional.theme = new MAPJS.Theme({layout: {spacing: {h: 30, v: 50}}});
-			MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			optional.theme = new Theme({layout: {spacing: {h: 30, v: 50}}});
+			calculateLayout(idea, dimensionProvider, optional);
 			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, {h: 30, v: 50});
 
 		});
 		it('should use the standard layout to calculate the layout when orientation is not recognised', function () {
-			optional.theme = new MAPJS.Theme({layout: {orientation: 'not-top-down'}});
-			MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			optional.theme = new Theme({layout: {orientation: 'not-top-down'}});
+			calculateLayout(idea, dimensionProvider, optional);
 			expect(layouts.standard).toHaveBeenCalledWith(idea.ideas[1], dimensionProvider, defaultMargin);
 			expect(layouts['top-down']).not.toHaveBeenCalled();
 		});
@@ -86,8 +88,8 @@ describe('MAPJS.calculateLayout', function () {
 			layouts.standard.and.returnValue({
 				1: {x: 0, y: 0, height: 10, width: 10}
 			});
-			optional.theme = new MAPJS.Theme({layout: {orientation: 'not-top-down'}});
-			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			optional.theme = new Theme({layout: {orientation: 'not-top-down'}});
+			result = calculateLayout(idea, dimensionProvider, optional);
 			expect(result.orientation).toEqual('not-top-down');
 		});
 		it('should attach node styles', function () {
@@ -95,7 +97,7 @@ describe('MAPJS.calculateLayout', function () {
 				1: {level: 3, attr: { group: 'blue'}, x: 0, y: 0, height: 10, width: 10 },
 				4: {level: 6, x: 0, y: 0, height: 10, width: 10}
 			});
-			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			result = calculateLayout(idea, dimensionProvider, optional);
 			expect(result.nodes[1].styles).toEqual(['attr_group_blue', 'attr_group', 'level_3', 'default']);
 			expect(result.nodes[4].styles).toEqual(['level_6', 'default']);
 		});
@@ -129,7 +131,7 @@ describe('MAPJS.calculateLayout', function () {
 					};
 				}
 			});
-			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			result = calculateLayout(idea, dimensionProvider, optional);
 			expect(result.nodes[1].rootId).toEqual(1);
 			expect(result.nodes[11].rootId).toEqual(1);
 			expect(result.nodes[111].rootId).toEqual(1);
@@ -152,8 +154,8 @@ describe('MAPJS.calculateLayout', function () {
 			layouts.standard.and.returnValue({
 				1: {x: 0, y: 0, height: 10, width: 10}
 			});
-			optional.theme = new MAPJS.Theme({layout: {orientation: 'not-top-down'}});
-			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			optional.theme = new Theme({layout: {orientation: 'not-top-down'}});
+			result = calculateLayout(idea, dimensionProvider, optional);
 			expect(result.theme).toEqual('blue');
 		});
 		describe('connector handling', function () {
@@ -190,7 +192,7 @@ describe('MAPJS.calculateLayout', function () {
 				});
 			});
 			it('should include connectors regardless of the layout', function () {
-				result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+				result = calculateLayout(idea, dimensionProvider, optional);
 
 				expect(result.connectors).toEqual({
 					11: makeConnector({ from: 1, to: 11 }),
@@ -200,8 +202,8 @@ describe('MAPJS.calculateLayout', function () {
 				});
 			});
 			it('should allow the theme to block connector overrides', function () {
-				optional.theme = new MAPJS.Theme({blockParentConnectorOverride: true});
-				result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+				optional.theme = new Theme({blockParentConnectorOverride: true});
+				result = calculateLayout(idea, dimensionProvider, optional);
 				expect(result.connectors[12].attr).toBeFalsy();
 			});
 		});
@@ -234,7 +236,7 @@ describe('MAPJS.calculateLayout', function () {
 			};
 
 			layouts.standard.and.returnValue({ 1: {id: 1, x: 0, y: 0, height: 10, width: 10}});
-			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			result = calculateLayout(idea, dimensionProvider, optional);
 			expect(result.links).toEqual({});
 		});
 		it('should include links between non-collapsed nodes', function () {
@@ -269,7 +271,7 @@ describe('MAPJS.calculateLayout', function () {
 				2: {id: 2, x: 0, y: 0, height: 10, width: 10},
 				3: {id: 3, x: 0, y: 0, height: 10, width: 10}
 			});
-			result = MAPJS.calculateLayout(idea, dimensionProvider, optional);
+			result = calculateLayout(idea, dimensionProvider, optional);
 			expect(result.links).toEqual({
 				'2_3': {
 					type: 'link',

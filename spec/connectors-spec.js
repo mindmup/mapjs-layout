@@ -1,6 +1,8 @@
-/*global describe, expect, it, MAPJS, beforeEach, require*/
-const defaultTheme = require('../src/default-theme');
-describe('MAPJS.Connectors', function () {
+/*global describe, expect, it,  beforeEach, require*/
+const defaultTheme = require('../src/default-theme'),
+	Connectors = require('../src/connectors'),
+	Theme = require('../src/theme');
+describe('Connectors', function () {
 	'use strict';
 	let parent, child;
 	beforeEach(function () {
@@ -9,21 +11,21 @@ describe('MAPJS.Connectors', function () {
 	});
 	describe('linkPath', function () {
 		it('draws a straight line between the borders of two nodes', function () {
-			const path = MAPJS.Connectors.linkPath(parent, child);
+			const path = Connectors.linkPath(parent, child);
 			expect(path.d).toEqual('M100,20L136,120');
 			expect(path.position).toEqual({ left: 200, top: 100, width: 142, height: 164 });
 
 		});
 		it('calculates the arrow if link attributes require it', function () {
-			const path = MAPJS.Connectors.linkPath(parent, child, {arrow: true});
+			const path = Connectors.linkPath(parent, child, {arrow: true});
 			expect(path.arrow).toEqual('M136,106L136,120L127,109Z');
 		});
 		it('returns the default link theme if no theme is provided', function () {
-			const path = MAPJS.Connectors.linkPath(parent, child);
+			const path = Connectors.linkPath(parent, child);
 			expect(path.theme).toEqual(defaultTheme.link.default);
 		});
 		it('returns the link theme from the provided theme object', function () {
-			const path = MAPJS.Connectors.linkPath(parent, child, {}, new MAPJS.Theme({
+			const path = Connectors.linkPath(parent, child, {}, new Theme({
 				link: {
 					default: {
 						line: 'lll',
@@ -34,7 +36,7 @@ describe('MAPJS.Connectors', function () {
 			expect(path.theme).toEqual({label: 'xxx', line: 'lll'});
 		});
 		it('requests the theme from link attributes', function () {
-			const path = MAPJS.Connectors.linkPath(parent, child, {type: 'curly'}, new MAPJS.Theme({
+			const path = Connectors.linkPath(parent, child, {type: 'curly'}, new Theme({
 				link: {
 					curly: {
 						line: 'clll',
@@ -50,7 +52,7 @@ describe('MAPJS.Connectors', function () {
 
 		});
 		it('merges link attributes with the theme to create line properties', function () {
-			const theme = new MAPJS.Theme({
+			const theme = new Theme({
 				link: {
 					default: {
 						line: {
@@ -61,32 +63,32 @@ describe('MAPJS.Connectors', function () {
 					}
 				}
 			});
-			expect(MAPJS.Connectors.linkPath(parent, child, {}, theme).lineProps).toEqual({
+			expect(Connectors.linkPath(parent, child, {}, theme).lineProps).toEqual({
 				strokes: '20, 20',
 				linecap: '',
 				width: 5,
 				color: 'green'
 			});
-			expect(MAPJS.Connectors.linkPath(parent, child, {color: 'blue'}, theme).lineProps).toEqual({
+			expect(Connectors.linkPath(parent, child, {color: 'blue'}, theme).lineProps).toEqual({
 				strokes: '20, 20',
 				linecap: '',
 				width: 5,
 				color: 'blue'
 			});
-			expect(MAPJS.Connectors.linkPath(parent, child, {lineStyle: 'dotted'}, theme).lineProps).toEqual({
+			expect(Connectors.linkPath(parent, child, {lineStyle: 'dotted'}, theme).lineProps).toEqual({
 				strokes: '1, 20',
 				linecap: 'round',
 				width: 5,
 				color: 'green'
 			});
 
-			expect(MAPJS.Connectors.linkPath(parent, child, {lineStyle: 'solid'}, theme).lineProps).toEqual({
+			expect(Connectors.linkPath(parent, child, {lineStyle: 'solid'}, theme).lineProps).toEqual({
 				strokes: '',
 				linecap: 'square',
 				width: 5,
 				color: 'green'
 			});
-			expect(MAPJS.Connectors.linkPath(parent, child, {width: 9}, theme).lineProps).toEqual({
+			expect(Connectors.linkPath(parent, child, {width: 9}, theme).lineProps).toEqual({
 				strokes: '36, 36',
 				linecap: '',
 				width: 9,
@@ -97,20 +99,20 @@ describe('MAPJS.Connectors', function () {
 	describe('themePath', function () {
 		describe('when no theme is provided', function () {
 			it('draws a quadratic curve between the centers of two nodes', function () {
-				const path = MAPJS.Connectors.themePath(parent, child);
+				const path = Connectors.themePath(parent, child);
 				expect(path).toEqual({
 					d: 'M50,20Q50,190 140,142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					color: '#707070',
 					width: 1,
-					theme: new MAPJS.Theme().connectorTheme('above', child.styles, parent.styles)
+					theme: new Theme().connectorTheme('above', child.styles, parent.styles)
 				});
 			});
 		});
 		describe('when a theme is provided with an underlined node style', function () {
 			let theme;
 			beforeEach(function () {
-				theme = new MAPJS.Theme({
+				theme = new Theme({
 					name: 'MindMup Test',
 					node: [
 						{
@@ -159,7 +161,7 @@ describe('MAPJS.Connectors', function () {
 			});
 			it('should use child level to determine connector type', function () {
 				child.styles = ['level_2', 'default'];
-				expect(MAPJS.Connectors.themePath(parent, child, theme)).toEqual({
+				expect(Connectors.themePath(parent, child, theme)).toEqual({
 					d: 'M100,41L130,142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					color: '#4F4F4F',
@@ -169,7 +171,7 @@ describe('MAPJS.Connectors', function () {
 			});
 			it('should use the defaults when the child level is not in the theme', function () {
 				child.level = 3;
-				expect(MAPJS.Connectors.themePath(parent, child, theme)).toEqual({
+				expect(Connectors.themePath(parent, child, theme)).toEqual({
 					d: 'M100,41q10,0 10,10v104q0,10 10,10h10M130,165 H142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					color: '#707070',
@@ -183,7 +185,7 @@ describe('MAPJS.Connectors', function () {
 		describe('when a theme is provided with an overlined node style', function () {
 			let theme;
 			beforeEach(function () {
-				theme = new MAPJS.Theme({
+				theme = new Theme({
 					name: 'MindMup Test',
 					node: [
 						{
@@ -232,7 +234,7 @@ describe('MAPJS.Connectors', function () {
 			});
 			it('should use child level to determine connector type', function () {
 				child.styles = ['level_2', 'default'];
-				expect(MAPJS.Connectors.themePath(parent, child, theme)).toEqual({
+				expect(Connectors.themePath(parent, child, theme)).toEqual({
 					d: 'M100,41L130,142',
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					color: '#4F4F4F',
@@ -242,7 +244,7 @@ describe('MAPJS.Connectors', function () {
 			});
 			it('should use the defaults when the child level is not in the theme', function () {
 				child.styles = ['level_3', 'default'];
-				expect(MAPJS.Connectors.themePath(parent, child, theme)).toEqual({
+				expect(Connectors.themePath(parent, child, theme)).toEqual({
 					d: 'M100,41v47q0,15 15,15h0q15,0 15,15v47m-5,5q0,-5 5,-5 h0q5,0 5,5',
 					position: { left: 200, top: 100, width: 142, height: 166 },
 					initialRadius: 5,
